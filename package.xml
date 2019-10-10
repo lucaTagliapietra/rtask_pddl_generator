@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rtask_commons</name>
+  <version>0.0.1</version>
+  <description>CloudRobotics-TAMP mantained rtask_commons package</description>
+  <maintainer email="luca.tagliapietra@unipd.it">lucaTagliapietra @ CloudRobotics-TAMP</maintainer>
+  <maintainer email="elisa.tosello@unipd.it">elisa_tosello @ CloudRobotics-TAMP</maintainer>
+  <license>TODO</license>
+
+  <url type="website">https://gitlab.com/RTask</url>
+  <author email="luca.tagliapietra@unipd.it">Luca Tagliapietra</author>
+  <author email="elisa.tosello@unipd.it">Elisa Tosello</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rtask_msgs</depend>
+  <depend>roscpp</depend>
+  
+  <build_export_depend>message_runtime</build_export_depend>
+  <exec_depend>message_runtime</exec_depend>
+</package>
