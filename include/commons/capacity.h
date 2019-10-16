@@ -40,8 +40,8 @@ namespace rtask {
       // --------------
       // Property Level
       // --------------
-      bool hasProperty(const std::string& t_property_name);
-      bool getProperty(const std::string& t_property_name, Property& t_property);
+      bool hasProperty(const std::string& t_property_name) const;
+      bool getProperty(const std::string& t_property_name, Property& t_property) const;
       void setProperty(const Property& t_property); // if not in, add it; if in, overwrite
       bool addProperty(const Property& t_property); // if already in, leave it unchanged
       bool removeProperty(const std::string& t_property_name);

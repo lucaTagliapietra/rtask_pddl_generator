@@ -78,7 +78,7 @@ void rtask::commons::Capacity::getProperties(std::vector<rtask::commons::Propert
 // --------------
 // Property Level
 // --------------
-bool rtask::commons::Capacity::hasProperty(const std::string& t_property_name)
+bool rtask::commons::Capacity::hasProperty(const std::string& t_property_name) const
 {
   if (m_properties.count(t_property_name) != 1) {
     return false;
@@ -86,13 +86,13 @@ bool rtask::commons::Capacity::hasProperty(const std::string& t_property_name)
   return true;
 }
 
-bool rtask::commons::Capacity::getProperty(const std::string& t_property_name, Property& t_property)
+bool rtask::commons::Capacity::getProperty(const std::string& t_property_name, Property& t_property) const
 {
   if (!hasProperty(t_property_name)) {
     return false;
   }
 
-  t_property = {m_properties[t_property_name]};
+  t_property = {m_properties.at(t_property_name)};
   return true;
 }
 

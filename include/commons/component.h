@@ -66,19 +66,20 @@ namespace rtask {
       // --------------
       // Capacity Level
       // --------------
-      bool hasCapacity(const std::string& t_capacity_name);
+      bool hasCapacity(const std::string& t_capacity_name) const;
       bool removeCapacity(const std::string& t_capacity_name);
-      bool getCapacity(const std::string& t_capacity_name, Capacity& t_capacity);
-      bool getCapacityProperties(const std::string& t_capacity_name, std::vector<Property>& t_props);
+      bool getCapacity(const std::string& t_capacity_name, Capacity& t_capacity) const;
+      bool getCapacityProperties(const std::string& t_capacity_name, std::vector<Property>& t_props) const;
       bool addCapacity(const Capacity& t_capacity);
       void setCapacity(const Capacity& t_capacity);
 
       // --------------
       // Property level
       // --------------
-      bool hasCapacityProperty(const std::string& t_capacity_name, const std::string& t_prop_name);
+      bool hasCapacityProperty(const std::string& t_capacity_name, const std::string& t_prop_name) const;
       bool removeCapacityProperty(const std::string& t_capacity_name, const std::string& t_prop_name);
-      bool getCapacityProperty(const std::string& t_capacity_name, const std::string& t_prop_name, Property& t_prop);
+      bool
+      getCapacityProperty(const std::string& t_capacity_name, const std::string& t_prop_name, Property& t_prop) const;
       bool addCapacityProperty(const std::string& t_capacity_name, const Property& t_prop);
       void setCapacityProperty(const std::string& t_capacity_name, const Property& t_prop);
 

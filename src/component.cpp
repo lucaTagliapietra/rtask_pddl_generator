@@ -124,7 +124,7 @@ void rtask::commons::Component::getCapabilities(std::vector<std::string>& t_capa
 // Component level
 // ---------------
 
-bool rtask::commons::Component::hasCapacity(const std::string& t_capacity_name)
+bool rtask::commons::Component::hasCapacity(const std::string& t_capacity_name) const
 {
   if (m_params.capacities.count(t_capacity_name) != 1) {
     return false;
@@ -141,22 +141,23 @@ bool rtask::commons::Component::removeCapacity(const std::string& t_capacity_nam
   return true;
 }
 
-bool rtask::commons::Component::getCapacity(const std::string& t_capacity_name, rtask::commons::Capacity& t_capacity)
+bool rtask::commons::Component::getCapacity(const std::string& t_capacity_name,
+                                            rtask::commons::Capacity& t_capacity) const
 {
   if (!hasCapacity(t_capacity_name)) {
     return false;
   }
-  t_capacity = {m_params.capacities[t_capacity_name]};
+  t_capacity = {m_params.capacities.at(t_capacity_name)};
   return true;
 }
 
 bool rtask::commons::Component::getCapacityProperties(const std::string& t_capacity_name,
-                                                      std::vector<rtask::commons::Property>& t_props)
+                                                      std::vector<rtask::commons::Property>& t_props) const
 {
   if (!hasCapacity(t_capacity_name)) {
     return false;
   }
-  m_params.capacities[t_capacity_name].getProperties(t_props);
+  m_params.capacities.at(t_capacity_name).getProperties(t_props);
   return true;
 }
 
@@ -165,7 +166,7 @@ bool rtask::commons::Component::addCapacity(const rtask::commons::Capacity& t_ca
   if (!hasCapacity(t_capacity.getCapabilityName())) {
     return false;
   }
-  m_params.capacities[t_capacity.getCapabilityName()] = {t_capacity};
+  setCapacity(t_capacity);
   return true;
 }
 
@@ -178,12 +179,13 @@ void rtask::commons::Component::setCapacity(const rtask::commons::Capacity& t_ca
 // Property level
 // --------------
 
-bool rtask::commons::Component::hasCapacityProperty(const std::string& t_capacity_name, const std::string& t_prop_name)
+bool rtask::commons::Component::hasCapacityProperty(const std::string& t_capacity_name,
+                                                    const std::string& t_prop_name) const
 {
   if (!hasCapacity(t_capacity_name)) {
     return false;
   }
-  if (!m_params.capacities[t_capacity_name].hasProperty(t_prop_name)) {
+  if (!m_params.capacities.at(t_capacity_name).hasProperty(t_prop_name)) {
     return false;
   }
   return true;
@@ -198,12 +200,12 @@ bool rtask::commons::Component::removeCapacityProperty(const std::string& t_capa
 }
 bool rtask::commons::Component::getCapacityProperty(const std::string& t_capacity_name,
                                                     const std::string& t_prop_name,
-                                                    rtask::commons::Property& t_prop)
+                                                    rtask::commons::Property& t_prop) const
 {
   if (!hasCapacity(t_capacity_name)) {
     return false;
   }
-  return m_params.capacities[t_capacity_name].getProperty(t_prop_name, t_prop);
+  return m_params.capacities.at(t_capacity_name).getProperty(t_prop_name, t_prop);
 }
 bool rtask::commons::Component::addCapacityProperty(const std::string& t_capacity_name,
                                                     const rtask::commons::Property& t_prop)
