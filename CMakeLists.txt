@@ -38,7 +38,6 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # packages don't collide add_executable(${PROJECT_NAME}_node
 add_library(${PROJECT_NAME}_lib src/capacity.cpp
                                 src/component.cpp
-                                src/pair.cpp
                                 src/property.cpp)
 
 # Rename C++ executable without prefix The above recommended prefix causes long
@@ -51,6 +50,9 @@ set_target_properties(${PROJECT_NAME}_lib
                                  PREFIX
                                  "")
 
+catkin_package(INCLUDE_DIRS include
+               LIBRARIES ${PROJECT_NAME}_lib)
+
 # Add cmake target dependencies of the executable same as for the library above
 add_dependencies(${PROJECT_NAME}_lib
                  ${${PROJECT_NAME}_EXPORTED_TARGETS}
@@ -59,7 +61,7 @@ add_dependencies(${PROJECT_NAME}_lib
 # Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
 
-# set_target_properties(${PROJECT_NAME}_node
+#set_target_properties(${PROJECT_NAME}_lib
 #                       PROPERTIES PUBLIC_HEADER include)
 
 target_include_directories(${PROJECT_NAME}_lib
