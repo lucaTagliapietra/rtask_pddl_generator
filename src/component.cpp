@@ -1,5 +1,7 @@
 #include "commons/component.h"
 
+#include "boost/make_shared.hpp"
+
 // ------------
 // CONSTRUCTORS
 // ------------
@@ -38,7 +40,7 @@ rtask::commons::Component::Component(const rtask_msgs::ComponentConstPtr t_msg_p
 
 rtask_msgs::ComponentPtr rtask::commons::Component::toComponentMsg() const
 {
-  rtask_msgs::ComponentPtr component;
+  rtask_msgs::ComponentPtr component = boost::make_shared<rtask_msgs::Component>();
   component->id = m_params.id;
   component->name = m_params.name;
   component->type = m_params.type;

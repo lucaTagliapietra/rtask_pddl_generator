@@ -1,4 +1,5 @@
 #include "commons/capacity.h"
+#include "boost/make_shared.hpp"
 
 // ------------
 // CONSTRUCTORS
@@ -27,7 +28,7 @@ rtask::commons::Capacity::Capacity(const rtask_msgs::CapacityConstPtr t_msg_ptr)
 // --------------
 rtask_msgs::CapacityPtr rtask::commons::Capacity::toCapacityMsg() const
 {
-  rtask_msgs::CapacityPtr capacity;
+  rtask_msgs::CapacityPtr capacity = boost::make_shared<rtask_msgs::Capacity>();
   capacity->capability = m_capability;
   for (auto& p : m_properties) {
     capacity->properties.push_back(*(p.second.toPropertyMsg()));

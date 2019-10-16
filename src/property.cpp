@@ -1,5 +1,7 @@
 #include "commons/property.h"
 
+#include "boost/make_shared.hpp"
+
 rtask::commons::Property::Property()
   : m_params({})
 {}
@@ -45,7 +47,7 @@ rtask::commons::Property::Property(const rtask_msgs::Property& t_property_msg)
 rtask_msgs::PropertyPtr rtask::commons::Property::toPropertyMsg() const
 {
 
-  rtask_msgs::PropertyPtr a_property{};
+  rtask_msgs::PropertyPtr a_property = boost::make_shared<rtask_msgs::Property>();
   a_property->name = m_params.name;
   switch (m_params.type) {
     case Type::Boolean:
