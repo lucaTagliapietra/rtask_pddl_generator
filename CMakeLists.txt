@@ -71,7 +71,11 @@ target_include_directories(${PROJECT_NAME}_lib
 
 if(CATKIN_ENABLE_TESTING)
  find_package(rostest REQUIRED)
+ 
  add_rostest_gtest(capacity_test launch/capacity_test.test test/capacity_test.cpp)
  target_link_libraries(capacity_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+ add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
+ target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
 endif()
