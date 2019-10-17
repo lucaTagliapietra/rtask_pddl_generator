@@ -46,6 +46,12 @@ namespace rtask {
       bool addProperty(const Property& t_property); // if already in, leave it unchanged
       bool removeProperty(const std::string& t_property_name);
 
+      // ---------
+      // Operators
+      // ---------
+
+      bool operator==(const Capacity& t_capacity);
+
     private:
       std::string m_capability = "";
       std::map<std::string, Property> m_properties{};

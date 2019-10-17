@@ -120,6 +120,21 @@ bool rtask::commons::Capacity::removeProperty(const std::string& t_property_name
   return true;
 }
 
+// ---------
+// Operators
+// ---------
+
+bool rtask::commons::Capacity::operator==(const Capacity& t_capacity)
+{
+
+  auto pred = [](std::pair<std::string, Property> a, std::pair<std::string, Property> b) {
+    return a.second.operator==(b.second);
+  };
+
+  return ((m_capability == t_capacity.getCapabilityName()) && (m_properties.size() == t_capacity.m_properties.size())
+          && std::equal(m_properties.begin(), m_properties.end(), t_capacity.m_properties.begin(), pred));
+}
+
 // -----------------
 // PRIVATE FUNCTIONS
 // -----------------

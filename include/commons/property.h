@@ -50,6 +50,12 @@ namespace rtask {
 
       rtask_msgs::PropertyPtr toPropertyMsg() const;
 
+      // ---------
+      // Operators
+      // ---------
+
+      bool operator==(const Property& t_property);
+
     private:
       struct Parameters
       {

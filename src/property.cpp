@@ -157,3 +157,25 @@ void rtask::commons::Property::setValue(const std::string& t_value)
   m_params.type = Type::String;
   m_params.str_value = t_value;
 }
+
+// ---------
+// Operators
+// ---------
+
+bool rtask::commons::Property::operator==(const Property& t_property)
+{
+  if ((m_params.name == t_property.getName()) && m_params.type == t_property.getType()) {
+    switch (m_params.type) {
+      case Type::Boolean:
+        return (m_params.bool_value == t_property.m_params.bool_value);
+      case Type::Integer:
+        return (m_params.int_value == t_property.m_params.int_value);
+      case Type::Double:
+        return (m_params.double_value == t_property.m_params.double_value);
+      case Type::String:
+        return (m_params.str_value == t_property.m_params.str_value);
+      default:
+        return false;
+    }
+  }
+}
