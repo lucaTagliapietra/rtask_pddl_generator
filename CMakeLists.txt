@@ -20,9 +20,9 @@ catkin_package(CATKIN_DEPENDS roscpp
 
 # Specify additional locations of header files Your package locations should be
 # listed before other locations
-# include_directories(include
-#                     ${catkin_INCLUDE_DIRS}
-#                     )
+include_directories(include
+                     ${catkin_INCLUDE_DIRS}
+                     )
 
 # Display additional files in qtcreator
 file(GLOB_RECURSE
@@ -68,3 +68,10 @@ target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
 target_include_directories(${PROJECT_NAME}_lib
                            PUBLIC include
                            PRIVATE ${catkin_INCLUDE_DIRS})
+
+if(CATKIN_ENABLE_TESTING)
+ find_package(rostest REQUIRED)
+ add_rostest_gtest(capacity_test launch/capacity_test.test test/capacity_test.cpp)
+ target_link_libraries(capacity_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+endif()
