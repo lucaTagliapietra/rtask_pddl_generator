@@ -79,9 +79,9 @@ public:
                                         const std::vector<rtask::commons::Property>& property2)
   {
     bool result = false;
-    for (auto it1 = property1.begin(); it1 != property1.end(); ++it1)
-      for (auto it2 = property2.begin(); it2 != property2.end(); ++it2)
-        if (it1->getName() == it2->getName())
+    for (auto p1 : property1)
+      for (auto p2 : property2)
+        if (p1.operator==(p2))
           result = true;
     return result;
   }
@@ -89,7 +89,8 @@ public:
 
 TEST_F(CapacityTest, sameCapacity)
 {
-  ASSERT_TRUE(cap == cap);
+  rtask::commons::Capacity dual_capacity = cap;
+  ASSERT_TRUE(dual_capacity == cap);
 }
 
 TEST_F(CapacityTest, getCapabilityName)
@@ -137,16 +138,22 @@ TEST_F(CapacityTest, removePropertyAndList)
   ASSERT_TRUE(arePropertiesVectorsEqual(properties_output, properties));
 }
 
-TEST_F(CapacityTest, toCapacityMsg)
+TEST_F(CapacityTest, toAndFromCapacityMsg)
+{
+  rtask_msgs::CapacityPtr capacity_msg_ptr = cap.toCapacityMsg();
+
+  rtask::commons::Capacity capacity_check;
+  capacity_check.setFromCapacityMsg(capacity_msg_ptr);
+
+  ASSERT_TRUE(capacity_check == cap);
+}
+
+TEST_F(CapacityTest, clear)
 {
 
-  // boost::shared_ptr<rtask::commons::Capacity> c = boost::make_shared<rtask::commons::Capacity>();
-  // rtask_msgs::CapacityPtr capacity = cap.toCapacityMsg();
-  //  //  ROS_ERROR_STREAM(capa.capability << " " << cap.getCapabilityName());
-  //  ASSERT_TRUE(true);
-  //  // ASSERT_EQ(capa->capability, capability_name);
-  //  // capacity = *capacity_msg_output;
-  // ASSERT_EQ(capacity_msg.capability, capability_name);
+  cap.clear();
+
+  ASSERT_TRUE(cap.getCapabilityName() == "");
 }
 
 int main(int argc, char* argv[])
