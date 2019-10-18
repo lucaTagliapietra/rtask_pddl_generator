@@ -2,6 +2,10 @@
 
 #include "boost/make_shared.hpp"
 
+// ------------
+// CONSTRUCTORS
+// ------------
+
 rtask::commons::Status::Status(const State t_status, const std::string t_descr)
 {
   setStatus(t_status, t_descr);
@@ -16,6 +20,10 @@ rtask::commons::Status::Status(const rtask_msgs::StatusConstPtr t_msg_ptr)
 {
   setFromStatusMsg(t_msg_ptr);
 }
+
+// ----------------
+// PUBLIC FUNCTIONS
+// ----------------
 
 rtask_msgs::StatusPtr rtask::commons::Status::toStatusMsg() const
 {
