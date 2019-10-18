@@ -40,8 +40,8 @@ add_library(${PROJECT_NAME}_lib src/agent.cpp
                                 src/capacity.cpp
                                 src/component.cpp
                                 src/property.cpp
-                                src/status.cpp)
-#                                src/task.cpp
+                                src/status.cpp
+                                src/task.cpp)
 #                                src/mission.cpp)
 
 # Rename C++ executable without prefix The above recommended prefix causes long
