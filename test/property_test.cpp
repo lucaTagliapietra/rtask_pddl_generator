@@ -44,9 +44,9 @@ TEST_F(PropertyTest, getType)
 
 TEST_F(PropertyTest, getValue)
 {
-  double property_value_check;
-  property.getValue(property_value_check);
-  ASSERT_EQ(property_value_check, property_value);
+  double property_value_output;
+  property.getValue(property_value_output);
+  ASSERT_EQ(property_value_output, property_value);
 }
 
 TEST_F(PropertyTest, toAndFromPropertyMsg)

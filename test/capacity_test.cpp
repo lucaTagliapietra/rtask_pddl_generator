@@ -19,7 +19,6 @@ public:
   std::string capability_name = "";
 
   std::vector<rtask::commons::Property> properties{};
-  std::vector<rtask::commons::Property> properties_output;
 
   rtask::commons::Property prop1, prop2, prop3;
   std::string prop_name1, prop_name2, prop_name3;
@@ -105,17 +104,19 @@ TEST_F(CapacityTest, hasProperty)
 
 TEST_F(CapacityTest, getProperty)
 {
-  rtask::commons::Property prop;
+  rtask::commons::Property property_output;
   int value;
-  cap.getProperty(prop_name1, prop);
-  prop.getValue(value);
+  cap.getProperty(prop_name1, property_output);
+  property_output.getValue(value);
 
-  ASSERT_EQ(prop.getType(), prop1.getType());
+  ASSERT_EQ(property_output.getType(), prop1.getType());
   ASSERT_EQ(value, value1);
 }
 
 TEST_F(CapacityTest, addPropertyAndList)
 {
+  std::vector<rtask::commons::Property> properties_output;
+
   properties.push_back(prop3);
   std::sort(properties.begin(), properties.end(), Sort());
 
@@ -128,6 +129,8 @@ TEST_F(CapacityTest, addPropertyAndList)
 
 TEST_F(CapacityTest, removePropertyAndList)
 {
+  std::vector<rtask::commons::Property> properties_output;
+
   properties.erase(std::find(properties.begin(), properties.end(), prop1));
   std::sort(properties.begin(), properties.end(), Sort());
 
@@ -142,10 +145,10 @@ TEST_F(CapacityTest, toAndFromCapacityMsg)
 {
   rtask_msgs::CapacityPtr capacity_msg_ptr = cap.toCapacityMsg();
 
-  rtask::commons::Capacity capacity_check;
-  capacity_check.setFromCapacityMsg(capacity_msg_ptr);
+  rtask::commons::Capacity capacity_output;
+  capacity_output.setFromCapacityMsg(capacity_msg_ptr);
 
-  ASSERT_TRUE(capacity_check == cap);
+  ASSERT_TRUE(capacity_output == cap);
 }
 
 TEST_F(CapacityTest, clear)
