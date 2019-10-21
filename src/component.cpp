@@ -229,6 +229,23 @@ void rtask::commons::Component::setCapacityProperty(const std::string& t_capacit
   m_params.capacities[t_capacity_name].setProperty(t_prop);
 }
 
+// ---------
+// Operators
+// ---------
+
+bool rtask::commons::Component::operator==(const Component& t_component)
+{
+
+  auto pred = [](std::pair<std::string, Capacity> a, std::pair<std::string, Capacity> b) {
+    return a.second.operator==(b.second);
+  };
+
+  return ((m_params.name == t_component.getName()) && (m_params.type == t_component.getType())
+          && (m_params.capacities.size() == t_component.m_params.capacities.size())
+          && std::equal(
+               m_params.capacities.begin(), m_params.capacities.end(), t_component.m_params.capacities.begin(), pred));
+}
+
 // -----------------
 // PRIVATE FUNCTIONS
 // -----------------

@@ -83,6 +83,12 @@ namespace rtask {
       bool addCapacityProperty(const std::string& t_capacity_name, const Property& t_prop);
       void setCapacityProperty(const std::string& t_capacity_name, const Property& t_prop);
 
+      // ---------
+      // Operators
+      // ---------
+
+      bool operator==(const Component& t_component);
+
     private:
       struct ComponentParameters
       {
