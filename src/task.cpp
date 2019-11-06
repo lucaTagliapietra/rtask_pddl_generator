@@ -8,12 +8,13 @@
 
 rtask::commons::Task::Task(const unsigned int t_id,
                            const std::string t_name,
+                           const std::string t_ref_frame,
                            const std::vector<Capacity> t_capacities,
                            const std::string t_description,
                            const ros::Duration t_timeout,
                            const Status t_status)
 {
-  setTask(t_id, t_name, t_capacities, t_description, t_timeout, t_status);
+  setTask(t_id, t_name, t_ref_frame, t_capacities, t_description, t_timeout, t_status);
 }
 
 rtask::commons::Task::Task(const rtask_msgs::Task& t_msg)
@@ -36,22 +37,24 @@ rtask::commons::Task::Task(const rtask_msgs::TaskConstPtr t_msg_ptr)
 
 rtask_msgs::TaskPtr rtask::commons::Task::toTaskMsg() const
 {
-  rtask_msgs::TaskPtr t_mgs_ptr = boost::make_shared<rtask_msgs::Task>();
-  t_mgs_ptr->id = m_params.id;
-  t_mgs_ptr->name = m_params.name;
-  t_mgs_ptr->status = *(m_params.status.toStatusMsg());
-  t_mgs_ptr->timeout = m_params.timeout;
-  t_mgs_ptr->description = m_params.description;
+  rtask_msgs::TaskPtr t_msg_ptr = boost::make_shared<rtask_msgs::Task>();
+  t_msg_ptr->id = m_params.id;
+  t_msg_ptr->name = m_params.name;
+  t_msg_ptr->header.frame_id = m_params.ref_frame;
+  t_msg_ptr->status = *(m_params.status.toStatusMsg());
+  t_msg_ptr->timeout = m_params.timeout;
+  t_msg_ptr->description = m_params.description;
   for (auto& r : m_params.requirements) {
-    t_mgs_ptr->requirements.push_back(*(r.second.toCapacityMsg()));
+    t_msg_ptr->requirements.push_back(*(r.second.toCapacityMsg()));
   }
-  return t_mgs_ptr;
+  return t_msg_ptr;
 }
 
 void rtask::commons::Task::setFromTaskMsg(const rtask_msgs::Task& t_msg)
 {
   m_params.id = t_msg.id;
   m_params.name = t_msg.name;
+  m_params.ref_frame = t_msg.header.frame_id;
   m_params.status.setFromStatusMsg(t_msg.status);
   m_params.timeout = t_msg.timeout;
   m_params.description = t_msg.description;
@@ -68,6 +71,7 @@ void rtask::commons::Task::setFromTaskMsg(const rtask_msgs::TaskConstPtr t_msg_p
 
 void rtask::commons::Task::setTask(const unsigned int t_id,
                                    const std::string t_name,
+                                   const std::string t_ref_frame,
                                    const std::vector<Capacity> t_requirements,
                                    const std::string t_description,
                                    const ros::Duration t_timeout,
@@ -75,10 +79,26 @@ void rtask::commons::Task::setTask(const unsigned int t_id,
 {
   m_params.id = t_id;
   m_params.name = t_name;
+  m_params.ref_frame = t_ref_frame;
   setStatus(t_status);
   m_params.timeout = t_timeout;
   m_params.description = t_description;
   for (auto& r : t_requirements) {
+    m_params.requirements[r.getCapabilityName()] = {r};
+  }
+}
+
+void rtask::commons::Task::setTask(const Task& t_task)
+{
+  m_params.id = t_task.getId();
+  m_params.name = t_task.getName();
+  m_params.ref_frame = t_task.getReferenceFrame();
+  t_task.getStatus(m_params.status);
+  m_params.timeout = t_task.getTimeout();
+  m_params.description = t_task.getDescription();
+  std::vector<rtask::commons::Capacity> tmp;
+  t_task.getRequirements(tmp);
+  for (auto& r : tmp) {
     m_params.requirements[r.getCapabilityName()] = {r};
   }
 }
@@ -122,7 +142,7 @@ void rtask::commons::Task::setStatusValue(const State t_state)
   m_params.status.setStatus(t_state, m_params.status.getDescription());
 }
 
-void rtask::commons::Task::setStatusDescription(std::string& t_descr)
+void rtask::commons::Task::setStatusDescription(const std::string& t_descr)
 {
   m_params.status.setStatus(m_params.status.getStatus(), t_descr);
 }
@@ -168,7 +188,7 @@ bool rtask::commons::Task::getRequiredCapacityProperties(const std::string& t_ca
 
 bool rtask::commons::Task::addRequiredCapacity(const Capacity& t_capacity)
 {
-  if (!requiresCapacity(t_capacity.getCapabilityName())) {
+  if (requiresCapacity(t_capacity.getCapabilityName())) {
     return false;
   }
   setRequiredCapacity(t_capacity);

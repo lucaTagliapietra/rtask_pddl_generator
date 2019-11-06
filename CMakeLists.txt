@@ -41,8 +41,8 @@ add_library(${PROJECT_NAME}_lib src/agent.cpp
                                 src/component.cpp
                                 src/property.cpp
                                 src/status.cpp
-                                src/task.cpp)
-#                                src/mission.cpp)
+                                src/task.cpp
+                                src/mission.cpp)
 
 # Rename C++ executable without prefix The above recommended prefix causes long
 # target names, the following renames the target back to the shorter version for

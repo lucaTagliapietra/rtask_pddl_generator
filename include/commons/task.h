@@ -20,6 +20,7 @@ namespace rtask {
       Task() {}
       Task(const unsigned int t_id,
            const std::string t_name,
+           const std::string t_ref_frame = "",
            const std::vector<Capacity> t_capacities = {},
            const std::string t_description = "",
            const ros::Duration t_timeout = {},
@@ -34,17 +35,21 @@ namespace rtask {
       void setFromTaskMsg(const rtask_msgs::TaskConstPtr t_msg_ptr);
       void setTask(const unsigned int t_id,
                    const std::string t_name,
+                   const std::string t_ref_frame = "",
                    const std::vector<Capacity> t_requirements = {},
                    const std::string t_description = "",
                    const ros::Duration t_timeout = {},
                    const Status t_status = {});
+      void setTask(const Task& t_task);
       void setDescription(const std::string& t_value) { m_params.description = t_value; }
       void setTimeout(const ros::Duration t_timeout) { m_params.timeout = t_timeout; }
+      void setReferenceFrame(const std::string& t_ref_frame) { m_params.ref_frame = t_ref_frame; }
       void setStatus(const Status t_status);
       void clear();
 
       unsigned int getId() const { return m_params.id; }
       std::string getName() const { return m_params.name; }
+      std::string getReferenceFrame() const { return m_params.ref_frame; }
       std::string getDescription() const { return m_params.description; }
       ros::Duration getTimeout() const { return m_params.timeout; }
       void getStatus(Status& t_status) const;
@@ -55,7 +60,7 @@ namespace rtask {
       // Status Level
       // ------------
       void setStatusValue(const State t_state);
-      void setStatusDescription(std::string& t_descr);
+      void setStatusDescription(const std::string& t_descr);
       State getStatusValue() const { return m_params.status.getStatus(); }
       std::string getStatusDescription() const { return m_params.status.getDescription(); }
 
@@ -86,6 +91,7 @@ namespace rtask {
         unsigned int id = std::numeric_limits<unsigned int>::quiet_NaN();
         std::string name = "";
         std::string description = "";
+        std::string ref_frame = "";
         ros::Duration timeout{};
 
         Status status{};
@@ -96,6 +102,7 @@ namespace rtask {
         {
           id = std::numeric_limits<unsigned int>::quiet_NaN();
           name = "";
+          ref_frame = "";
           description = "";
           timeout = {};
           status.clear();
