@@ -3,6 +3,7 @@
 #include "commons/capacity.h"
 #include "commons/component.h"
 #include "commons/property.h"
+#include "commons/utils.h"
 
 #include "boost/make_shared.hpp"
 
@@ -12,9 +13,9 @@
 rtask::commons::Agent::Agent(const unsigned int t_id,
                              const std::string& t_name,
                              const std::vector<Component> t_comps,
-                             const std::string t_description,
-                             const std::string t_urdf_link,
-                             const std::string t_base_link)
+                             const std::string& t_description,
+                             const std::string& t_urdf_link,
+                             const std::string& t_base_link)
 {
   setAgent(t_id, t_name, t_comps, t_description, t_urdf_link, t_base_link);
 }
@@ -27,6 +28,10 @@ rtask::commons::Agent::Agent(const rtask_msgs::Agent& t_msg)
 rtask::commons::Agent::Agent(const rtask_msgs::AgentConstPtr& t_msg_ptr)
 {
   setFromAgentMsg(t_msg_ptr);
+}
+rtask::commons::Agent::Agent(XmlRpc::XmlRpcValue& t_node)
+{
+  setAgentFromXmlRpc(t_node);
 }
 
 // ----------------
@@ -54,6 +59,39 @@ rtask_msgs::AgentPtr rtask::commons::Agent::toAgentMsg() const
   return t_agent;
 }
 
+bool rtask::commons::Agent::setAgentFromXmlRpc(XmlRpc::XmlRpcValue& t_node)
+{
+  if (commons::utils::checkXmlRpcSanity("id", t_node, XmlRpc::XmlRpcValue::TypeInt)) {
+    m_params.id = static_cast<unsigned int>(static_cast<int>(t_node["id"]));
+  }
+  if (commons::utils::checkXmlRpcSanity("name", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.name = static_cast<std::string>(t_node["name"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("description", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.description = static_cast<std::string>(t_node["description"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("urdf_link", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.urdf_link = static_cast<std::string>(t_node["urdf_link"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("header", t_node, XmlRpc::XmlRpcValue::TypeStruct)
+      && commons::utils::checkXmlRpcSanity("frame_id", t_node["header"], XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.base_link = static_cast<std::string>(t_node["header"]["frame_id"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("components", t_node, XmlRpc::XmlRpcValue::TypeArray)) {
+    if (t_node["components"].size() == 0) {
+      std::cout << "Empty components vector for agent " << m_params.name << std::endl;
+      return updValidity();
+    }
+    for (int i = 0; i < t_node["components"].size(); ++i) {
+      Component tmp(t_node["components"][i]);
+      if (!addComponent(tmp)) {
+        std::cout << "Malformed or already present component " << tmp.getName() << std::endl;
+      }
+    }
+  }
+  return updValidity();
+}
+
 void rtask::commons::Agent::setFromAgentMsg(const rtask_msgs::Agent& t_msg)
 {
   m_params.base_link = t_msg.header.frame_id;
@@ -66,6 +104,7 @@ void rtask::commons::Agent::setFromAgentMsg(const rtask_msgs::Agent& t_msg)
     m_params.components[c.name] = {c};
     updCapabilityMap(m_params.components[c.name]);
   }
+  updValidity();
 }
 
 void rtask::commons::Agent::setFromAgentMsg(const rtask_msgs::AgentConstPtr t_msg_ptr)
@@ -76,9 +115,9 @@ void rtask::commons::Agent::setFromAgentMsg(const rtask_msgs::AgentConstPtr t_ms
 void rtask::commons::Agent::setAgent(const unsigned int t_id,
                                      const std::string& t_name,
                                      const std::vector<Component> t_comps,
-                                     const std::string t_description,
-                                     const std::string t_urdf_link,
-                                     const std::string t_base_link)
+                                     const std::string& t_description,
+                                     const std::string& t_urdf_link,
+                                     const std::string& t_base_link)
 {
   m_params.id = t_id;
   m_params.name = t_name;
@@ -93,6 +132,7 @@ void rtask::commons::Agent::setAgent(const unsigned int t_id,
       updCapabilityMap(m_params.components[c.getName()]);
     }
   }
+  updValidity();
 }
 
 void rtask::commons::Agent::clear()
@@ -151,6 +191,7 @@ bool rtask::commons::Agent::removeComponent(const std::string& t_component_name)
   }
   m_params.components.erase(t_component_name);
   updCapabilityMap();
+  updValidity();
   return true;
 }
 
@@ -176,6 +217,7 @@ void rtask::commons::Agent::setComponent(const commons::Component& t_component)
 {
   m_params.components[t_component.getName()] = {t_component};
   updCapabilityMap(t_component);
+  updValidity();
 }
 
 bool rtask::commons::Agent::getComponentId(const std::string& t_component_name, unsigned int& t_id) const
@@ -279,6 +321,7 @@ bool rtask::commons::Agent::removeComponentCapacity(const std::string& t_compone
     return false;
   }
   updCapabilityMap();
+  updValidity();
   return true;
 }
 bool rtask::commons::Agent::getComponentCapacity(const std::string& t_component_name,
@@ -305,7 +348,10 @@ bool rtask::commons::Agent::addComponentCapacity(const std::string& t_component_
   if (!hasComponent(t_component_name)) {
     return false;
   }
-  return m_params.components.at(t_component_name).addCapacity(t_capacity);
+  bool ok = m_params.components.at(t_component_name).addCapacity(t_capacity);
+  updCapabilityMap();
+  updValidity();
+  return ok;
 }
 
 bool rtask::commons::Agent::setComponentCapacity(const std::string& t_component_name, const Capacity& t_capacity)
@@ -314,6 +360,7 @@ bool rtask::commons::Agent::setComponentCapacity(const std::string& t_component_
     return false;
   }
   m_params.components.at(t_component_name).setCapacity(t_capacity);
+  updValidity();
   return true;
 }
 
@@ -336,7 +383,9 @@ bool rtask::commons::Agent::removeComponentCapacityProperty(const std::string& t
   if (!hasComponent(t_component_name)) {
     return false;
   }
-  return m_params.components.at(t_component_name).removeCapacityProperty(t_capacity_name, t_prop_name);
+  bool ok = m_params.components.at(t_component_name).removeCapacityProperty(t_capacity_name, t_prop_name);
+  updValidity();
+  return ok;
 }
 
 bool rtask::commons::Agent::getComponentCapacityProperty(const std::string& t_component_name,
@@ -358,6 +407,7 @@ bool rtask::commons::Agent::addComponentCapacityProperty(const std::string& t_co
     return false;
   }
   bool ok = m_params.components.at(t_component_name).addCapacityProperty(t_capacity_name, t_prop);
+  updValidity();
   return ok;
 }
 
@@ -370,6 +420,7 @@ bool rtask::commons::Agent::setComponentCapacityProperty(const std::string& t_co
   }
 
   m_params.components.at(t_component_name).setCapacityProperty(t_capacity_name, t_prop);
+  updValidity();
   return true;
 }
 
@@ -404,4 +455,16 @@ void rtask::commons::Agent::clearComponents()
 {
   m_params.components.clear();
   m_capability_to_component.clear();
+}
+
+bool rtask::commons::Agent::updValidity()
+{
+  m_params.valid = false;
+  if (!std::isnan(m_params.id) && !m_params.name.empty() && !m_params.components.empty()) {
+    m_params.valid = true;
+    for (const auto& c : m_params.components) {
+      m_params.valid &= c.second.isValid();
+    }
+  }
+  return m_params.valid;
 }

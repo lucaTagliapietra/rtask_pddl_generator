@@ -19,11 +19,12 @@ namespace rtask {
       Agent(const unsigned int t_id,
             const std::string& t_name,
             const std::vector<Component> t_comps = {},
-            const std::string t_description = "",
-            const std::string t_urdf_link = "",
-            const std::string t_base_link = "");
+            const std::string& t_description = "",
+            const std::string& t_urdf_link = "",
+            const std::string& t_base_link = "");
       Agent(const rtask_msgs::Agent& t_msg);
       Agent(const rtask_msgs::AgentConstPtr& t_msg_ptr);
+      Agent(XmlRpc::XmlRpcValue& t_node);
 
       ~Agent() {}
 
@@ -32,19 +33,21 @@ namespace rtask {
       // -----------
       rtask_msgs::AgentPtr toAgentMsg() const;
 
+      bool setAgentFromXmlRpc(XmlRpc::XmlRpcValue& t_node);
       void setFromAgentMsg(const rtask_msgs::Agent& t_msg);
       void setFromAgentMsg(const rtask_msgs::AgentConstPtr t_msg_ptr);
       void setAgent(const unsigned int t_id,
                     const std::string& t_name,
                     const std::vector<Component> t_comps = {},
-                    const std::string t_description = "",
-                    const std::string t_urdf_link = "",
-                    const std::string t_base_link = "");
+                    const std::string& t_description = "",
+                    const std::string& t_urdf_link = "",
+                    const std::string& t_base_link = "");
       void setDescription(const std::string& t_value) { m_params.description = t_value; }
       void setUrdfLink(const std::string& t_value) { m_params.urdf_link = t_value; }
       void setBaseLink(const std::string& t_value) { m_params.base_link = t_value; }
       void clear();
 
+      bool isValid() const { return m_params.valid; }
       unsigned int getId() const { return m_params.id; }
       std::string getName() const { return m_params.name; }
       std::string getDescription() const { return m_params.description; }
@@ -112,12 +115,12 @@ namespace rtask {
     private:
       struct AgentParameters
       {
-
         unsigned int id = std::numeric_limits<unsigned int>::quiet_NaN();
         std::string name = "";
         std::string description = "";
         std::string urdf_link = "";
         std::string base_link = "";
+        bool valid = false;
 
         std::map<std::string, Component> components{};
       };
@@ -129,6 +132,7 @@ namespace rtask {
 
       void updCapabilityMap();
       void updCapabilityMap(const Component& t_comp);
+      bool updValidity();
     };
   } // namespace commons
 } // namespace rtask
