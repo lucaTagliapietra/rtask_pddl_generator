@@ -50,11 +50,11 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
 # target names, the following renames the target back to the shorter version for
 # ease of user use e.g. "rosrun someones_pkg node" instead of "rosrun
 # someones_pkg someones_pkg_node"
-set_target_properties(${PROJECT_NAME}_lib
-                      PROPERTIES OUTPUT_NAME
-                                 ${PROJECT_NAME}
-                                 PREFIX
-                                 "")
+# set_target_properties(${PROJECT_NAME}_lib
+#                       PROPERTIES LIBRARY_OUTPUT_NAME
+#                                  ${PROJECT_NAME}
+#                                  PREFIX
+#                                  "lib")
 
 catkin_package(INCLUDE_DIRS include
                LIBRARIES ${PROJECT_NAME}_lib)
