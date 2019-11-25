@@ -20,13 +20,14 @@ namespace rtask {
                 const std::string& t_name,
                 const std::string& t_type,
                 const std::string& t_ref_frame,
-                const std::vector<Capacity> t_capacities = {},
+                const std::vector<Capacity> t_capacities,
                 const std::string& t_description = "",
                 const std::string& t_urdf_link = "",
                 const std::string& t_moveit_group_name = "",
                 const std::string& t_parent_link = "");
       Component(const rtask_msgs::Component& t_msg);
       Component(const rtask_msgs::ComponentConstPtr t_msg_ptr);
+      Component(XmlRpc::XmlRpcValue& t_node);
 
       ~Component() {}
 
@@ -35,13 +36,14 @@ namespace rtask {
       // ---------------
       rtask_msgs::ComponentPtr toComponentMsg() const;
 
+      bool setComponentFromXmlRpc(XmlRpc::XmlRpcValue& t_node);
       void setFromComponentMsg(const rtask_msgs::Component& t_msg);
       void setFromComponentMsg(const rtask_msgs::ComponentConstPtr t_msg_ptr);
       void setComponent(const unsigned int t_id,
                         const std::string& t_name,
                         const std::string& t_type,
                         const std::string& t_ref_frame,
-                        const std::vector<Capacity> t_capacities = {},
+                        const std::vector<Capacity> t_capacities,
                         const std::string& t_description = "",
                         const std::string& t_urdf_link = "",
                         const std::string& t_moveit_group_name = "",
@@ -52,6 +54,7 @@ namespace rtask {
       void setParentLink(const std::string& t_value) { m_params.parent_link = t_value; }
       void clear();
 
+      bool isValid() const { return m_params.valid; }
       unsigned int getId() const { return m_params.id; }
       std::string getName() const { return m_params.name; }
       std::string getType() const { return m_params.type; }
@@ -101,6 +104,7 @@ namespace rtask {
         std::string reference_frame = "";
         std::string parent_link = "";
         std::map<std::string, Capacity> capacities{};
+        bool valid = false;
       };
 
       ComponentParameters m_params{};
@@ -112,6 +116,8 @@ namespace rtask {
 
       void clearCapacities();
       void setCapacities(const std::vector<Capacity>& t_capacities);
+
+      bool updValidity();
 
       // void clearCapacityProperties(const std::string& t_capacity_name);
       // bool setCapacityProperties(const std::string& t_capacity_name, const std::vector<Property>& t_props);

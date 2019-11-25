@@ -1,4 +1,5 @@
 #include "commons/component.h"
+#include "commons/utils.h"
 
 #include "boost/make_shared.hpp"
 
@@ -30,6 +31,10 @@ rtask::commons::Component::Component(const rtask_msgs::ComponentConstPtr t_msg_p
   setFromComponentMsg(t_msg_ptr);
 }
 
+rtask::commons::Component::Component(XmlRpc::XmlRpcValue& t_node)
+{
+  setComponentFromXmlRpc(t_node);
+}
 // ----------------
 // PUBLIC FUNCTIONS
 // ----------------
@@ -55,6 +60,47 @@ rtask_msgs::ComponentPtr rtask::commons::Component::toComponentMsg() const
   return component;
 }
 
+bool rtask::commons::Component::setComponentFromXmlRpc(XmlRpc::XmlRpcValue& t_node)
+{
+  if (commons::utils::checkXmlRpcSanity("id", t_node, XmlRpc::XmlRpcValue::TypeInt)) {
+    m_params.id = static_cast<unsigned int>(static_cast<int>(t_node["id"]));
+  }
+  if (commons::utils::checkXmlRpcSanity("name", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.name = static_cast<std::string>(t_node["name"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("type", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.type = static_cast<std::string>(t_node["type"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("reference_frame", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.reference_frame = static_cast<std::string>(t_node["reference_frame"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("description", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.description = static_cast<std::string>(t_node["description"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("urdf_link", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.urdf_link = static_cast<std::string>(t_node["urdf_link"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("moveit_group_name", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.moveit_group_name = static_cast<std::string>(t_node["moveit_group_name"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("parent_link", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.parent_link = static_cast<std::string>(t_node["parent_link"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("capacities", t_node, XmlRpc::XmlRpcValue::TypeArray)) {
+    if (t_node["capacities"].size() == 0) {
+      std::cout << "Empty capacity vector for component " << m_params.name << std::endl;
+      return updValidity();
+    }
+    for (int i = 0; i < t_node["capacities"].size(); ++i) {
+      Capacity tmp(t_node["capacities"][i]);
+      if (!addCapacity(tmp)) {
+        std::cout << "Malformed or already present capacity " << tmp.getCapabilityName() << std::endl;
+      }
+    }
+  }
+  return updValidity();
+}
+
 void rtask::commons::Component::setFromComponentMsg(const rtask_msgs::Component& t_msg)
 {
   m_params.id = t_msg.id;
@@ -69,6 +115,7 @@ void rtask::commons::Component::setFromComponentMsg(const rtask_msgs::Component&
   for (auto& c : t_msg.capacities) {
     m_params.capacities[c.capability] = {c};
   }
+  updValidity();
 }
 
 void rtask::commons::Component::setFromComponentMsg(const rtask_msgs::ComponentConstPtr t_msg_ptr)
@@ -97,6 +144,7 @@ void rtask::commons::Component::setComponent(const unsigned int t_id,
   if (!t_capacities.empty()) {
     setCapacities(t_capacities);
   }
+  updValidity();
 }
 
 void rtask::commons::Component::clear()
@@ -138,6 +186,7 @@ bool rtask::commons::Component::removeCapacity(const std::string& t_capacity_nam
     return false;
   }
   m_params.capacities.erase(t_capacity_name);
+  updValidity();
   return true;
 }
 
@@ -163,7 +212,7 @@ bool rtask::commons::Component::getCapacityProperties(const std::string& t_capac
 
 bool rtask::commons::Component::addCapacity(const rtask::commons::Capacity& t_capacity)
 {
-  if (!hasCapacity(t_capacity.getCapabilityName())) {
+  if (hasCapacity(t_capacity.getCapabilityName()) || !t_capacity.isValid()) {
     return false;
   }
   setCapacity(t_capacity);
@@ -172,7 +221,9 @@ bool rtask::commons::Component::addCapacity(const rtask::commons::Capacity& t_ca
 
 void rtask::commons::Component::setCapacity(const rtask::commons::Capacity& t_capacity)
 {
-  m_params.capacities[t_capacity.getCapabilityName()] = {t_capacity};
+  if (t_capacity.isValid()) {
+    m_params.capacities[t_capacity.getCapabilityName()] = {t_capacity};
+  }
 }
 
 // --------------
@@ -196,7 +247,9 @@ bool rtask::commons::Component::removeCapacityProperty(const std::string& t_capa
   if (!hasCapacity(t_capacity_name)) {
     return false;
   }
-  return m_params.capacities[t_capacity_name].removeProperty(t_prop_name);
+  bool ok = m_params.capacities[t_capacity_name].removeProperty(t_prop_name);
+  updValidity();
+  return ok;
 }
 bool rtask::commons::Component::getCapacityProperty(const std::string& t_capacity_name,
                                                     const std::string& t_prop_name,
@@ -210,23 +263,27 @@ bool rtask::commons::Component::getCapacityProperty(const std::string& t_capacit
 bool rtask::commons::Component::addCapacityProperty(const std::string& t_capacity_name,
                                                     const rtask::commons::Property& t_prop)
 {
-  if (hasCapacityProperty(t_capacity_name, t_prop.getName())) {
+  if (hasCapacityProperty(t_capacity_name, t_prop.getName()) || !t_prop.isValid()) {
     return false;
   }
 
   if (!hasCapacity(t_capacity_name)) {
     m_params.capacities[t_capacity_name] = {t_capacity_name};
   }
-  return m_params.capacities[t_capacity_name].addProperty(t_prop);
+  bool ok = m_params.capacities[t_capacity_name].addProperty(t_prop);
+  updValidity();
+  return ok;
 }
 
 void rtask::commons::Component::setCapacityProperty(const std::string& t_capacity_name,
                                                     const rtask::commons::Property& t_prop)
 {
-  if (!hasCapacity(t_capacity_name)) {
-    m_params.capacities[t_capacity_name] = {t_capacity_name};
+  if (!t_capacity_name.empty() && t_prop.isValid()) {
+    if (!hasCapacity(t_capacity_name)) {
+      m_params.capacities[t_capacity_name] = {t_capacity_name};
+    }
+    m_params.capacities[t_capacity_name].setProperty(t_prop);
   }
-  m_params.capacities[t_capacity_name].setProperty(t_prop);
 }
 
 // ---------
@@ -261,4 +318,17 @@ void rtask::commons::Component::setCapacities(const std::vector<Capacity>& t_cap
   for (auto& cap : t_capacities) {
     m_params.capacities[cap.getCapabilityName()] = {cap};
   }
+}
+
+bool rtask::commons::Component::updValidity()
+{
+  m_params.valid = false;
+  if (!std::isnan(m_params.id) && !m_params.name.empty() && !m_params.type.empty() && !m_params.reference_frame.empty()
+      && !m_params.capacities.empty()) {
+    m_params.valid = true;
+    for (const auto& c : m_params.capacities) {
+      m_params.valid &= c.second.isValid();
+    }
+  }
+  return m_params.valid;
 }

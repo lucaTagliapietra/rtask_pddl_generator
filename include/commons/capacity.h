@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "rtask_msgs/Capacity.h"
+#include "xmlrpcpp/XmlRpcValue.h"
 
 #include "commons/property.h"
+#include "rtask_msgs/Capacity.h"
 
 namespace rtask {
   namespace commons {
@@ -20,6 +21,7 @@ namespace rtask {
       Capacity(const std::string t_capability, const std::vector<Property>& t_properties = {});
       Capacity(const rtask_msgs::Capacity& t_msg);
       Capacity(const rtask_msgs::CapacityConstPtr t_msg_ptr);
+      Capacity(XmlRpc::XmlRpcValue& t_value);
 
       ~Capacity() {}
 
@@ -28,12 +30,14 @@ namespace rtask {
       // --------------
       rtask_msgs::CapacityPtr toCapacityMsg() const;
 
+      bool setCapacityFromXmlRpc(XmlRpc::XmlRpcValue& t_value);
       void setFromCapacityMsg(const rtask_msgs::Capacity& t_msg);
       void setFromCapacityMsg(const rtask_msgs::CapacityConstPtr t_msg_ptr);
       void setCapacity(const std::string& t_capability, const std::vector<Property>& t_properties = {});
 
       void clear();
 
+      bool isValid() const { return m_valid; }
       std::string getCapabilityName() const;
       void getProperties(std::vector<Property>& t_properties) const;
 
@@ -53,12 +57,15 @@ namespace rtask {
       bool operator==(const Capacity& t_capacity);
 
     private:
+      bool m_valid = false;
       std::string m_capability = "";
+
       std::map<std::string, Property> m_properties{};
 
       void setCapabilityName(const std::string& t_capability);
       void setProperties(const std::vector<Property>& t_properties);
       void clearProperties();
+      bool updValidity();
     };
   } // namespace commons
 } // namespace rtask

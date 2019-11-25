@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "xmlrpcpp/XmlRpc.h"
+
 #include "rtask_msgs/Property.h"
 
 namespace rtask {
@@ -29,26 +31,27 @@ namespace rtask {
       Property(const std::string& t_name, const std::string& t_value);
       Property(const rtask_msgs::PropertyConstPtr t_msg);
       Property(const rtask_msgs::Property& t_property_msg);
+      Property(XmlRpc::XmlRpcValue& t_structured_value);
 
       ~Property() {}
 
+      rtask_msgs::PropertyPtr toPropertyMsg() const;
+
       inline std::string getName() const { return m_params.name; }
       inline Type getType() const { return m_params.type; }
+      inline bool isValid() const { return m_params.valid; }
       bool getValue(bool& t_value) const;
       bool getValue(int& t_value) const;
       bool getValue(double& t_value) const;
       bool getValue(std::string& t_value) const;
 
-      void setName(const std::string& t_name);
-      void setValue(const bool t_value);
-      void setValue(const int t_value);
-      void setValue(const double t_value);
-      void setValue(const std::string& t_value);
-
+      void setProperty(const std::string& t_name, const bool t_value);
+      void setProperty(const std::string& t_name, const int t_value);
+      void setProperty(const std::string& t_name, const double t_value);
+      void setProperty(const std::string& t_name, const std::string& t_value);
+      bool setPropertyFromXmlRpc(XmlRpc::XmlRpcValue& t_structured_value);
       void setFromPropertyMsg(const rtask_msgs::PropertyConstPtr t_msg_ptr);
       void setFromPropertyMsg(const rtask_msgs::Property& t_msg);
-
-      rtask_msgs::PropertyPtr toPropertyMsg() const;
 
       // ---------
       // Operators
@@ -57,8 +60,15 @@ namespace rtask {
       bool operator==(const Property& t_property);
 
     private:
+      bool setName(const std::string& t_name);
+      bool setValue(const bool t_value);
+      bool setValue(const int t_value);
+      bool setValue(const double t_value);
+      bool setValue(const std::string& t_value);
+
       struct Parameters
       {
+        bool valid = false;
         std::string name = "";
         Type type = Type::Undefined;
         bool bool_value = std::numeric_limits<bool>::quiet_NaN();
