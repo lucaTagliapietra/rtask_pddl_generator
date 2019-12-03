@@ -21,7 +21,7 @@ namespace rtask {
       Task(const unsigned int t_id,
            const std::string t_name,
            const std::string t_ref_frame = "",
-           const std::vector<Capacity> t_capacities = {},
+           const std::vector<Capacity> t_requirements = {},
            const std::string t_description = "",
            const ros::Duration t_timeout = {},
            const Status t_status = {});
