@@ -44,6 +44,8 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/status.cpp
                                 src/task.cpp
                                 src/mission.cpp
+                                src/action.cpp
+                                src/taskDefinition.cpp
                                 )
 
 # Rename C++ executable without prefix The above recommended prefix causes long
