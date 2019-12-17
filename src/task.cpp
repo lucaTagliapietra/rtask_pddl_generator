@@ -9,12 +9,12 @@
 rtask::commons::Task::Task(const unsigned int t_id,
                            const std::string t_name,
                            const std::string t_ref_frame,
-                           const std::vector<Capacity> t_capacities,
+                           const std::vector<Capacity> t_requirements,
                            const std::string t_description,
                            const ros::Duration t_timeout,
                            const Status t_status)
 {
-  setTask(t_id, t_name, t_ref_frame, t_capacities, t_description, t_timeout, t_status);
+  setTask(t_id, t_name, t_ref_frame, t_requirements, t_description, t_timeout, t_status);
 }
 
 rtask::commons::Task::Task(const rtask_msgs::Task& t_msg)
