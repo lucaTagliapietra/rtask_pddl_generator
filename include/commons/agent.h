@@ -112,6 +112,12 @@ namespace rtask {
                                         const std::string& t_capacity_name,
                                         const Property& t_prop);
 
+      // ---------
+      // Operators
+      // ---------
+
+      bool operator==(const Agent& t_agent);
+
     private:
       struct AgentParameters
       {

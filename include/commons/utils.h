@@ -1,3 +1,6 @@
+#ifndef rtask_commons_utils_h
+#define rtask_commons_utils_h
+
 #include <string>
 
 #include "xmlrpcpp/XmlRpcValue.h"
@@ -10,3 +13,5 @@ namespace rtask {
     }
   } // namespace commons
 } // namespace rtask
+
+#endif

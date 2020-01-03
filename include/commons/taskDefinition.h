@@ -1,5 +1,5 @@
 #ifndef rtask_commons_task_definition_h
-#define rtask_commons_taak_definition_h
+#define rtask_commons_task_definition_h
 
 #include "xmlrpcpp/XmlRpcValue.h"
 
@@ -16,7 +16,7 @@ namespace rtask {
       TaskDefinition() = default;
       TaskDefinition(const std::string& t_name,
                      const std::string& t_domain_name,
-                     const std::vector<Parameter>& t_objects = {},
+                     const std::vector<Entity>& t_entities = {},
                      const std::vector<Command>& t_initial_state = {},
                      const std::vector<Command>& t_goal_state = {},
                      const bool t_req_typing = false,
@@ -38,7 +38,7 @@ namespace rtask {
       bool setFromTaskDefinitionMsg(const rtask_msgs::TaskDefinitionConstPtr& t_msg_ptr);
       bool setTaskDefinition(const std::string& t_name,
                              const std::string& t_domain_name,
-                             const std::vector<Parameter>& t_objects = {},
+                             const std::vector<Entity>& t_entities = {},
                              const std::vector<Command>& t_initial_state = {},
                              const std::vector<Command>& t_goal_state = {},
                              const bool t_req_typing = false,
@@ -48,17 +48,23 @@ namespace rtask {
 
       std::string getName() const { return m_name; }
       std::string getDomainName() const { return m_domain_name; }
-      std::vector<Parameter> getObjects() const { return m_objects; }
+      std::vector<Entity> getEntities() const { return m_entities; }
       std::vector<Command> getPreconditions() const { return m_initial_state; }
       std::vector<Command> getEffects() const { return m_goal_state; }
 
       // ------------
-      // Object Level
+      // Entity Level
       // ------------
-      bool hasObject(const std::string& t_name, const std::string& t_type = "") const;
-      bool getObjectType(const std::string& t_name, std::string& t_type) const;
-      bool addObject(const std::string& t_name, const std::string& t_type);
-      bool removeObject(const std::string& t_name, const std::string& t_type = "");
+      bool hasEntity(const std::string& t_symbol, const std::string& t_type = "") const;
+      bool getEntityType(const std::string& t_symbol, std::string& t_type) const;
+      bool getEntityClass(const std::string& t_symbol, std::string& t_class) const;
+      bool getEntityProperties(const std::string& t_symbol, std::vector<std::string>& t_properties) const;
+      bool getEntity(const std::string& t_symbol, Entity& t_entity) const;
+      bool addEntity(const std::string& t_symbol,
+                     const std::string& t_type,
+                     const std::string& t_class,
+                     const std::vector<std::string>& t_properties);
+      bool removeEntity(const std::string& t_symbol, const std::string& t_type = "");
 
       // -------------------
       // Initial State Level
@@ -88,7 +94,7 @@ namespace rtask {
 
       std::string m_name = "";
       std::string m_domain_name = "";
-      std::vector<Parameter> m_objects = {};
+      std::vector<Entity> m_entities = {};
       std::vector<Command> m_initial_state = {};
       std::vector<Command> m_goal_state = {};
       Requirements m_requirements{};

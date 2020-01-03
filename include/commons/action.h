@@ -17,7 +17,8 @@ namespace rtask {
     public:
       Action() {}
       Action(const std::string t_name,
-             const std::vector<Parameter>& t_params = {},
+             const std::string t_type,
+             const std::vector<Entity>& t_params = {},
              const std::vector<Command>& t_preconditions = {},
              const std::vector<Command>& t_effects = {});
       Action(const rtask_msgs::Action& t_msg);
@@ -37,24 +38,34 @@ namespace rtask {
                                bool t_strips = false);
       bool setFromActionMsg(const rtask_msgs::Action& t_msg);
       bool setFromActionMsg(const rtask_msgs::ActionConstPtr& t_msg_ptr);
+
       bool setAction(const std::string t_name,
-                     const std::vector<Parameter>& t_params = {},
+                     const std::string t_type,
+                     const std::vector<Entity>& t_params = {},
                      const std::vector<Command>& t_preconditions = {},
                      const std::vector<Command>& t_effects = {});
+
       void clear();
 
       std::string getName() const { return m_name; }
-      std::vector<Parameter> getParameters() const { return m_params; }
+      std::string getType() const { return m_type; }
+      std::vector<Entity> getParameters() const { return m_params; }
       std::vector<Command> getPreconditions() const { return m_preconditions; }
       std::vector<Command> getEffects() const { return m_effects; }
 
       // ---------------
       // Parameter Level
       // ---------------
-      bool hasParameter(const std::string& t_name, const std::string& t_type = "") const;
-      bool getParameterType(const std::string& t_name, std::string& t_type) const;
-      bool addParameter(const std::string& t_name, const std::string& t_type);
-      bool removeParameter(const std::string& t_name, const std::string& t_type = "");
+      bool hasParameter(const std::string& t_symbol, const std::string& t_type = "") const;
+      bool getParameterType(const std::string& t_symbol, std::string& t_type) const;
+      bool getParameterClass(const std::string& t_symbol, std::string& t_class) const;
+      bool getParameterProperties(const std::string& t_symbol, std::vector<std::string>& t_properties) const;
+      bool getParameter(const std::string& t_symbol, Entity t_entity) const;
+      bool addParameter(const std::string& t_symbol,
+                        const std::string& t_type,
+                        const std::string& t_class,
+                        std::vector<std::string>& t_properties);
+      bool removeParameter(const std::string& t_symbol, const std::string& t_type = "");
 
       // ------------------
       // Precondition Level
@@ -76,7 +87,8 @@ namespace rtask {
       bool removeCommand(const Command& t_cmd, unsigned int t_on);
 
       std::string m_name = "";
-      std::vector<Parameter> m_params = {};
+      std::string m_type = "";
+      std::vector<Entity> m_params = {};
       std::vector<Command> m_preconditions = {};
       std::vector<Command> m_effects = {};
 

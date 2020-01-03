@@ -7,7 +7,7 @@
 
 rtask::commons::TaskDefinition::TaskDefinition(const std::string& t_name,
                                                const std::string& t_domain_name,
-                                               const std::vector<Parameter>& t_objects,
+                                               const std::vector<Entity>& t_entities,
                                                const std::vector<Command>& t_initial_state,
                                                const std::vector<Command>& t_goal_state,
                                                const bool t_req_typing,
@@ -15,7 +15,7 @@ rtask::commons::TaskDefinition::TaskDefinition(const std::string& t_name,
                                                const bool t_req_strips)
 {
   setTaskDefinition(
-    t_name, t_domain_name, t_objects, t_initial_state, t_goal_state, t_req_typing, t_req_equality, t_req_strips);
+    t_name, t_domain_name, t_entities, t_initial_state, t_goal_state, t_req_typing, t_req_equality, t_req_strips);
 }
 
 rtask::commons::TaskDefinition::TaskDefinition(const rtask_msgs::TaskDefinition& t_msg)
@@ -35,7 +35,7 @@ rtask::commons::TaskDefinition::TaskDefinition(XmlRpc::XmlRpcValue& t_node)
 
 bool rtask::commons::TaskDefinition::isValid() const
 {
-  return !m_name.empty() && !m_domain_name.empty() && !m_objects.empty() && !m_initial_state.empty()
+  return !m_name.empty() && !m_domain_name.empty() && !m_entities.empty() && !m_initial_state.empty()
          && !m_goal_state.empty();
 }
 
@@ -47,8 +47,8 @@ rtask_msgs::TaskDefinitionPtr rtask::commons::TaskDefinition::toTaskDefinitionMs
   t_msg->requires_strips = m_requirements.strips;
   t_msg->requires_typing = m_requirements.typing;
   t_msg->requires_equalty = m_requirements.equality;
-  for (const auto& obj : m_objects) {
-    t_msg->objs.emplace_back(obj.toMsg());
+  for (const auto& entity : m_entities) {
+    t_msg->entities.emplace_back(entity.toMsg());
   }
   for (const auto& c : m_initial_state) {
     t_msg->initial_state.emplace_back(c.toMsg());
@@ -56,6 +56,8 @@ rtask_msgs::TaskDefinitionPtr rtask::commons::TaskDefinition::toTaskDefinitionMs
   for (const auto& c : m_goal_state) {
     t_msg->goal_state.emplace_back(c.toMsg());
   }
+
+  return t_msg;
 }
 
 std::string rtask::commons::TaskDefinition::toPddl() const
@@ -72,10 +74,12 @@ std::string rtask::commons::TaskDefinition::toPddl() const
   }
 
   out += "\t(:objects";
-  for (const auto& o : m_objects) {
-    out += (" " + o.name);
-    if (m_requirements.typing) {
-      out += (" - " + o.type);
+  for (const auto& o : m_entities) {
+    for (const auto& symbol : o.semantic_entity.symbols) {
+      out += (" " + symbol);
+      if (m_requirements.typing) {
+        out += (" - " + o.semantic_entity.type);
+      }
     }
   }
   out += ")\n";
@@ -86,10 +90,10 @@ std::string rtask::commons::TaskDefinition::toPddl() const
     if (count != 0)
       out += "\n\t\t";
     out += "(";
-    out += is.predicate.cmd;
+    out += is.predicate.name;
     for (const auto& p : is.predicate.args) {
       out += " ";
-      out += (p.name);
+      out += (p);
     }
     out += ")";
   }
@@ -102,10 +106,10 @@ std::string rtask::commons::TaskDefinition::toPddl() const
       out += "\n\t\t";
     out += " (";
     gs.negate ? out += "not (" : "";
-    out += gs.predicate.cmd;
+    out += gs.predicate.name;
     for (const auto& p : gs.predicate.args) {
       out += " ";
-      out += (p.name);
+      out += (p);
     }
     out += ")";
     gs.negate ? out += ")" : out += "";
@@ -142,32 +146,55 @@ bool rtask::commons::TaskDefinition::setTaskDefinitionFromXmlRpc(XmlRpc::XmlRpcV
     }
   }
 
-  // Objects
+  // Entities
   if (commons::utils::checkXmlRpcSanity("objects", t_node, XmlRpc::XmlRpcValue::TypeArray)) {
     if (t_node["objects"].size() == 0) {
       std::cout << "Empty object vector for task " << m_name << " in domain: " << m_domain_name << std::endl;
       return isValid();
     }
-    for (auto& objs_same_type : t_node["objects"]) {
-      std::string type = commons::NULL_TYPE;
+    for (auto& entities_same_type : t_node["objects"]) {
 
-      if (commons::utils::checkXmlRpcSanity("type", objs_same_type.second, XmlRpc::XmlRpcValue::TypeString)) {
-        type = static_cast<std::string>(objs_same_type.second["type"]);
+      std::string type = commons::NULL_TYPE;
+      if (commons::utils::checkXmlRpcSanity("type", entities_same_type.second, XmlRpc::XmlRpcValue::TypeString)) {
+        type = static_cast<std::string>(entities_same_type.second["type"]);
       }
 
-      if (commons::utils::checkXmlRpcSanity("names", objs_same_type.second, XmlRpc::XmlRpcValue::TypeArray)) {
-        if (objs_same_type.second["names"].size() == 0) {
-          std::cout << "Empty object name vector for type " << type << " for task " << m_name
+      std::string semantic_class{};
+      if (commons::utils::checkXmlRpcSanity("class", entities_same_type.second, XmlRpc::XmlRpcValue::TypeString)) {
+        semantic_class = static_cast<std::string>(entities_same_type.second["class"]);
+      }
+
+      std::vector<std::string> symbols;
+      if (commons::utils::checkXmlRpcSanity("symbols", entities_same_type.second, XmlRpc::XmlRpcValue::TypeArray)) {
+        if (entities_same_type.second["symbols"].size() == 0) {
+          std::cout << "Empty object symbols vector for type " << type << " for task " << m_name
                     << " in domain: " << m_domain_name << std::endl;
           return isValid();
         }
-        for (auto& obj : objs_same_type.second["names"]) {
-          if (obj.second.getType() == XmlRpc::XmlRpcValue::TypeString
-              && !static_cast<std::string>(obj.second).empty()) {
-            m_objects.emplace_back(static_cast<std::string>(obj.second), type);
+        for (auto& symbol : entities_same_type.second["symbols"]) {
+          if (symbol.second.getType() == XmlRpc::XmlRpcValue::TypeString
+              && !static_cast<std::string>(symbol.second).empty()) {
+            symbols.emplace_back(static_cast<std::string>(symbol.second));
           }
         }
       }
+
+      std::vector<std::string> properties;
+      if (commons::utils::checkXmlRpcSanity("properties", entities_same_type.second, XmlRpc::XmlRpcValue::TypeArray)) {
+        if (entities_same_type.second["properties"].size() == 0) {
+          std::cout << "Empty object properties vector for type " << type << " for task " << m_name
+                    << " in domain: " << m_domain_name << std::endl;
+          return isValid();
+        }
+        for (auto& property : entities_same_type.second["properties"]) {
+          if (property.second.getType() == XmlRpc::XmlRpcValue::TypeString
+              && !static_cast<std::string>(property.second).empty()) {
+            properties.emplace_back(static_cast<std::string>(property.second));
+          }
+        }
+      }
+
+      m_entities.emplace_back(Entity({symbols, type, semantic_class}, properties));
     }
   }
 
@@ -183,15 +210,15 @@ bool rtask::commons::TaskDefinition::setTaskDefinitionFromXmlRpc(XmlRpc::XmlRpcV
                   << std::endl;
         return false;
       }
-      std::string cmd = cond.second["cmd"];
-      std::vector<Parameter> args{};
+      std::string name = cond.second["cmd"];
+      std::vector<std::string> args{};
       bool negate = false;
       if (commons::utils::checkXmlRpcSanity("args", cond.second, XmlRpc::XmlRpcValue::TypeArray)) {
         for (auto& arg : cond.second["args"]) {
-          std::string arg_name = static_cast<std::string>(arg.second);
-          std::string arg_type{};
-          if (getObjectType(arg_name, arg_type)) {
-            args.emplace_back(arg_name, arg_type);
+
+          if (arg.second.getType() == XmlRpc::XmlRpcValue::TypeString
+              && !static_cast<std::string>(arg.second).empty()) {
+            args.emplace_back(static_cast<std::string>(arg.second));
           }
         }
       }
@@ -199,7 +226,7 @@ bool rtask::commons::TaskDefinition::setTaskDefinitionFromXmlRpc(XmlRpc::XmlRpcV
       if (cond.second.hasMember("not") && cond.second["not"].getType() == XmlRpc::XmlRpcValue::TypeBoolean) {
         negate = cond.second["not"];
       }
-      m_initial_state.push_back({{cmd, args}, negate});
+      m_initial_state.push_back({{name, args}, negate});
     }
   }
 
@@ -215,15 +242,15 @@ bool rtask::commons::TaskDefinition::setTaskDefinitionFromXmlRpc(XmlRpc::XmlRpcV
                   << std::endl;
         return false;
       }
-      std::string cmd = cond.second["cmd"];
-      std::vector<Parameter> args{};
+      std::string name = cond.second["cmd"];
+      std::vector<std::string> args{};
       bool negate = false;
       if (commons::utils::checkXmlRpcSanity("args", cond.second, XmlRpc::XmlRpcValue::TypeArray)) {
         for (auto& arg : cond.second["args"]) {
-          std::string arg_name = static_cast<std::string>(arg.second);
-          std::string arg_type{};
-          if (getObjectType(arg_name, arg_type)) {
-            args.emplace_back(arg_name, arg_type);
+
+          if (arg.second.getType() == XmlRpc::XmlRpcValue::TypeString
+              && !static_cast<std::string>(arg.second).empty()) {
+            args.emplace_back(static_cast<std::string>(arg.second));
           }
         }
       }
@@ -231,7 +258,7 @@ bool rtask::commons::TaskDefinition::setTaskDefinitionFromXmlRpc(XmlRpc::XmlRpcV
       if (cond.second.hasMember("not") && cond.second["not"].getType() == XmlRpc::XmlRpcValue::TypeBoolean) {
         negate = cond.second["not"];
       }
-      m_goal_state.push_back({{cmd, args}, negate});
+      m_goal_state.push_back({{name, args}, negate});
     }
   }
 
@@ -246,8 +273,8 @@ bool rtask::commons::TaskDefinition::setFromTaskDefinitionMsg(const rtask_msgs::
   m_requirements.typing = t_msg.requires_typing;
   m_requirements.equality = t_msg.requires_equalty;
 
-  for (const auto& obj : t_msg.objs) {
-    m_objects.emplace_back(obj);
+  for (const auto& entity : t_msg.entities) {
+    m_entities.emplace_back(entity);
   }
   for (const auto& c : t_msg.initial_state) {
     m_initial_state.emplace_back(c);
@@ -262,9 +289,10 @@ bool rtask::commons::TaskDefinition::setFromTaskDefinitionMsg(const rtask_msgs::
 {
   return setFromTaskDefinitionMsg(*t_msg_ptr);
 }
+
 bool rtask::commons::TaskDefinition::setTaskDefinition(const std::string& t_name,
                                                        const std::string& t_domain_name,
-                                                       const std::vector<Parameter>& t_objects,
+                                                       const std::vector<Entity>& t_entities,
                                                        const std::vector<Command>& t_initial_state,
                                                        const std::vector<Command>& t_goal_state,
                                                        const bool t_req_typing,
@@ -277,8 +305,8 @@ bool rtask::commons::TaskDefinition::setTaskDefinition(const std::string& t_name
   m_requirements.typing = t_req_typing;
   m_requirements.equality = t_req_equality;
 
-  for (const auto& obj : t_objects) {
-    m_objects.emplace_back(obj);
+  for (const auto& entity : t_entities) {
+    m_entities.emplace_back(entity);
   }
   for (const auto& c : t_initial_state) {
     m_initial_state.emplace_back(c);
@@ -293,56 +321,136 @@ void rtask::commons::TaskDefinition::clear()
 {
   m_name.clear();
   m_domain_name.clear();
-  m_objects.clear();
+  m_entities.clear();
   m_initial_state.clear();
   m_goal_state.clear();
   m_requirements = {};
 }
 
 // ------------
-// Object Level
+// Entity Level
 // ------------
-bool rtask::commons::TaskDefinition::hasObject(const std::string& t_name, const std::string& t_type) const
+
+bool rtask::commons::TaskDefinition::hasEntity(const std::string& t_symbol, const std::string& t_type) const
 {
   if (t_type.empty()) {
-    auto equal_name = [t_name](const Parameter& a) { return a.name == t_name; };
-    return std::find_if(m_objects.begin(), m_objects.end(), equal_name) != m_objects.end();
+
+    auto equal_name = [t_symbol](const Entity& a) {
+      bool eq = false;
+      for (unsigned int i = 0; i < a.semantic_entity.symbols.size(); ++i) {
+        eq = a.semantic_entity.symbols[i] == t_symbol;
+      }
+      return eq;
+    };
+    return std::find_if(m_entities.begin(), m_entities.end(), equal_name) != m_entities.end();
   }
-  auto equal_name_type = [t_name, t_type](const Parameter& a) { return (a.name == t_name) && a.type == t_type; };
-  return std::find_if(m_objects.begin(), m_objects.end(), equal_name_type) != m_objects.end();
+  auto equal_name_type = [t_symbol, t_type](const Entity& a) {
+    bool eq = false;
+    for (unsigned int i = 0; i < a.semantic_entity.symbols.size(); ++i) {
+      eq = a.semantic_entity.symbols[i] == t_symbol && a.semantic_entity.type == t_type;
+    }
+    return eq;
+  };
+  return std::find_if(m_entities.begin(), m_entities.end(), equal_name_type) != m_entities.end();
 }
 
-bool rtask::commons::TaskDefinition::getObjectType(const std::string& t_name, std::string& t_type) const
+bool rtask::commons::TaskDefinition::getEntityType(const std::string& t_symbol, std::string& t_type) const
 {
-  if (!hasObject(t_name)) {
+  if (!hasEntity(t_symbol)) {
     return false;
   }
-  auto equal_name = [t_name](const Parameter& a) { return a.name == t_name; };
-  auto const it = std::find_if(m_objects.begin(), m_objects.end(), equal_name);
-  t_type = it->type;
+  auto equal_name = [t_symbol](const Entity& a) {
+    bool eq = false;
+    for (unsigned int i = 0; i < a.semantic_entity.symbols.size(); ++i) {
+      eq = a.semantic_entity.symbols[i] == t_symbol;
+    }
+    return eq;
+  };
+  auto const it = std::find_if(m_entities.begin(), m_entities.end(), equal_name);
+  t_type = it->semantic_entity.type;
   return true;
 }
 
-bool rtask::commons::TaskDefinition::addObject(const std::string& t_name, const std::string& t_type)
+bool rtask::commons::TaskDefinition::getEntityClass(const std::string& t_symbol, std::string& t_class) const
 {
-  if (!hasObject(t_name, t_type)) {
-    if (hasObject(t_name)) {
+  if (!hasEntity(t_symbol)) {
+    return false;
+  }
+  auto equal_name = [t_symbol](const Entity& a) {
+    bool eq = false;
+    for (unsigned int i = 0; i < a.semantic_entity.symbols.size(); ++i) {
+      eq = a.semantic_entity.symbols[i] == t_symbol;
+    }
+    return eq;
+  };
+  auto const it = std::find_if(m_entities.begin(), m_entities.end(), equal_name);
+  t_class = it->semantic_entity.semantic_class;
+  return true;
+}
+
+bool rtask::commons::TaskDefinition::getEntityProperties(const std::string& t_symbol,
+                                                         std::vector<std::string>& t_properties) const
+{
+  if (!hasEntity(t_symbol)) {
+    return false;
+  }
+  auto equal_name = [t_symbol](const Entity& a) {
+    bool eq = false;
+    for (unsigned int i = 0; i < a.semantic_entity.symbols.size(); ++i) {
+      eq = a.semantic_entity.symbols[i] == t_symbol;
+    }
+    return eq;
+  };
+  auto const it = std::find_if(m_entities.begin(), m_entities.end(), equal_name);
+  t_properties = it->properties;
+  return true;
+}
+
+bool rtask::commons::TaskDefinition::getEntity(const std::string& t_symbol, Entity& t_entity) const
+{
+
+  std::string t_type{};
+  std::string t_class{};
+  std::vector<std::string> t_properties{};
+
+  if (!getEntityType(t_symbol, t_type) || !getEntityClass(t_symbol, t_class)
+      || !getEntityProperties(t_symbol, t_properties)) {
+    return false;
+  }
+
+  t_entity = {{{t_symbol}, t_type, t_class}, t_properties};
+  return true;
+}
+
+bool rtask::commons::TaskDefinition::addEntity(const std::string& t_symbol,
+                                               const std::string& t_type,
+                                               const std::string& t_class,
+                                               const std::vector<std::string>& t_properties)
+{
+  if (!hasEntity(t_symbol, t_type)) {
+    if (hasEntity(t_symbol)) {
       return false;
     }
-    m_objects.emplace_back(t_name, t_type);
+    m_entities.push_back({{{t_symbol}, t_type, t_class}, t_properties});
   }
   return true;
 }
 
-bool rtask::commons::TaskDefinition::removeObject(const std::string& t_name, const std::string& t_type)
+bool rtask::commons::TaskDefinition::removeEntity(const std::string& t_symbol, const std::string& t_type)
 {
-  if (hasObject(t_name)) {
-    if (!t_type.empty() && !hasObject(t_name, t_type)) {
+  if (hasEntity(t_symbol)) {
+    if (!t_type.empty() && !hasEntity(t_symbol, t_type)) {
       return false;
     }
-    auto equal_name = [t_name](const Parameter& a) { return a.name == t_name; };
-    auto const it = std::find_if(m_objects.begin(), m_objects.end(), equal_name);
-    m_objects.erase(it);
+    auto equal_name = [t_symbol](const Entity& a) {
+      bool eq = false;
+      for (unsigned int i = 0; i < a.semantic_entity.symbols.size(); ++i) {
+        eq = a.semantic_entity.symbols[i] == t_symbol;
+      }
+      return eq;
+    };
+    auto const it = std::find_if(m_entities.begin(), m_entities.end(), equal_name);
+    m_entities.erase(it);
   }
   return true;
 }

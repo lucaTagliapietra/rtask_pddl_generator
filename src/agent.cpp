@@ -424,6 +424,22 @@ bool rtask::commons::Agent::setComponentCapacityProperty(const std::string& t_co
   return true;
 }
 
+// ---------
+// Operators
+// ---------
+
+bool rtask::commons::Agent::operator==(const rtask::commons::Agent& t_agent)
+{
+
+  auto pred = [](std::pair<std::string, Component> a, std::pair<std::string, Component> b) {
+    return a.second.operator==(b.second);
+  };
+
+  return (
+    (m_params.components.size() == t_agent.m_params.components.size())
+    && std::equal(m_params.components.begin(), m_params.components.end(), t_agent.m_params.components.begin(), pred));
+}
+
 // -----------------
 // PRIVATE FUNCTIONS
 // -----------------

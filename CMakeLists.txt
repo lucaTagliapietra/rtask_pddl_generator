@@ -42,10 +42,11 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/component.cpp
                                 src/property.cpp
                                 src/status.cpp
-                                src/task.cpp
-                                src/mission.cpp
                                 src/action.cpp
                                 src/taskDefinition.cpp
+                                src/domain.cpp
+                                #src/task.cpp
+                                #src/mission.cpp
                                 )
 
 # Rename C++ executable without prefix The above recommended prefix causes long
@@ -87,5 +88,8 @@ if(CATKIN_ENABLE_TESTING)
 
  add_rostest_gtest(component_test launch/component_test.test test/component_test.cpp)
  target_link_libraries(component_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+ add_rostest_gtest(agent_test launch/agent_test.test test/agent_test.cpp)
+ target_link_libraries(agent_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
 endif()
