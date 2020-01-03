@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <map>
 
 #include "boost/make_shared.hpp"
 
@@ -283,3 +284,168 @@ bool rtask::commons::Domain::removePredicate(const std::string& t_name, const st
 // ------------
 // Action Level
 // ------------
+bool rtask::commons::Domain::hasAction(const Action& t_act) const
+{
+  return hasAction(
+    t_act.getName(), t_act.getType(), t_act.getParameters(), t_act.getPreconditions(), t_act.getEffects());
+}
+
+bool rtask::commons::Domain::hasAction(const std::string& t_name,
+                                       const std::string& t_type,
+                                       const std::vector<Entity>& t_params,
+                                       const std::vector<Command>& t_preconditions,
+                                       const std::vector<Command>& t_effects) const
+{
+  bool same_action = false;
+  for (const auto& act : m_actions) {
+
+    // Different name
+    if (act.getName() != t_name)
+      continue;
+    // Different type
+    if (act.getType() != t_type)
+      continue;
+    // Different number of arguments
+    if (act.getParameters().size() != t_params.size())
+      continue;
+    // Different number of preconditions
+    if (act.getPreconditions().size() != t_preconditions.size())
+      continue;
+    // Different number of effects
+    if (act.getEffects().size() != t_effects.size())
+      continue;
+
+    std::map<std::string, std::string> param_map;
+    for (const auto& t_param : t_params) {
+      for (const auto& param : act.getParameters()) {
+        if (t_param.semantic_entity.semantic_class == param.semantic_entity.semantic_class) {
+          param_map[t_param.semantic_entity.symbols.front()] = param.semantic_entity.symbols.front();
+          break;
+        }
+      }
+    }
+
+    // Same number of parameters but some of different class
+    if (param_map.size() != act.getParameters().size())
+      continue;
+
+    bool same_preconditions = true;
+    for (const auto& t_prec : t_preconditions) {
+      std::vector<std::string> args;
+      for (const auto& a : t_prec.predicate.args) {
+        args.push_back(param_map.at(a));
+      }
+      Command t_cmd{{t_prec.predicate.name, args}, t_prec.negate};
+      same_preconditions &= act.hasPrecondition(t_cmd);
+      if (!same_preconditions) {
+        break;
+      }
+    }
+
+    // Different preconditions, try with another action from available ones
+    if (!same_preconditions) {
+      continue;
+    }
+
+    bool same_effects = true;
+    for (const auto& t_prec : t_preconditions) {
+      std::vector<std::string> args;
+      for (const auto& a : t_prec.predicate.args) {
+        args.push_back(param_map.at(a));
+      }
+      Command t_cmd{{t_prec.predicate.name, args}, t_prec.negate};
+      same_effects &= act.hasEffect(t_cmd);
+      if (!same_effects) {
+        break;
+      }
+    }
+
+    // Different preconditions, try with another action from available ones
+    if (!same_effects) {
+      continue;
+    }
+
+    //      bool precondition_found = false;
+    //      for (const auto& prec : act.getPreconditions()) {
+
+    //        if (t_prec.predicate.name != prec.predicate.name)
+    //          continue;
+    //        if (t_prec.predicate.args.size() != prec.predicate.args.size())
+    //          continue;
+    //        if (t_prec.negate != prec.negate)
+    //          continue;
+    //        bool same_args = true;
+    //        for (const auto& t_arg : t_prec.predicate.args) {
+    //          if (std::find(prec.predicate.args.begin(), prec.predicate.args.end(), param_map.at(t_arg))
+    //              == prec.predicate.args.end()) {
+    //            same_args = false;
+    //            break;
+    //          }
+    //        }
+    //        if (!same_args)
+    //          continue;
+    //        precondition_found = true;
+    //      }
+    //      if (!precondition_found) {
+    //        same_preconditions = false;
+    //        break;
+    //      }
+    //  }
+    // Different preconditions
+    //    if (!same_preconditions) {
+    //      continue;
+    //    }
+
+    //  bool same_effects = true;
+    //  for (const auto& t_prec : t_effects) {
+    //    bool effect_found = false;
+    //    for (const auto& prec : act.getEffects()) {
+
+    //      if (t_prec.predicate.name != prec.predicate.name)
+    //        continue;
+    //      if (t_prec.predicate.args.size() != prec.predicate.args.size())
+    //        continue;
+    //      if (t_prec.negate != prec.negate)
+    //        continue;
+    //      bool same_args = true;
+    //      for (const auto& t_arg : t_prec.predicate.args) {
+    //        if (std::find(prec.predicate.args.begin(), prec.predicate.args.end(), param_map.at(t_arg))
+    //            == prec.predicate.args.end()) {
+    //          same_args = false;
+    //          break;
+    //        }
+    //      }
+    //      if (!same_args)
+    //        continue;
+    //      effect_found = true;
+    //    }
+    //    if (!effect_found) {
+    //      same_effects = false;
+    //      break;
+    //    }
+    //  }
+    //  // Different effects
+    //  if (!same_effects) {
+    //    continue;
+    //  }
+
+    same_action = true;
+    break;
+  }
+  return same_action;
+}
+
+bool rtask::commons::Domain::getActionType(const std::string& t_name, std::string& t_type) const {}
+
+bool rtask::commons::Domain::addAction(const std::string& t_name,
+                                       const std::string& t_type,
+                                       const std::vector<Entity>& t_params,
+                                       const std::vector<Command>& t_preconditions,
+                                       const std::vector<Command>& t_effects)
+{
+  if (!hasAction(t_name, t_type, t_params, t_preconditions, t_effects)) {
+    m_actions.emplace_back(t_name, t_type, t_params, t_preconditions, t_effects);
+    return true;
+  }
+  return false;
+}

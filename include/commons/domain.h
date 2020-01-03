@@ -73,21 +73,23 @@ namespace rtask {
       // ------------
       // Action Level
       // ------------
-      //      bool hasAction(const std::string& t_name,
-      //                     const std::string& t_type,
-      //                     const std::vector<Entity>& t_params,
-      //                     const std::vector<Command>& t_preconditions,
-      //                     const std::vector<Command>& t_effects) const;
-      //      bool getActionType(const std::string& t_name, std::string& t_type) const;
+      bool hasAction(const Action& t_act) const;
+      bool hasAction(const std::string& t_name,
+                     const std::string& t_type,
+                     const std::vector<Entity>& t_params,
+                     const std::vector<Command>& t_preconditions,
+                     const std::vector<Command>& t_effects) const;
+      bool getActionType(const std::string& t_name, std::string& t_type) const;
       //      bool getActionParams(const std::string& t_name, std::vector<Entity>& t_params) const;
       //      bool getActionPreconditions(const std::string& t_name, std::vector<Command>& t_preconditions) const;
       //      bool getActionEffects(const std::string& t_name, std::vector<Command>& t_effects) const;
       //      bool getAction(const std::string& t_name, Action& t_action) const;
-      //      bool addAction(const std::string& t_name,
-      //                     const std::string& t_type,
-      //                     const std::vector<Entity>& t_params,
-      //                     const std::vector<Command>& t_preconditions,
-      //                     const std::vector<Command>& t_effects);
+      bool addAction(const std::string& t_name,
+                     const std::string& t_type,
+                     const std::vector<Entity>& t_params,
+                     const std::vector<Command>& t_preconditions,
+                     const std::vector<Command>& t_effects);
+
       //      bool removeAction(const std::string& t_name);
 
     private:
