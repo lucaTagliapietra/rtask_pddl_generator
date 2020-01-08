@@ -31,7 +31,7 @@ namespace rtask {
       bool isValid() const;
 
       rtask_msgs::DomainPtr toDomainMsg() const;
-      std::string toPddl() const;
+      bool toPddl(std::string out) const;
 
       bool setDomainFromXmlRpc(XmlRpc::XmlRpcValue& t_node);
       bool setFromDomainMsg(const rtask_msgs::Domain& t_msg);
@@ -79,7 +79,7 @@ namespace rtask {
                      const std::vector<Entity>& t_params,
                      const std::vector<Command>& t_preconditions,
                      const std::vector<Command>& t_effects) const;
-      bool getActionType(const std::string& t_name, std::string& t_type) const;
+      // bool getActionTypes(const Action& t_act, std::vector<std::string>& t_types) const;
       //      bool getActionParams(const std::string& t_name, std::vector<Entity>& t_params) const;
       //      bool getActionPreconditions(const std::string& t_name, std::vector<Command>& t_preconditions) const;
       //      bool getActionEffects(const std::string& t_name, std::vector<Command>& t_effects) const;
@@ -90,7 +90,12 @@ namespace rtask {
                      const std::vector<Command>& t_preconditions,
                      const std::vector<Command>& t_effects);
 
-      //      bool removeAction(const std::string& t_name);
+      bool removeAction(const Action& t_act);
+      bool removeAction(const std::string& t_name,
+                        const std::string& t_type,
+                        const std::vector<Entity>& t_params,
+                        const std::vector<Command>& t_preconditions,
+                        const std::vector<Command>& t_effects);
 
     private:
       struct Requirements
@@ -105,6 +110,8 @@ namespace rtask {
       std::vector<Predicate> m_predicates = {};
       std::vector<Action> m_actions = {};
       Requirements m_requirements{};
+
+      bool equalActions(const Action& first_action, const Action& second_action) const;
     };
 
   } // namespace commons

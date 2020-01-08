@@ -49,8 +49,11 @@ namespace rtask {
       std::string getName() const { return m_name; }
       std::string getDomainName() const { return m_domain_name; }
       std::vector<Entity> getEntities() const { return m_entities; }
-      std::vector<Command> getPreconditions() const { return m_initial_state; }
-      std::vector<Command> getEffects() const { return m_goal_state; }
+      std::vector<Command> getInitialState() const { return m_initial_state; }
+      std::vector<Command> getGoalState() const { return m_goal_state; }
+      bool getTypingRequirement() const { return m_requirements.typing; }
+      bool getStripsRequirement() const { return m_requirements.strips; }
+      bool getEqualityRequirement() const { return m_requirements.equality; }
 
       // ------------
       // Entity Level
@@ -69,21 +72,21 @@ namespace rtask {
       // -------------------
       // Initial State Level
       // -------------------
-      bool hasInitialCondition(const Command& t_cmd) const { return hasCondition(t_cmd, INITIAL_STATE); }
-      bool addInitialCondition(const Command& t_cmd) { return addCondition(t_cmd, INITIAL_STATE); }
-      bool removeInitialCondition(const Command& t_cmd) { return removeCondition(t_cmd, INITIAL_STATE); }
+      bool hasInitialState(const Command& t_cmd) const { return hasState(t_cmd, INITIAL_STATE); }
+      bool addInitialState(const Command& t_cmd) { return addState(t_cmd, INITIAL_STATE); }
+      bool removeInitialState(const Command& t_cmd) { return removeState(t_cmd, INITIAL_STATE); }
 
       // ----------------
       // Goal State Level
       // ----------------
-      bool hasGoalCondition(const Command& t_cmd) const { return hasCondition(t_cmd, GOAL_STATE); }
-      bool addGoalCondition(const Command& t_cmd) { return addCondition(t_cmd, GOAL_STATE); }
-      bool removeGoalCondition(const Command& t_cmd) { return removeCondition(t_cmd, GOAL_STATE); }
+      bool hasGoalState(const Command& t_cmd) const { return hasState(t_cmd, GOAL_STATE); }
+      bool addGoalState(const Command& t_cmd) { return addState(t_cmd, GOAL_STATE); }
+      bool removeGoalState(const Command& t_cmd) { return removeState(t_cmd, GOAL_STATE); }
 
     private:
-      bool hasCondition(const Command& t_cmd, unsigned int t_on) const;
-      bool addCondition(const Command& t_cmd, unsigned int t_on);
-      bool removeCondition(const Command& t_cmd, unsigned int t_on);
+      bool hasState(const Command& t_cmd, unsigned int t_on) const;
+      bool addState(const Command& t_cmd, unsigned int t_on);
+      bool removeState(const Command& t_cmd, unsigned int t_on);
 
       struct Requirements
       {

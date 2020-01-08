@@ -45,7 +45,7 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/action.cpp
                                 src/taskDefinition.cpp
                                 src/domain.cpp
-                                #src/task.cpp
+                                src/task.cpp
                                 #src/mission.cpp
                                 )
 

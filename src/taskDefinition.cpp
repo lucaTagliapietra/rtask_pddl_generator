@@ -458,7 +458,7 @@ bool rtask::commons::TaskDefinition::removeEntity(const std::string& t_symbol, c
 // -------------
 // Private Level
 // -------------
-bool rtask::commons::TaskDefinition::hasCondition(const Command& t_cmd, unsigned int t_on) const
+bool rtask::commons::TaskDefinition::hasState(const Command& t_cmd, unsigned int t_on) const
 {
   auto equal = [t_cmd](const Command& c) { return c == t_cmd; };
   if (t_on == INITIAL_STATE) {
@@ -470,7 +470,7 @@ bool rtask::commons::TaskDefinition::hasCondition(const Command& t_cmd, unsigned
   return false;
 }
 
-bool rtask::commons::TaskDefinition::addCondition(const Command& t_cmd, unsigned int t_on)
+bool rtask::commons::TaskDefinition::addState(const Command& t_cmd, unsigned int t_on)
 {
   auto equal = [t_cmd](const Command& c) { return c == t_cmd; };
   if (t_on == INITIAL_STATE) {
@@ -490,7 +490,7 @@ bool rtask::commons::TaskDefinition::addCondition(const Command& t_cmd, unsigned
   return false;
 }
 
-bool rtask::commons::TaskDefinition::removeCondition(const Command& t_cmd, unsigned int t_on)
+bool rtask::commons::TaskDefinition::removeState(const Command& t_cmd, unsigned int t_on)
 {
   auto equal = [t_cmd](const Command& c) { return c == t_cmd; };
   if (t_on == INITIAL_STATE) {
