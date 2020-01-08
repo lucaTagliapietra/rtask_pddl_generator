@@ -211,6 +211,15 @@ bool rtask::commons::Mission::getTaskTimeout(const std::string& t_task_name, ros
   return true;
 }
 
+bool rtask::commons::Mission::getTaskType(const std::string& t_task_name, std::string& t_type) const
+{
+  if (!hasTask(t_task_name)) {
+    return false;
+  }
+  t_type = m_params.tasks.at(t_task_name).getType();
+  return true;
+}
+
 bool rtask::commons::Mission::getTaskStatus(const std::string& t_task_name, Status& t_status) const
 {
   if (!hasTask(t_task_name)) {
@@ -236,6 +245,15 @@ bool rtask::commons::Mission::getTaskRequirements(const std::string& t_task_name
     return false;
   }
   m_params.tasks.at(t_task_name).getRequirements(t_reqs);
+  return true;
+}
+
+bool rtask::commons::Mission::getTaskDefinition(const std::string& t_task_name, TaskDefinition& t_task_definition) const
+{
+  if (!hasTask(t_task_name)) {
+    return false;
+  }
+  m_params.tasks.at(t_task_name).getTaskDefinition(t_task_definition);
   return true;
 }
 
@@ -290,6 +308,24 @@ bool rtask::commons::Mission::setTaskTimeout(const std::string& t_task_name, con
     return false;
   }
   m_params.tasks.at(t_task_name).setTimeout(t_timeout);
+  return true;
+}
+
+bool rtask::commons::Mission::setTaskType(const std::string& t_task_name, std::string& t_type)
+{
+  if (!hasTask(t_task_name)) {
+    return false;
+  }
+  m_params.tasks.at(t_task_name).setType(t_type);
+  return true;
+}
+
+bool rtask::commons::Mission::setTaskDefinition(const std::string& t_task_name, TaskDefinition& t_task_definition)
+{
+  if (!hasTask(t_task_name)) {
+    return false;
+  }
+  m_params.tasks.at(t_task_name).setTaskDefinition(t_task_definition);
   return true;
 }
 

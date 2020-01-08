@@ -74,17 +74,21 @@ namespace rtask {
       bool getTaskReferenceFrame(const std::string& t_task_name, std::string& t_ref_frame) const;
       bool getTaskDescription(const std::string& t_task_name, std::string& t_descr) const;
       bool getTaskTimeout(const std::string& t_task_name, ros::Duration& t_timeout) const;
+      bool getTaskType(const std::string& t_task_name, std::string& t_type) const;
       bool getTaskStatus(const std::string& t_task_name, Status& t_status) const;
       bool getTaskRequiredCapabilities(const std::string& t_task_name,
                                        std::vector<std::string>& t_req_capabilities) const;
       bool getTaskRequirements(const std::string& t_task_name, std::vector<Capacity> t_reqs) const;
+      bool getTaskDefinition(const std::string& t_task_name, TaskDefinition& t_task_definition) const;
 
       bool setTaskReferenceFrame(const std::string& t_task_name, const std::string& t_ref_frame);
+      bool setTaskDescription(const std::string& t_task_name, const std::string& t_task_descr);
+      bool setTaskTimeout(const std::string& t_task_name, const ros::Duration& t_timeout);
+      bool setTaskType(const std::string& t_task_name, std::string& t_type);
       bool setTaskStatus(const std::string& t_task_name, const Status& t_status);
       bool setTaskStatusValue(const std::string& t_task_name, const State& t_state);
       bool setTaskStatusDescription(const std::string& t_task_name, const std::string& t_status_decr);
-      bool setTaskDescription(const std::string& t_task_name, const std::string& t_task_descr);
-      bool setTaskTimeout(const std::string& t_task_name, const ros::Duration& t_timeout);
+      bool setTaskDefinition(const std::string& t_task_name, TaskDefinition& t_task_definition);
 
       // --------------
       // Capacity Level
