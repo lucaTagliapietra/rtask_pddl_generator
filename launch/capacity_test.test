@@ -1,3 +1,10 @@
+<?xml version="1.0"?>
 <launch>
-<test test-name="unit-test" pkg="rtask_commons" type="capacity_test" name="CapacityTest"/>
+
+  <arg name="yaml_file" default="capacity_test"/>
+
+  <test test-name="unit-capacity-test" pkg="rtask_commons" type="capacity_test" name="CapacityTest">
+    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_file).yaml" />
+  </test>
+
 </launch>

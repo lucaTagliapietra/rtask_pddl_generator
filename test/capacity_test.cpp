@@ -30,7 +30,10 @@ public:
 
   rtask::commons::Capacity cap;
 
+  ros::NodeHandle m_nh;
+
   CapacityTest()
+    : m_nh("~")
   {
 
     prop_name1 = "robot_payload";
@@ -60,7 +63,7 @@ public:
 
     prop3.setFromPropertyMsg(prop3_msg);
 
-    capability_name = "Manipulation";
+    capability_name = "manipulation";
 
     properties.push_back(prop1);
     properties.push_back(prop2);
@@ -151,6 +154,24 @@ TEST_F(CapacityTest, toAndFromCapacityMsg)
   ASSERT_TRUE(capacity_output == cap);
 }
 
+TEST_F(CapacityTest, fromXml)
+{
+
+  XmlRpc::XmlRpcValue capacity_description;
+  rtask::commons::Capacity capacity_output;
+
+  m_nh.getParam("capacity_description", capacity_description);
+
+  capacity_output.setCapacityFromXmlRpc(capacity_description);
+
+  ASSERT_TRUE(capacity_output == cap);
+}
+
+TEST_F(CapacityTest, isValid)
+{
+  ASSERT_EQ(cap.isValid(), true);
+}
+
 TEST_F(CapacityTest, clear)
 {
 
@@ -162,6 +183,8 @@ TEST_F(CapacityTest, clear)
 int main(int argc, char* argv[])
 {
   testing::InitGoogleTest(&argc, argv);
+
+  ros::init(argc, argv, "capacity_test_node");
 
   std::thread t([] {
     while (ros::ok())
