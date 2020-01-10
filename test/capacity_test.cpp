@@ -1,4 +1,4 @@
-#include "commons/capacity.h"
+﻿#include "commons/capacity.h"
 #include <chrono>
 #include <gtest/gtest.h>
 #include <ros/ros.h>
@@ -95,6 +95,19 @@ TEST_F(CapacityTest, sameCapacity)
   ASSERT_TRUE(dual_capacity == cap);
 }
 
+TEST_F(CapacityTest, fromXml)
+{
+
+  XmlRpc::XmlRpcValue capacity_description;
+  rtask::commons::Capacity capacity_check;
+
+  m_nh.getParam("capacity_description", capacity_description);
+
+  capacity_check.setCapacityFromXmlRpc(capacity_description);
+
+  ASSERT_TRUE(capacity_check == cap);
+}
+
 TEST_F(CapacityTest, getCapabilityName)
 {
   ASSERT_EQ(cap.getCapabilityName(), capability_name);
@@ -148,23 +161,10 @@ TEST_F(CapacityTest, toAndFromCapacityMsg)
 {
   rtask_msgs::CapacityPtr capacity_msg_ptr = cap.toCapacityMsg();
 
-  rtask::commons::Capacity capacity_output;
-  capacity_output.setFromCapacityMsg(capacity_msg_ptr);
+  rtask::commons::Capacity capacity_check;
+  capacity_check.setFromCapacityMsg(capacity_msg_ptr);
 
-  ASSERT_TRUE(capacity_output == cap);
-}
-
-TEST_F(CapacityTest, fromXml)
-{
-
-  XmlRpc::XmlRpcValue capacity_description;
-  rtask::commons::Capacity capacity_output;
-
-  m_nh.getParam("capacity_description", capacity_description);
-
-  capacity_output.setCapacityFromXmlRpc(capacity_description);
-
-  ASSERT_TRUE(capacity_output == cap);
+  ASSERT_TRUE(capacity_check == cap);
 }
 
 TEST_F(CapacityTest, isValid)

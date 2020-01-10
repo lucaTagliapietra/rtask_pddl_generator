@@ -165,13 +165,22 @@ bool rtask::commons::Capacity::removeProperty(const std::string& t_property_name
 
 bool rtask::commons::Capacity::operator==(const Capacity& t_capacity)
 {
+  bool result = false;
 
-  auto pred = [](std::pair<std::string, Property> a, std::pair<std::string, Property> b) {
-    return a.second.operator==(b.second);
-  };
+  for (auto p1 : t_capacity.m_properties)
+    for (auto p2 : m_properties)
+      if (p1.second.operator==(p2.second))
+        result = true;
 
-  return ((m_capability == t_capacity.getCapabilityName()) && (m_properties.size() == t_capacity.m_properties.size())
-          && std::equal(m_properties.begin(), m_properties.end(), t_capacity.m_properties.begin(), pred));
+  return ((m_capability == t_capacity.getCapabilityName()) && result);
+
+  //  auto pred = [](std::pair<std::string, Property> a, std::pair<std::string, Property> b) {
+  //    return a.second.operator==(b.second);
+  //  };
+
+  //  return ((m_capability == t_capacity.getCapabilityName()) && (m_properties.size() ==
+  //  t_capacity.m_properties.size())
+  //          && std::equal(m_properties.begin(), m_properties.end(), t_capacity.m_properties.begin(), pred));
 }
 
 // -----------------

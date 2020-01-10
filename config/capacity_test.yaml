@@ -9,5 +9,4 @@ capacity_description:
        int_value: 5
      - name: "gripper_max_opening"
        type: 2
-       double_value: "0.1"
-        
+       double_value: 0.1
