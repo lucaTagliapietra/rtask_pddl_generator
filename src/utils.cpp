@@ -26,5 +26,6 @@ bool rtask::commons::utils::checkXmlRpcSanity(const std::string& t_tag,
       return false;
     }
   }
+
   return true;
 }

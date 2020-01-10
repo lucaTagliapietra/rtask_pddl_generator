@@ -4,6 +4,9 @@
 #include <ros/ros.h>
 #include <thread>
 
+#include <iostream> // std::cout
+#include <sstream> // std::stringstream
+
 class PropertyTest : public ::testing::Test
 {
 public:
@@ -13,14 +16,16 @@ public:
   rtask_msgs::Property property_msg;
   rtask::commons::Property property;
 
+  ros::NodeHandle m_nh;
+
   PropertyTest()
+    : m_nh("~")
   {
 
     property_name = "gripper_max_opening";
-    property_value = 0.10;
+    property_value = 0.1;
 
-    property.setName(property_name);
-    property.setValue(property_value);
+    property.setProperty(property_name, property_value);
   }
 
   ~PropertyTest() {}
@@ -59,9 +64,29 @@ TEST_F(PropertyTest, toAndFromPropertyMsg)
   ASSERT_TRUE(property_check == property);
 }
 
+TEST_F(PropertyTest, fromXml)
+{
+
+  XmlRpc::XmlRpcValue property_description;
+  rtask::commons::Property property_check;
+
+  m_nh.getParam("property_description", property_description);
+
+  property_check.setPropertyFromXmlRpc(property_description);
+
+  ASSERT_TRUE(property_check == property);
+}
+
+TEST_F(PropertyTest, isValid)
+{
+  ASSERT_EQ(property.isValid(), true);
+}
+
 int main(int argc, char* argv[])
 {
   testing::InitGoogleTest(&argc, argv);
+
+  ros::init(argc, argv, "property_test_node");
 
   std::thread t([] {
     while (ros::ok())

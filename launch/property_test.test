@@ -1,3 +1,10 @@
+<?xml version="1.0"?>
 <launch>
-<test test-name="unit-test" pkg="rtask_commons" type="property_test" name="PropertyTest"/>
+
+  <arg name="yaml_file" default="property_test"/>
+
+  <test test-name="unit-property-test" pkg="rtask_commons" type="property_test" name="PropertyTest">
+    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_file).yaml" />
+  </test>
+
 </launch>

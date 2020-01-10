@@ -83,8 +83,8 @@ if(CATKIN_ENABLE_TESTING)
  add_rostest_gtest(capacity_test launch/capacity_test.test test/capacity_test.cpp)
  target_link_libraries(capacity_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
-# add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
-# target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+ add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
+ target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
 # add_rostest_gtest(component_test launch/component_test.test test/component_test.cpp)
 # target_link_libraries(component_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)

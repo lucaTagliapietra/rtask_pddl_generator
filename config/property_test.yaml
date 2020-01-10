@@ -1,0 +1,4 @@
+property_description:
+   name: "gripper_max_opening"
+   type: 2
+   double_value: 0.1

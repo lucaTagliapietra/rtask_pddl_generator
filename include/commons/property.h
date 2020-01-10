@@ -46,8 +46,8 @@ namespace rtask {
       bool getValue(std::string& t_value) const;
 
       void setProperty(const std::string& t_name, const bool t_value);
-      void setProperty(const std::string& t_name, const int t_value);
-      void setProperty(const std::string& t_name, const double t_value);
+      void setProperty(const std::string& t_name, const int& t_value);
+      void setProperty(const std::string& t_name, const double& t_value);
       void setProperty(const std::string& t_name, const std::string& t_value);
       bool setPropertyFromXmlRpc(XmlRpc::XmlRpcValue& t_structured_value);
       void setFromPropertyMsg(const rtask_msgs::PropertyConstPtr t_msg_ptr);

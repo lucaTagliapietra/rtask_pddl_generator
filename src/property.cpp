@@ -82,12 +82,12 @@ void rtask::commons::Property::setProperty(const std::string& t_name, const bool
   m_params.valid = setName(t_name) && setValue(t_value);
 };
 
-void rtask::commons::Property::setProperty(const std::string& t_name, const int t_value)
+void rtask::commons::Property::setProperty(const std::string& t_name, const int& t_value)
 {
   m_params.valid = setName(t_name) && setValue(t_value);
 };
 
-void rtask::commons::Property::setProperty(const std::string& t_name, const double t_value)
+void rtask::commons::Property::setProperty(const std::string& t_name, const double& t_value)
 {
   m_params.valid = setName(t_name) && setValue(t_value);
 };
@@ -99,10 +99,13 @@ void rtask::commons::Property::setProperty(const std::string& t_name, const std:
 
 bool rtask::commons::Property::setPropertyFromXmlRpc(XmlRpc::XmlRpcValue& t_structured_value)
 {
-  if (utils::checkXmlRpcSanity("name", t_structured_value, XmlRpc::XmlRpcValue::TypeString)
-      && utils::checkXmlRpcSanity("type", t_structured_value, XmlRpc::XmlRpcValue::TypeInt)) {
+  if (commons::utils::checkXmlRpcSanity("name", t_structured_value, XmlRpc::XmlRpcValue::TypeString)
+      && commons::utils::checkXmlRpcSanity("type", t_structured_value, XmlRpc::XmlRpcValue::TypeInt)) {
     std::string name = static_cast<std::string>(t_structured_value["name"]);
-    switch (static_cast<int>(t_structured_value["type"])) {
+
+    int type = static_cast<int>(t_structured_value["type"]);
+
+    switch (type) {
       case Type::Boolean: {
         if (utils::checkXmlRpcSanity("bool_value", t_structured_value, XmlRpc::XmlRpcValue::TypeBoolean)) {
           setProperty(name, static_cast<bool>(t_structured_value["bool_value"]));
@@ -132,10 +135,8 @@ bool rtask::commons::Property::setPropertyFromXmlRpc(XmlRpc::XmlRpcValue& t_stru
       }
     }
   }
-  else {
-    m_params.valid = false;
-  }
-  return m_params.valid;
+
+  return isValid();
 }
 
 void rtask::commons::Property::setFromPropertyMsg(const rtask_msgs::PropertyConstPtr t_msg_ptr)
