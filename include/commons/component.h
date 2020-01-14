@@ -128,6 +128,31 @@ namespace rtask {
       // bool setCapacityProperties(const std::string& t_capacity_name, const std::vector<Property>& t_props);
     };
 
+    static std::ostream& operator<<(std::ostream& out, const Component& c)
+    {
+      out << "is_valid: " << c.isValid() << std::endl
+          << "id: " << c.getId() << std::endl
+          << "name: " << c.getName() << std::endl
+          << "model: " << c.getModel() << std::endl
+          << "manufacturer: " << c.getManufacturer() << std::endl
+          << "description: " << c.getDescription() << std::endl
+          << "urdf_link: " << c.getUrdfLink() << std::endl
+          << "moveit_group_name: " << c.getMoveitGroupName() << std::endl
+          << "reference_frame: " << c.getReferenceFrame() << std::endl
+          << "parent_link: " << c.getParentLink() << std::endl
+          << std::endl;
+
+      std::vector<Capacity> caps;
+      c.getCapacities(caps);
+
+      unsigned int i = 0;
+      for (const auto& cap : caps) {
+        out << "capacity " << i << ": " << std::endl << std::endl << cap;
+        ++i;
+      }
+      return out;
+    }
+
   } // namespace commons
 } // namespace rtask
 
