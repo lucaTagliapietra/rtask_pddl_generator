@@ -70,11 +70,14 @@ namespace rtask {
 
     static std::ostream& operator<<(std::ostream& out, const Capacity& p)
     {
-      out << "valid: " << p.isValid() << std::endl << "capability_name: " << p.getCapabilityName() << std::endl;
+      out << "is_valid: " << p.isValid() << std::endl << "name: " << p.getCapabilityName() << std::endl << std::endl;
       std::vector<Property> props;
       p.getProperties(props);
-      for (const auto& p : props)
-        out << "property: " << std::endl << p;
+      unsigned int i = 0;
+      for (const auto& p : props) {
+        out << "property " << i << ": " << std::endl << std::endl << p;
+        ++i;
+      }
       return out << std::endl;
     }
   } // namespace commons
