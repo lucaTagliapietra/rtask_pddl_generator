@@ -1,0 +1,27 @@
+component_description:
+   id: 0
+   name: "component_0"
+   model: "ur5"
+   manufacturer: "universal_robot"
+   description: "URDF description and properties of the Universal Robot UR5 robot arm"
+   urdf_link: "base_link"
+   moveit_group_name: "manipulator"
+   reference_frame: "world"
+   parent_link: "world"
+   capacities:
+      - capability: "manipulation"
+        properties:
+          - name: "robot_weight"
+            type: 2
+            double_value: 18.4
+          - name: "robot_payload"
+            type: 1
+            int_value: 5
+          - name: "robot_ip_classification"
+            type: 3
+            str_value: "ip54"
+      - capability: "human_collaboration"
+        properties:
+          - name: "robot_force_sensor"
+            type: 0
+            bool_value: True

@@ -9,7 +9,8 @@
 
 rtask::commons::Component::Component(const unsigned int t_id,
                                      const std::string& t_name,
-                                     const std::string& t_type,
+                                     const std::string& t_model,
+                                     const std::string& t_manufacturer,
                                      const std::string& t_ref_frame,
                                      const std::vector<Capacity> t_capacities,
                                      const std::string& t_description,
@@ -17,8 +18,16 @@ rtask::commons::Component::Component(const unsigned int t_id,
                                      const std::string& t_moveit_group_name,
                                      const std::string& t_parent_link)
 {
-  setComponent(
-    t_id, t_name, t_type, t_ref_frame, t_capacities, t_description, t_urdf_link, t_moveit_group_name, t_parent_link);
+  setComponent(t_id,
+               t_name,
+               t_model,
+               t_manufacturer,
+               t_ref_frame,
+               t_capacities,
+               t_description,
+               t_urdf_link,
+               t_moveit_group_name,
+               t_parent_link);
 }
 
 rtask::commons::Component::Component(const rtask_msgs::Component& t_msg)
@@ -48,7 +57,8 @@ rtask_msgs::ComponentPtr rtask::commons::Component::toComponentMsg() const
   rtask_msgs::ComponentPtr component = boost::make_shared<rtask_msgs::Component>();
   component->id = m_params.id;
   component->name = m_params.name;
-  component->type = m_params.type;
+  component->model = m_params.model;
+  component->manufacturer = m_params.manufacturer;
   component->description = m_params.description;
   component->urdf_link = m_params.urdf_link;
   component->moveit_group = m_params.moveit_group_name;
@@ -68,8 +78,11 @@ bool rtask::commons::Component::setComponentFromXmlRpc(XmlRpc::XmlRpcValue& t_no
   if (commons::utils::checkXmlRpcSanity("name", t_node, XmlRpc::XmlRpcValue::TypeString)) {
     m_params.name = static_cast<std::string>(t_node["name"]);
   }
-  if (commons::utils::checkXmlRpcSanity("type", t_node, XmlRpc::XmlRpcValue::TypeString)) {
-    m_params.type = static_cast<std::string>(t_node["type"]);
+  if (commons::utils::checkXmlRpcSanity("model", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.model = static_cast<std::string>(t_node["model"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("manufacturer", t_node, XmlRpc::XmlRpcValue::TypeString)) {
+    m_params.manufacturer = static_cast<std::string>(t_node["manufacturer"]);
   }
   if (commons::utils::checkXmlRpcSanity("reference_frame", t_node, XmlRpc::XmlRpcValue::TypeString)) {
     m_params.reference_frame = static_cast<std::string>(t_node["reference_frame"]);
@@ -105,7 +118,8 @@ void rtask::commons::Component::setFromComponentMsg(const rtask_msgs::Component&
 {
   m_params.id = t_msg.id;
   m_params.name = t_msg.name;
-  m_params.type = t_msg.type;
+  m_params.model = t_msg.model;
+  m_params.manufacturer = t_msg.manufacturer;
   m_params.description = t_msg.description;
   m_params.urdf_link = t_msg.urdf_link;
   m_params.moveit_group_name = t_msg.moveit_group;
@@ -125,7 +139,8 @@ void rtask::commons::Component::setFromComponentMsg(const rtask_msgs::ComponentC
 
 void rtask::commons::Component::setComponent(const unsigned int t_id,
                                              const std::string& t_name,
-                                             const std::string& t_type,
+                                             const std::string& t_model,
+                                             const std::string& t_manufacturer,
                                              const std::string& t_ref_frame,
                                              const std::vector<rtask::commons::Capacity> t_capacities,
                                              const std::string& t_description,
@@ -135,7 +150,8 @@ void rtask::commons::Component::setComponent(const unsigned int t_id,
 {
   m_params.id = t_id;
   m_params.name = t_name;
-  m_params.type = t_type;
+  m_params.model = t_model;
+  m_params.manufacturer = t_manufacturer;
   m_params.description = t_description;
   m_params.urdf_link = t_urdf_link;
   m_params.moveit_group_name = t_moveit_group_name;
@@ -283,6 +299,7 @@ void rtask::commons::Component::setCapacityProperty(const std::string& t_capacit
       m_params.capacities[t_capacity_name] = {t_capacity_name};
     }
     m_params.capacities[t_capacity_name].setProperty(t_prop);
+    updValidity();
   }
 }
 
@@ -293,14 +310,11 @@ void rtask::commons::Component::setCapacityProperty(const std::string& t_capacit
 bool rtask::commons::Component::operator==(const Component& t_component)
 {
 
-  auto pred = [](std::pair<std::string, Capacity> a, std::pair<std::string, Capacity> b) {
-    return a.second.operator==(b.second);
-  };
-
-  return ((m_params.name == t_component.getName()) && (m_params.type == t_component.getType())
+  return ((m_params.name == t_component.getName()) && (m_params.model == t_component.getModel())
+          && (m_params.manufacturer == t_component.getManufacturer())
           && (m_params.capacities.size() == t_component.m_params.capacities.size())
-          && std::equal(
-               m_params.capacities.begin(), m_params.capacities.end(), t_component.m_params.capacities.begin(), pred));
+          && std::is_permutation(
+               m_params.capacities.begin(), m_params.capacities.end(), t_component.m_params.capacities.begin()));
 }
 
 // -----------------
@@ -323,8 +337,8 @@ void rtask::commons::Component::setCapacities(const std::vector<Capacity>& t_cap
 bool rtask::commons::Component::updValidity()
 {
   m_params.valid = false;
-  if (!std::isnan(m_params.id) && !m_params.name.empty() && !m_params.type.empty() && !m_params.reference_frame.empty()
-      && !m_params.capacities.empty()) {
+  if (!std::isnan(m_params.id) && !m_params.name.empty() && !m_params.model.empty() && !m_params.manufacturer.empty()
+      && !m_params.reference_frame.empty() && !m_params.capacities.empty()) {
     m_params.valid = true;
     for (const auto& c : m_params.capacities) {
       m_params.valid &= c.second.isValid();

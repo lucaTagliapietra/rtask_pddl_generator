@@ -18,7 +18,8 @@ namespace rtask {
       Component() {}
       Component(const unsigned int t_id,
                 const std::string& t_name,
-                const std::string& t_type,
+                const std::string& t_model,
+                const std::string& t_manufacturer,
                 const std::string& t_ref_frame,
                 const std::vector<Capacity> t_capacities,
                 const std::string& t_description = "",
@@ -41,7 +42,8 @@ namespace rtask {
       void setFromComponentMsg(const rtask_msgs::ComponentConstPtr t_msg_ptr);
       void setComponent(const unsigned int t_id,
                         const std::string& t_name,
-                        const std::string& t_type,
+                        const std::string& t_model,
+                        const std::string& t_manufacturer,
                         const std::string& t_ref_frame,
                         const std::vector<Capacity> t_capacities,
                         const std::string& t_description = "",
@@ -57,7 +59,8 @@ namespace rtask {
       bool isValid() const { return m_params.valid; }
       unsigned int getId() const { return m_params.id; }
       std::string getName() const { return m_params.name; }
-      std::string getType() const { return m_params.type; }
+      std::string getModel() const { return m_params.model; }
+      std::string getManufacturer() const { return m_params.manufacturer; }
       std::string getDescription() const { return m_params.description; }
       std::string getUrdfLink() const { return m_params.urdf_link; }
       std::string getMoveitGroupName() const { return m_params.moveit_group_name; }
@@ -97,7 +100,8 @@ namespace rtask {
       {
         unsigned int id = std::numeric_limits<unsigned int>::quiet_NaN();
         std::string name = "";
-        std::string type = "";
+        std::string model = "";
+        std::string manufacturer = "";
         std::string description = "";
         std::string urdf_link = "";
         std::string moveit_group_name = "";
@@ -111,7 +115,8 @@ namespace rtask {
 
       void setId(const unsigned int t_value) { m_params.id = t_value; }
       void setName(const std::string& t_value) { m_params.name = t_value; }
-      void setType(const std::string& t_value) { m_params.type = t_value; }
+      void setModel(const std::string& t_value) { m_params.model = t_value; }
+      void setManufacturer(const std::string& t_value) { m_params.manufacturer = t_value; }
       void setReferenceFrame(const std::string& t_value) { m_params.reference_frame = t_value; }
 
       void clearCapacities();
