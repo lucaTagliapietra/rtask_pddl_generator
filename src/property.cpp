@@ -57,7 +57,7 @@ rtask_msgs::PropertyPtr rtask::commons::Property::toPropertyMsg() const
   switch (m_params.type) {
     case Type::Boolean:
       a_property->type = rtask_msgs::Property::BOOLEAN;
-      a_property->bool_value = m_params.bool_value;
+      a_property->bool_value = m_params.bool_value ? '1' : '0';
       break;
     case Type::Integer:
       a_property->type = rtask_msgs::Property::INTEGER;
@@ -148,16 +148,16 @@ void rtask::commons::Property::setFromPropertyMsg(const rtask_msgs::Property& t_
 {
   switch (t_msg.type) {
     case rtask_msgs::Property::BOOLEAN:
-      m_params.valid = setName(t_msg.name) && setValue(t_msg.bool_value);
+      m_params.valid = setName(t_msg.name) && setValue(static_cast<bool>(t_msg.bool_value));
       break;
     case rtask_msgs::Property::INTEGER:
       m_params.valid = setName(t_msg.name) && setValue(static_cast<int>(t_msg.int_value));
       break;
     case rtask_msgs::Property::DOUBLE:
-      m_params.valid = setName(t_msg.name) && setValue(t_msg.double_value);
+      m_params.valid = setName(t_msg.name) && setValue(static_cast<double>(t_msg.double_value));
       break;
     case rtask_msgs::Property::STRING:
-      m_params.valid = setName(t_msg.name) && setValue(t_msg.str_value);
+      m_params.valid = setName(t_msg.name) && setValue(static_cast<std::string>(t_msg.str_value));
       break;
     default:
       m_params.valid = false;
@@ -201,7 +201,7 @@ bool rtask::commons::Property::getValue(std::string& t_value) const
 // Operators
 // ---------
 
-bool rtask::commons::Property::operator==(const Property& t_property)
+bool rtask::commons::Property::operator==(const Property& t_property) const
 {
   if ((m_params.name == t_property.getName()) && m_params.type == t_property.getType()) {
     switch (m_params.type) {

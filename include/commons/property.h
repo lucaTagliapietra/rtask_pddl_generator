@@ -57,7 +57,7 @@ namespace rtask {
       // Operators
       // ---------
 
-      bool operator==(const Property& t_property);
+      bool operator==(const Property& t_property) const;
 
     private:
       bool setName(const std::string& t_name);
@@ -79,6 +79,41 @@ namespace rtask {
 
       Parameters m_params;
     };
+
+    static std::ostream& operator<<(std::ostream& out, const Property& p)
+    {
+      out << "valid: " << p.isValid() << std::endl
+          << "name: " << p.getName() << std::endl
+          << "type: " << p.getType() << std::endl;
+
+      bool bool_value;
+      int int_value;
+      double double_value;
+      std::string string_value;
+
+      switch (p.getType()) {
+        case rtask::commons::Property::Type::Boolean:
+          p.getValue(bool_value);
+          out << "value: " << bool_value;
+          break;
+        case rtask::commons::Property::Type::Integer:
+          p.getValue(int_value);
+          out << "value: " << int_value;
+          break;
+        case rtask::commons::Property::Type::Double:
+          p.getValue(double_value);
+          out << "value: " << double_value;
+          break;
+        case rtask::commons::Property::Type::String:
+          p.getValue(string_value);
+          out << "value: " << string_value;
+          break;
+        default:
+          out << "Unknown Type.";
+      }
+
+      return out << std::endl;
+    }
   } // namespace commons
 } // namespace rtask
 

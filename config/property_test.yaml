@@ -1,4 +1,4 @@
 property_description:
-   name: "gripper_max_opening"
+   name: "robot_weight"
    type: 2
-   double_value: 0.1
+   double_value: 18.4

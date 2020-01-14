@@ -22,8 +22,8 @@ public:
     : m_nh("~")
   {
 
-    property_name = "gripper_max_opening";
-    property_value = 0.1;
+    property_name = "robot_weight";
+    property_value = 18.4;
 
     property.setProperty(property_name, property_value);
   }
