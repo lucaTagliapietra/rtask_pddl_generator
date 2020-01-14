@@ -7,23 +7,14 @@
 class CapacityTest : public ::testing::Test
 {
 public:
-  struct Sort
-  {
-    // overload the function call operator
-    bool operator()(const rtask::commons::Property& property1, const rtask::commons::Property& property2) const
-    {
-      return property1.getName() < property2.getName();
-    }
-  };
-
   std::string capability_name = "";
 
   std::vector<rtask::commons::Property> properties{};
 
   rtask::commons::Property prop1, prop2, prop3;
   std::string prop_name1, prop_name2, prop_name3;
-  int value1, value2;
-  double value3;
+  double value1;
+  int value2, value3;
 
   rtask_msgs::Capacity capacity_msg;
   rtask_msgs::Property prop1_msg, prop2_msg, prop3_msg;
@@ -36,16 +27,16 @@ public:
     : m_nh("~")
   {
 
-    prop_name1 = "robot_payload";
-    value1 = 10;
+    prop_name1 = "robot_weight";
+    value1 = 18.4;
 
     prop1_msg.name = prop_name1;
-    prop1_msg.type = rtask_msgs::Property::INTEGER;
-    prop1_msg.int_value = value1;
+    prop1_msg.type = rtask_msgs::Property::DOUBLE;
+    prop1_msg.double_value = value1;
 
     prop1.setFromPropertyMsg(prop1_msg);
 
-    prop_name2 = "gripper_payload";
+    prop_name2 = "robot_payload";
     value2 = 5;
 
     prop2_msg.name = prop_name2;
@@ -54,11 +45,11 @@ public:
 
     prop2.setFromPropertyMsg(prop2_msg);
 
-    prop_name3 = "gripper_max_opening";
-    value3 = 0.1;
+    prop_name3 = "robot_reach";
+    value3 = 850;
 
     prop3_msg.name = prop_name3;
-    prop3_msg.type = rtask_msgs::Property::DOUBLE;
+    prop3_msg.type = rtask_msgs::Property::INTEGER;
     prop3_msg.double_value = value3;
 
     prop3.setFromPropertyMsg(prop3_msg);
@@ -80,12 +71,8 @@ public:
   inline bool arePropertiesVectorsEqual(const std::vector<rtask::commons::Property>& property1,
                                         const std::vector<rtask::commons::Property>& property2)
   {
-    bool result = false;
-    for (auto p1 : property1)
-      for (auto p2 : property2)
-        if (p1.operator==(p2))
-          result = true;
-    return result;
+    return ((property1.size() == property2.size())
+            && std::is_permutation(property1.begin(), property1.end(), property2.begin()));
   }
 };
 
@@ -121,7 +108,7 @@ TEST_F(CapacityTest, hasProperty)
 TEST_F(CapacityTest, getProperty)
 {
   rtask::commons::Property property_output;
-  int value;
+  double value;
   cap.getProperty(prop_name1, property_output);
   property_output.getValue(value);
 
@@ -134,7 +121,6 @@ TEST_F(CapacityTest, addPropertyAndList)
   std::vector<rtask::commons::Property> properties_output;
 
   properties.push_back(prop3);
-  std::sort(properties.begin(), properties.end(), Sort());
 
   cap.addProperty(prop3);
 
@@ -148,7 +134,6 @@ TEST_F(CapacityTest, removePropertyAndList)
   std::vector<rtask::commons::Property> properties_output;
 
   properties.erase(std::find(properties.begin(), properties.end(), prop1));
-  std::sort(properties.begin(), properties.end(), Sort());
 
   cap.removeProperty(prop1.getName());
 

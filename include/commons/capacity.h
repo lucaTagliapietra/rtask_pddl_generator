@@ -54,7 +54,7 @@ namespace rtask {
       // Operators
       // ---------
 
-      bool operator==(const Capacity& t_capacity);
+      bool operator==(const Capacity& t_capacity) const;
 
     private:
       bool m_valid = false;
@@ -67,6 +67,16 @@ namespace rtask {
       void clearProperties();
       bool updValidity();
     };
+
+    static std::ostream& operator<<(std::ostream& out, const Capacity& p)
+    {
+      out << "valid: " << p.isValid() << std::endl << "capability_name: " << p.getCapabilityName() << std::endl;
+      std::vector<Property> props;
+      p.getProperties(props);
+      for (const auto& p : props)
+        out << "property: " << std::endl << p;
+      return out << std::endl;
+    }
   } // namespace commons
 } // namespace rtask
 

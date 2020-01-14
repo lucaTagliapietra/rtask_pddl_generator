@@ -56,6 +56,7 @@ bool rtask::commons::Capacity::setCapacityFromXmlRpc(XmlRpc::XmlRpcValue& t_valu
       Property tmp(t_value["properties"][i]);
       if (!addProperty(tmp)) {
         std::cout << "Malformed or already present property " << tmp.getName() << std::endl;
+        return updValidity();
       }
     }
   }
@@ -83,8 +84,10 @@ void rtask::commons::Capacity::setFromCapacityMsg(const rtask_msgs::CapacityCons
 void rtask::commons::Capacity::setCapacity(const std::string& t_capability, const std::vector<Property>& t_properties)
 {
   clear();
-  if (!t_capability.empty() && !t_properties.empty()) {
+  if (!t_capability.empty()) {
     m_capability = t_capability;
+  }
+  if (!t_properties.empty()) {
     setProperties(t_properties);
   }
   updValidity();
@@ -163,24 +166,15 @@ bool rtask::commons::Capacity::removeProperty(const std::string& t_property_name
 // Operators
 // ---------
 
-bool rtask::commons::Capacity::operator==(const Capacity& t_capacity)
+bool rtask::commons::Capacity::operator==(const Capacity& t_capacity) const
 {
-  bool result = false;
 
-  for (auto p1 : t_capacity.m_properties)
-    for (auto p2 : m_properties)
-      if (p1.second.operator==(p2.second))
-        result = true;
+  auto pred = [](const std::pair<std::string, Property>& a, const std::pair<std::string, Property>& b) {
+    return a.second.operator==(b.second);
+  };
 
-  return ((m_capability == t_capacity.getCapabilityName()) && result);
-
-  //  auto pred = [](std::pair<std::string, Property> a, std::pair<std::string, Property> b) {
-  //    return a.second.operator==(b.second);
-  //  };
-
-  //  return ((m_capability == t_capacity.getCapabilityName()) && (m_properties.size() ==
-  //  t_capacity.m_properties.size())
-  //          && std::equal(m_properties.begin(), m_properties.end(), t_capacity.m_properties.begin(), pred));
+  return ((m_capability == t_capacity.getCapabilityName()) && (m_properties.size() == t_capacity.m_properties.size())
+          && std::equal(m_properties.begin(), m_properties.end(), t_capacity.m_properties.begin(), pred));
 }
 
 // -----------------

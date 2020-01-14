@@ -1,12 +1,9 @@
 capacity_description:
    capability: "manipulation"
    properties:
+     - name: "robot_weight"
+       type: 2
+       double_value: 18.4
      - name: "robot_payload"
        type: 1
-       int_value: 10
-     - name: "gripper_payload"
-       type: 1
        int_value: 5
-     - name: "gripper_max_opening"
-       type: 2
-       double_value: 0.1
