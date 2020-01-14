@@ -94,19 +94,19 @@ namespace rtask {
       switch (p.getType()) {
         case rtask::commons::Property::Type::Boolean:
           p.getValue(bool_value);
-          out << "value: " << bool_value;
+          out << "value: " << bool_value << std::endl;
           break;
         case rtask::commons::Property::Type::Integer:
           p.getValue(int_value);
-          out << "value: " << int_value;
+          out << "value: " << int_value << std::endl;
           break;
         case rtask::commons::Property::Type::Double:
           p.getValue(double_value);
-          out << "value: " << double_value;
+          out << "value: " << double_value << std::endl;
           break;
         case rtask::commons::Property::Type::String:
           p.getValue(string_value);
-          out << "value: " << string_value;
+          out << "value: " << string_value << std::endl;
           break;
         default:
           out << "Unknown Type.";
