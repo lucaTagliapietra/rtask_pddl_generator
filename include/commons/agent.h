@@ -68,7 +68,8 @@ namespace rtask {
       void setComponent(const Component& t_component);
 
       bool getComponentId(const std::string& t_component_name, unsigned int& t_id) const;
-      bool getComponentType(const std::string& t_component_name, std::string& t_type) const;
+      bool getComponentModel(const std::string& t_component_name, std::string& t_model) const;
+      bool getComponentManufacturer(const std::string& t_component_name, std::string& t_manufacturer) const;
       bool getComponentDescription(const std::string& t_component_name, std::string& t_description) const;
       bool getComponentUrdfLink(const std::string& t_component_name, std::string& t_urdf_link) const;
       bool getComponentMoveitGroupName(const std::string& t_component_name, std::string& t_moveit_group) const;

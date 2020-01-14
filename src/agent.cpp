@@ -228,12 +228,21 @@ bool rtask::commons::Agent::getComponentId(const std::string& t_component_name, 
   t_id = m_params.components.at(t_component_name).getId();
   return true;
 }
-bool rtask::commons::Agent::getComponentType(const std::string& t_component_name, std::string& t_type) const
+bool rtask::commons::Agent::getComponentModel(const std::string& t_component_name, std::string& t_model) const
 {
   if (!hasComponent(t_component_name)) {
     return false;
   }
-  t_type = m_params.components.at(t_component_name).getType();
+  t_model = m_params.components.at(t_component_name).getModel();
+  return true;
+}
+bool rtask::commons::Agent::getComponentManufacturer(const std::string& t_component_name,
+                                                     std::string& t_manufacturer) const
+{
+  if (!hasComponent(t_component_name)) {
+    return false;
+  }
+  t_manufacturer = m_params.components.at(t_component_name).getManufacturer();
   return true;
 }
 bool rtask::commons::Agent::getComponentDescription(const std::string& t_component_name,

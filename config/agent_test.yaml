@@ -1,0 +1,61 @@
+agent_description:
+  header:
+    frame_id: "test"
+  id: 0
+  name: "agent_name"
+  description: "a test agent"
+  urdf_link: "test_link/robot.urdf"
+  components:
+    - id: 0
+      name: "component_0"
+      model: "test_model"
+      manufacturer: "test_manufacturer"
+      description: "test_description"
+      urdf_link: "a_link"
+      moveit_group_name: "a_moveit_group"
+      reference_frame: "a_ref_frame"
+      parent_link: "a_parent"
+      capacities:
+        - capability: "capability_0"
+          properties:
+            - name: "prop_0"
+              type: 0
+              bool_value: true
+            - name: "prop_1"
+              type: 1
+              int_value: 4
+            - name: "prop_2"
+              type: 3
+              str_value: "test_str"
+        - capability: "capability_2"
+          properties:
+            - name: "prop_02"
+              type: 0
+              bool_value: true
+            - name: "prop_12"
+              type: 1
+              int_value: 4
+            - name: "prop_22"
+              type: 3
+              str_value: "test_str"
+    - id: 1
+      name: "component_1"
+      model: "test_model_1"
+      manufacturer: "test_manufacturer_1"
+      description: "test_description_1"
+      urdf_link: "a_link_1"
+      moveit_group_name: "a_moveit_group_1"
+      reference_frame: "a_ref_frame_1"
+      parent_link: "a_parent_1"
+      capacities:
+        - capability: "capability_1"
+          properties:
+            - name: "prop_01"
+              type: 0
+              bool_value: true
+            - name: "prop_11"
+              type: 1
+              int_value: 4
+            - name: "prop_21"
+              type: 3
+              str_value: "test_str"
