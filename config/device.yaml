@@ -1,10 +1,10 @@
 device:
   name: "device_0"
-  type: "Robot"
-  subtype: "AutonomousRobot"
+  type: "Robot"                 # ontogy has UpperCase
+  subtype: "AutonomousRobot"    # ontogy has UpperCase
   unique_properties:
-    - { "model", "ur5" }
-    - { "manufacturer", "universal_robot" }
+    - { "model", "UR5" }
+    - { "manufacturer", "Universal Robot" }
   extra_properties:
     - { "description", "URDF description and properties of a Universal Robot UR5 robot arm" }
     - { "urdf_link", "https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel/ur_description/urdf/ur5_robot.urdf.xacro" }
