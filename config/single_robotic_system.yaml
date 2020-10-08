@@ -1,0 +1,34 @@
+single_robotic_system:
+  name: "single_robotic_system_0"
+  devices:
+    - name: "device_0"            # ontogy has UpperCase
+      type: "Robot"               # ontogy has UpperCase
+      subtype: "AutonomousRobot"
+      unique_properties:
+        - { "model", "ur5" }
+        - { "manufacturer", "universal_robot" }
+      extra_properties:
+        - { "description", "URDF description and properties of a Universal Robot UR5 robot arm" }
+        - { "urdf_link", "https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel/ur_description/urdf/ur5_robot.urdf.xacro" }
+      capabilities:
+        - name: "moving"
+          properties:
+            - { "degrees_of_freedom", 6 }
+            - { "payload", 5 }
+    - name: "device_1"
+      type: "Sensor"              # ontogy has UpperCase
+      subtype: "VisionSensor"     # ontogy has UpperCase
+      unique_properties:
+        - { "model", "kinect_one" }
+        - { "manufacturer", "microsoft" }
+      extra_properties:
+        - { "description", "URDF description and properties of a Microsoft Kinect One vision sensor" }
+        - { "urdf_link", "https://github.com/code-iai/iai_robots/blob/master/iai_kinect2_description/urdf/kinect2.urdf.xacro" }
+      capabilities:
+        - name: "seeing"
+          properties:
+            - { "maximum_distance", 4.5 }
+            - { "schnittstelle", "USB 3.0" }
+            - { "weight", 1.4 }
+  extra_properties:
+    - { "description", "URDF description and properties of a Universal Robot UR5 robot arm with a Kinect One vision sensor" }
