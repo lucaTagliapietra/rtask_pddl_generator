@@ -5,30 +5,30 @@ single_robotic_system:
       type: "Robot"               # ontogy has UpperCase
       subtype: "AutonomousRobot"
       unique_properties:
-        - { "model", "ur5" }
-        - { "manufacturer", "universal_robot" }
+        - { name: "model", value: "ur5" }
+        - { name: "manufacturer", value: "universal_robot" }
       extra_properties:
-        - { "description", "URDF description and properties of a Universal Robot UR5 robot arm" }
-        - { "urdf_link", "https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel/ur_description/urdf/ur5_robot.urdf.xacro" }
+        - { name: "description", value: "URDF description and properties of a Universal Robot UR5 robot arm" }
+        - { name: "urdf_link", value: "https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel/ur_description/urdf/ur5_robot.urdf.xacro" }
       capabilities:
         - name: "moving"
           properties:
-            - { "degrees_of_freedom", 6 }
-            - { "payload", 5 }
+            - { name: "degrees_of_freedom", value: 6 }
+            - { name: "payload", value: 5 }
     - name: "device_1"
       type: "Sensor"              # ontogy has UpperCase
       subtype: "VisionSensor"     # ontogy has UpperCase
       unique_properties:
-        - { "model", "kinect_one" }
-        - { "manufacturer", "microsoft" }
+        - { name: "model", value: "kinect_one" }
+        - { name: "manufacturer", value: "microsoft" }
       extra_properties:
-        - { "description", "URDF description and properties of a Microsoft Kinect One vision sensor" }
-        - { "urdf_link", "https://github.com/code-iai/iai_robots/blob/master/iai_kinect2_description/urdf/kinect2.urdf.xacro" }
+        - { name: "description", value: "URDF description and properties of a Microsoft Kinect One vision sensor" }
+        - { name: "urdf_link", value: "https://github.com/code-iai/iai_robots/blob/master/iai_kinect2_description/urdf/kinect2.urdf.xacro" }
       capabilities:
         - name: "seeing"
           properties:
-            - { "maximum_distance", 4.5 }
-            - { "schnittstelle", "USB 3.0" }
-            - { "weight", 1.4 }
+            - { name: "maximum_distance", value: 4.5 }
+            - { name: "schnittstelle", value: "USB 3.0" }
+            - { name: "weight", value: 1.4 }
   extra_properties:
-    - { "description", "URDF description and properties of a Universal Robot UR5 robot arm with a Kinect One vision sensor" }
+    - { name: "description", value: "URDF description and properties of a Universal Robot UR5 robot arm with a Kinect One vision sensor" }
