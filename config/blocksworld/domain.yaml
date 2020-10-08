@@ -26,7 +26,7 @@ domain:
       params:
         - { name: "x", type: "block" }
       preconditions:
-        - { name: "clear", zargs: ["x"] }
+        - { name: "clear", args: ["x"] }
         - { name: "ontable", args: ["x"] }
         - { name: "handempty" }
       effects:
