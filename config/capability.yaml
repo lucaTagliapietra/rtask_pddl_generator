@@ -1,0 +1,5 @@
+capability:
+  name: "moving"
+  properties:
+    - { "degrees_of_freedom", 6 }
+    - { "payload", 5 }
