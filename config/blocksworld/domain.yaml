@@ -4,6 +4,8 @@ domain:
     equality: False
     strips: False
     typing: True
+  types:
+    - {type_names: ["block"]}
   predicates:
     - name: "on"
       params:
