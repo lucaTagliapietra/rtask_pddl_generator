@@ -5,7 +5,7 @@ domain:
     strips: False
     typing: True
   types:
-    - {type_names: ["block"]}
+    - { type_names: ["block"] }
   predicates:
     - name: "on"
       params:
