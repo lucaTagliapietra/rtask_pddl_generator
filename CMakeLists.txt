@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10)
 project(rtask_commons)
 
 # Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 
 # Find catkin macros and libraries if COMPONENTS list like find_package(catkin
 # REQUIRED COMPONENTS xyz) is used, also find other catkin packages
@@ -37,16 +37,16 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # single CMake context The recommended prefix ensures that target names across
 # packages don't collide add_executable(${PROJECT_NAME}_node
 add_library(${PROJECT_NAME}_lib src/utils.cpp
-                                src/agent.cpp
-                                src/capacity.cpp
-                                src/component.cpp
+#                                src/agent.cpp
+#                                src/capacity.cpp
+#                                src/component.cpp
                                 src/property.cpp
-                                src/status.cpp
-                                src/action.cpp
-                                src/taskDefinition.cpp
-                                src/domain.cpp
-                                src/task.cpp
-                                src/mission.cpp
+#                                src/status.cpp
+#                                src/action.cpp
+#                                src/taskDefinition.cpp
+#                                src/domain.cpp
+#                                src/task.cpp
+#                                src/mission.cpp
                                 )
 
 # Rename C++ executable without prefix The above recommended prefix causes long
@@ -70,26 +70,31 @@ add_dependencies(${PROJECT_NAME}_lib
 # Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
 
-#set_target_properties(${PROJECT_NAME}_lib
-#                       PROPERTIES PUBLIC_HEADER include)
+set_target_properties(${PROJECT_NAME}_lib
+                       PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+set_target_properties(${PROJECT_NAME}_lib PROPERTIES CXX_STANDARD 17)
 
 target_include_directories(${PROJECT_NAME}_lib
                            PUBLIC include
                            PRIVATE ${catkin_INCLUDE_DIRS})
 
-if(CATKIN_ENABLE_TESTING)
- find_package(rostest REQUIRED)
+add_executable(test_property test/property_test_main.cpp)
+target_link_libraries(test_property ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+#if(CATKIN_ENABLE_TESTING)
+# find_package(rostest REQUIRED)
  
- add_rostest_gtest(capacity_test launch/capacity_test.test test/capacity_test.cpp)
- target_link_libraries(capacity_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+# add_rostest_gtest(capacity_test launch/capacity_test.test test/capacity_test.cpp)
+# target_link_libraries(capacity_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
- add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
- target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+# add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
+# target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
- add_rostest_gtest(component_test launch/component_test.test test/component_test.cpp)
- target_link_libraries(component_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+# add_rostest_gtest(component_test launch/component_test.test test/component_test.cpp)
+# target_link_libraries(component_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
-# add_rostest_gtest(agent_test launch/agent_test.test test/agent_test.cpp)
-# target_link_libraries(agent_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+## add_rostest_gtest(agent_test launch/agent_test.test test/agent_test.cpp)
+## target_link_libraries(agent_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
-endif()
+#endif()
