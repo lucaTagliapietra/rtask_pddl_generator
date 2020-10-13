@@ -29,3 +29,12 @@ bool rtask::commons::utils::checkXmlRpcSanity(const std::string& t_tag,
 
   return true;
 }
+
+XmlRpc::XmlRpcValue::Type rtask::commons::utils::getTagValueType(const std::string& t_tag, XmlRpc::XmlRpcValue& t_node)
+{
+  if (!t_node.hasMember(t_tag)) {
+    std::cout << "Tag: " << t_tag << " not found" << std::endl;
+    return XmlRpc::XmlRpcValue::Type::TypeInvalid;
+  }
+  return t_node[t_tag].getType();
+}

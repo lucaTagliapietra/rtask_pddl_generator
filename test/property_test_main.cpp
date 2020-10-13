@@ -3,6 +3,9 @@
 
 int main(int argc, char* argv[])
 {
-  rtask::commons::Property prop("prova", false);
-  std::cout << "Type : " << prop.get().first << " val: " << prop.get().second << std::endl;
+  rtask::commons::Property test_prop("boolname", true);
+  auto msg = test_prop.toMsg();
+  std::cout << msg.name << std::endl;
+  std::cout << std::to_string(msg.type) << std::endl;
+  std::cout << msg.value << std::endl;
 }
