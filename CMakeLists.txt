@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(rtask_commons)
 
 # Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++17)
+add_compile_options(-std=c++2a)
 
 # Find catkin macros and libraries if COMPONENTS list like find_package(catkin
 # REQUIRED COMPONENTS xyz) is used, also find other catkin packages
@@ -38,9 +38,9 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # packages don't collide add_executable(${PROJECT_NAME}_node
 add_library(${PROJECT_NAME}_lib src/utils.cpp
 #                                src/agent.cpp
-#                                src/capacity.cpp
+                                 src/capability.cpp
 #                                src/component.cpp
-                                src/property.cpp
+                                 src/property.cpp
 #                                src/status.cpp
 #                                src/action.cpp
 #                                src/taskDefinition.cpp
@@ -73,7 +73,7 @@ target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
 set_target_properties(${PROJECT_NAME}_lib
                        PROPERTIES CXX_STANDARD_REQUIRED ON)
 
-set_target_properties(${PROJECT_NAME}_lib PROPERTIES CXX_STANDARD 17)
+set_target_properties(${PROJECT_NAME}_lib PROPERTIES CXX_STANDARD 20)
 
 target_include_directories(${PROJECT_NAME}_lib
                            PUBLIC include
