@@ -26,7 +26,8 @@ namespace rtask {
     class Property
     {
     public:
-      Property() = delete;
+      Property() = default;
+      ~Property() = default;
 
       Property(const std::string& t_name, const bool t_val);
       Property(const std::string& t_name, const int t_val);
@@ -39,6 +40,11 @@ namespace rtask {
 
       rtask_msgs::Property toMsg() const;
 
+      void set(const std::string& t_name, const bool t_val);
+      void set(const std::string& t_name, const int t_val);
+      void set(const std::string& t_name, const double t_val);
+      void set(const std::string& t_name, const std::string& t_val);
+
       void updValue(const bool t_val);
       void updValue(const int t_val);
       void updValue(const double t_val);
@@ -49,6 +55,7 @@ namespace rtask {
       bool getValue(double& t_val) const;
       bool getValue(std::string& t_val) const;
 
+      inline bool isValid() const { return valid_; }
       inline std::string getName() const { return name_; }
       inline PropertyType getType() const { return static_cast<PropertyType>(value_.index()); }
 
@@ -57,14 +64,17 @@ namespace rtask {
     private:
       void fromMsg(const rtask_msgs::Property& t_msg);
 
-      std::string name_;
-      PropertyVariant value_;
+      std::string name_{};
+      bool valid_{false};
+      PropertyVariant value_{};
     };
 
     static std::ostream& operator<<(std::ostream& out, const Property& p)
     {
       auto t = p.getType();
-      out << "name: " << p.getName() << std::endl << "type: " << t << std::endl;
+      out << "name: " << p.getName() << std::endl
+          << "type: " << t << std::endl
+          << "valid: " << p.isValid() << std::endl;
 
       switch (t) {
         case PropertyType::BOOL: {

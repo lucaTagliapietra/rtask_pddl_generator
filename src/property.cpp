@@ -6,18 +6,23 @@
 // ------------
 
 rtask::commons::Property::Property(const std::string& t_name, bool t_val)
-  : name_(t_name)
-  , value_(t_val)
-{}
+{
+  set(t_name, t_val);
+}
 rtask::commons::Property::Property(const std::string& t_name, int t_val)
-  : name_(t_name)
-  , value_(t_val){};
+{
+  set(t_name, t_val);
+};
+
 rtask::commons::Property::Property(const std::string& t_name, double t_val)
-  : name_(t_name)
-  , value_(t_val){};
+{
+  set(t_name, t_val);
+};
+
 rtask::commons::Property::Property(const std::string& t_name, std::string t_val)
-  : name_(t_name)
-  , value_(t_val){};
+{
+  set(t_name, t_val);
+};
 
 rtask::commons::Property::Property(const rtask_msgs::PropertyConstPtr t_msg_ptr)
 {
@@ -58,33 +63,68 @@ rtask::commons::Property::Property(XmlRpc::XmlRpcValue& t_rpc_val)
       }
       default: {
         std::cout << "Malformed Property named: " << name << std::endl;
+        std::cout << " Invalid Property" << std::endl;
+        valid_ = false;
         break;
       }
     }
+  }
+  else {
+    std::cout << " Invalid Property" << std::endl;
+    valid_ = false;
   }
 }
 
 void rtask::commons::Property::fromMsg(const rtask_msgs::Property& t_msg)
 {
   name_ = t_msg.name;
+  if (name_.empty()) {
+    std::cout << " Invalid Property" << std::endl;
+    valid_ = false;
+    return;
+  }
+  valid_ = true;
   auto type = static_cast<PropertyType>(t_msg.type);
   switch (type) {
     case PropertyType::BOOL: {
-      value_ = false;
-      if (strcasecmp(t_msg.value.c_str(), "true") == 0 || atoi(t_msg.value.c_str()) != 0) {
-        value_ = true;
+      try {
+        if (strcasecmp(t_msg.value.c_str(), "true") == 0 || std::stoi(t_msg.value) != 0) {
+          value_ = true;
+        }
+        value_ = false;
+      }
+      catch (std::exception const& e) {
+        std::cout << e.what() << " Invalid Property" << std::endl;
+        valid_ = false;
       }
       break;
     }
     case PropertyType::INT: {
-      value_ = atoi(t_msg.value.c_str());
+      try {
+        value_ = std::stoi(t_msg.value);
+      }
+      catch (std::exception const& e) {
+        std::cout << e.what() << " Invalid Property" << std::endl;
+        valid_ = false;
+      }
       break;
     }
+
     case PropertyType::DOUBLE: {
-      value_ = atof(t_msg.value.c_str());
+      try {
+        value_ = std::stod(t_msg.value);
+      }
+      catch (std::exception const& e) {
+        std::cout << e.what() << " Invalid Property" << std::endl;
+        valid_ = false;
+      }
       break;
     }
     case PropertyType::STRING: {
+      if (t_msg.value.empty()) {
+        valid_ = false;
+        std::cout << " Invalid Property" << std::endl;
+      }
       value_ = t_msg.value;
       break;
     }
@@ -102,29 +142,58 @@ rtask_msgs::Property rtask::commons::Property::toMsg() const
   return msg;
 }
 
+void rtask::commons::Property::set(const std::string& t_name, const bool t_val)
+{
+  name_ = t_name;
+  value_ = t_val;
+  valid_ = !t_name.empty();
+}
+void rtask::commons::Property::set(const std::string& t_name, const int t_val)
+{
+  name_ = t_name;
+  value_ = t_val;
+  valid_ = !t_name.empty();
+}
+void rtask::commons::Property::set(const std::string& t_name, const double t_val)
+{
+  name_ = t_name;
+  value_ = t_val;
+  valid_ = !t_name.empty();
+}
+void rtask::commons::Property::set(const std::string& t_name, const std::string& t_val)
+{
+  name_ = t_name;
+  value_ = t_val;
+  valid_ = (!t_name.empty() && !t_val.empty());
+}
+
 void rtask::commons::Property::updValue(const bool t_val)
 {
   value_ = t_val;
+  valid_ = !name_.empty();
 }
 
 void rtask::commons::Property::updValue(const int t_val)
 {
   value_ = t_val;
+  valid_ = !name_.empty();
 }
 
 void rtask::commons::Property::updValue(const double t_val)
 {
   value_ = t_val;
+  valid_ = !name_.empty();
 }
 
 void rtask::commons::Property::updValue(const std::string& t_val)
 {
   value_ = t_val;
+  valid_ = (!name_.empty() && !t_val.empty());
 }
 
 bool rtask::commons::Property::getValue(bool& t_val) const
 {
-  if (static_cast<PropertyType>(value_.index()) != PropertyType::BOOL) {
+  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::BOOL) {
     return false;
   }
   t_val = std::get<bool>(value_);
@@ -133,7 +202,7 @@ bool rtask::commons::Property::getValue(bool& t_val) const
 
 bool rtask::commons::Property::getValue(int& t_val) const
 {
-  if (static_cast<PropertyType>(value_.index()) != PropertyType::INT) {
+  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::INT) {
     return false;
   }
   t_val = std::get<int>(value_);
@@ -141,7 +210,7 @@ bool rtask::commons::Property::getValue(int& t_val) const
 }
 bool rtask::commons::Property::getValue(double& t_val) const
 {
-  if (static_cast<PropertyType>(value_.index()) != PropertyType::DOUBLE) {
+  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::DOUBLE) {
     return false;
   }
   t_val = std::get<double>(value_);
@@ -149,7 +218,7 @@ bool rtask::commons::Property::getValue(double& t_val) const
 }
 bool rtask::commons::Property::getValue(std::string& t_val) const
 {
-  if (static_cast<PropertyType>(value_.index()) != PropertyType::STRING) {
+  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::STRING) {
     return false;
   }
   t_val = std::get<std::string>(value_);
