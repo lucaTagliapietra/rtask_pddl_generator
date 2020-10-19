@@ -38,6 +38,7 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # packages don't collide add_executable(${PROJECT_NAME}_node
 add_library(${PROJECT_NAME}_lib src/utils.cpp
 #                                src/agent.cpp
+                                 src/device.cpp
                                  src/capability.cpp
 #                                src/component.cpp
                                  src/property.cpp
