@@ -29,7 +29,7 @@ namespace rtask {
       Property() = default;
       ~Property() = default;
 
-      Property(const std::string& t_name, const PropertyVariant& t_val);
+      Property(const std::string& t_name, const PropertyVariant& t_val = {});
       Property(const rtask_msgs::PropertyConstPtr t_msg_ptr);
       Property(const rtask_msgs::Property& t_msg);
       Property(XmlRpc::XmlRpcValue& t_rpc_val);
@@ -37,11 +37,9 @@ namespace rtask {
       rtask_msgs::Property toMsg() const;
 
       void set(const std::string& t_name, const PropertyVariant& t_val);
-      bool get(std::string& t_name, PropertyVariant& t_val) const;
-
       void setValue(const PropertyVariant& t_val);
-      bool getValue(PropertyVariant& t_val) const;
 
+      std::pair<bool, PropertyVariant> getValue() const;
       inline std::string getName() const { return name_; }
       inline PropertyType getType() const { return static_cast<PropertyType>(value_.index()); }
       inline bool isValid() const { return valid_; }
@@ -64,8 +62,7 @@ namespace rtask {
           << "type: " << t << std::endl
           << "valid: " << p.isValid() << std::endl;
 
-      PropertyVariant v;
-      p.getValue(v);
+      PropertyVariant v = p.getValue().second;
       switch (t) {
         case PropertyType::BOOL: {
           out << "value: " << std::get<bool>(v) << std::endl;

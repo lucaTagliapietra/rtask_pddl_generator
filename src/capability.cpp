@@ -19,6 +19,27 @@ rtask::commons::Capability::Capability(const rtask_msgs::CapabilityConstPtr t_ms
   fromMsg(*t_msg_ptr);
 }
 
+rtask::commons::Capability::Capability(XmlRpc::XmlRpcValue& t_rpc_val)
+{
+  if (commons::utils::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString)) {
+    name_ = static_cast<std::string>(t_rpc_val["name"]);
+    if (commons::utils::checkXmlRpcSanity("properties", t_rpc_val, XmlRpc::XmlRpcValue::TypeArray)) {
+      if (t_rpc_val["properties"].size() == 0) {
+        std::cout << "Empty properties vector for capability " << name_ << std::endl;
+      }
+      else {
+        for (int i = 0; i < t_rpc_val["properties"].size(); ++i) {
+          Property p(t_rpc_val["properties"][i]);
+          if (p.isValid()) {
+            properties_.push_back(p);
+          }
+        }
+      }
+    }
+  }
+  updValidity();
+}
+
 void rtask::commons::Capability::set(const std::string& t_name, const std::vector<Property>& t_props)
 {
   if (t_name.empty()) {
@@ -84,7 +105,7 @@ void rtask::commons::Capability::clear()
 std::vector<std::string> rtask::commons::Capability::getPropertyList() const
 {
   std::vector<std::string> out;
-  std::for_each(properties_.begin(), properties_.end(), [&out](const auto& p) { out.push_back(p.getName()); });
+  std::for_each(properties_.begin(), properties_.end(), [&out](const auto& p) { out.emplace_back(p.getName()); });
   return out;
 }
 
@@ -106,14 +127,13 @@ bool rtask::commons::Capability::deleteProperty(const std::string& t_name)
   return true;
 }
 
-bool rtask::commons::Capability::getProperty(const std::string& t_name, rtask::commons::PropertyVariant& t_val) const
+std::pair<bool, rtask::commons::Property> rtask::commons::Capability::getProperty(const std::string& t_name) const
 {
   auto it = std::find_if(properties_.begin(), properties_.end(), [t_name](auto& p) { return p.getName() == t_name; });
   if (it == properties_.end()) {
-    return false;
+    return {false, {}};
   }
-  it->getValue(t_val);
-  return true;
+  return {true, *it};
 }
 
 void rtask::commons::Capability::setProperty(const std::string& t_name, const rtask::commons::PropertyVariant& t_val)

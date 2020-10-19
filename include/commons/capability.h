@@ -44,10 +44,9 @@ namespace rtask {
       // --------------
       bool hasProperty(const std::string& t_name) const;
       bool deleteProperty(const std::string& t_name);
-
-      bool getProperty(const std::string& t_name, PropertyVariant& t_val) const;
-      void setProperty(const std::string& t_name, const PropertyVariant& t_val);
       bool isPropertyValid(const std::string& t_name) const;
+      std::pair<bool, Property> getProperty(const std::string& t_name) const;
+      void setProperty(const std::string& t_name, const PropertyVariant& t_val);
 
       // ---------
       // Operators
@@ -71,7 +70,7 @@ namespace rtask {
       unsigned int i = 0;
       for (const auto& p : c.getProperties()) {
         out << "\t"
-            << "p[" << i << "]: " << p;
+            << " - p[" << i << "]: " << p;
         ++i;
       }
       return out << std::endl;
