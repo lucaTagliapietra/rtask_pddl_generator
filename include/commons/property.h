@@ -29,37 +29,25 @@ namespace rtask {
       Property() = default;
       ~Property() = default;
 
-      Property(const std::string& t_name, const bool t_val);
-      Property(const std::string& t_name, const int t_val);
-      Property(const std::string& t_name, const double t_val);
-      Property(const std::string& t_name, const std::string t_val);
-
+      Property(const std::string& t_name, const PropertyVariant& t_val);
       Property(const rtask_msgs::PropertyConstPtr t_msg_ptr);
       Property(const rtask_msgs::Property& t_msg);
       Property(XmlRpc::XmlRpcValue& t_rpc_val);
 
       rtask_msgs::Property toMsg() const;
 
-      void set(const std::string& t_name, const bool t_val);
-      void set(const std::string& t_name, const int t_val);
-      void set(const std::string& t_name, const double t_val);
-      void set(const std::string& t_name, const std::string& t_val);
+      void set(const std::string& t_name, const PropertyVariant& t_val);
+      bool get(std::string& t_name, PropertyVariant& t_val) const;
 
-      void updValue(const bool t_val);
-      void updValue(const int t_val);
-      void updValue(const double t_val);
-      void updValue(const std::string& t_val);
+      void setValue(const PropertyVariant& t_val);
+      bool getValue(PropertyVariant& t_val) const;
 
-      bool getValue(bool& t_val) const;
-      bool getValue(int& t_val) const;
-      bool getValue(double& t_val) const;
-      bool getValue(std::string& t_val) const;
-
-      inline bool isValid() const { return valid_; }
       inline std::string getName() const { return name_; }
       inline PropertyType getType() const { return static_cast<PropertyType>(value_.index()); }
+      inline bool isValid() const { return valid_; }
 
       bool operator==(const Property& t_property) const;
+      Property& operator=(const Property& t_property);
 
     private:
       void fromMsg(const rtask_msgs::Property& t_msg);
@@ -76,29 +64,23 @@ namespace rtask {
           << "type: " << t << std::endl
           << "valid: " << p.isValid() << std::endl;
 
+      PropertyVariant v;
+      p.getValue(v);
       switch (t) {
         case PropertyType::BOOL: {
-          bool val;
-          p.getValue(val);
-          out << "value: " << val << std::endl;
+          out << "value: " << std::get<bool>(v) << std::endl;
           break;
         }
         case PropertyType::INT: {
-          int val;
-          p.getValue(val);
-          out << "value: " << val << std::endl;
+          out << "value: " << std::get<int>(v) << std::endl;
           break;
         }
         case PropertyType::DOUBLE: {
-          double val;
-          p.getValue(val);
-          out << "value: " << val << std::endl;
+          out << "value: " << std::get<double>(v) << std::endl;
           break;
         }
         case PropertyType::STRING: {
-          std::string val;
-          p.getValue(val);
-          out << "value: " << val << std::endl;
+          out << "value: " << std::get<std::string>(v) << std::endl;
           break;
         }
       }

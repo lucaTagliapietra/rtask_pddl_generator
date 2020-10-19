@@ -30,42 +30,31 @@ namespace rtask {
       // --------------
       rtask_msgs::Capability toMsg() const;
 
-      // bool setCapacityFromXmlRpc(XmlRpc::XmlRpcValue& t_value);
-      // void setFromCapacityMsg(const rtask_msgs::Capacity& t_msg);
-      // void setFromCapacityMsg(const rtask_msgs::CapacityConstPtr t_msg_ptr);
-      // void setCapacity(const std::string& t_capability, const std::vector<Property>& t_properties = {});
-
       void clear();
-
-      void set(const std::string t_name, const std::vector<Property>& t_props);
+      void set(const std::string& t_name, const std::vector<Property>& t_props);
 
       inline std::string getName() const { return name_; }
       inline bool isValid() const { return valid_; }
+      inline std::vector<Property> getProperties() const { return properties_; }
 
       std::vector<std::string> getPropertyList() const;
-      void getProperties(std::vector<Property>& t_props) const;
 
       // --------------
       // Property Level
       // --------------
       bool hasProperty(const std::string& t_name) const;
-      bool deleteProperty(const std::string& t_property_name);
+      bool deleteProperty(const std::string& t_name);
 
-      bool getProperty(const std::string& t_name, bool& t_val) const;
-      bool getProperty(const std::string& t_name, int& t_val) const;
-      bool getProperty(const std::string& t_name, double& t_val) const;
-      bool getProperty(const std::string& t_name, std::string& t_val) const;
-
-      bool setProperty(const std::string& t_name, bool t_val) const;
-      bool setProperty(const std::string& t_name, int t_val) const;
-      bool setProperty(const std::string& t_name, double t_val) const;
-      bool setProperty(const std::string& t_name, std::string t_val) const;
+      bool getProperty(const std::string& t_name, PropertyVariant& t_val) const;
+      void setProperty(const std::string& t_name, const PropertyVariant& t_val);
+      bool isPropertyValid(const std::string& t_name) const;
 
       // ---------
       // Operators
       // ---------
 
       bool operator==(const Capability& t_capability) const;
+      Capability& operator=(const Capability& t_capability);
 
     private:
       std::string name_{};
@@ -76,16 +65,17 @@ namespace rtask {
       void fromMsg(const rtask_msgs::Capability& t_msg);
     };
 
-    //    static std::ostream& operator<<(std::ostream& out, const Capability& p)
-    //    {
-    //      out << "is_valid: " << p.isValid() << std::endl << "name: " << p.getCapabilityName() << std::endl <<
-    //      std::endl; std::vector<Property> props; p.getProperties(props); unsigned int i = 0; for (const auto& p :
-    //      props) {
-    //        out << "property " << i << ": " << std::endl << std::endl << p;
-    //        ++i;
-    //      }
-    //      return out << std::endl;
-    //    }
+    static std::ostream& operator<<(std::ostream& out, const Capability& c)
+    {
+      out << "Capability name: " << c.getName() << std::endl << "Capability valid: " << c.isValid() << std::endl;
+      unsigned int i = 0;
+      for (const auto& p : c.getProperties()) {
+        out << "\t"
+            << "p[" << i << "]: " << p;
+        ++i;
+      }
+      return out << std::endl;
+    }
   } // namespace commons
 } // namespace rtask
 

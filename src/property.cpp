@@ -5,23 +5,11 @@
 // CONSTRUCTORS
 // ------------
 
-rtask::commons::Property::Property(const std::string& t_name, bool t_val)
+rtask::commons::Property::Property(const std::string& t_name, const PropertyVariant& t_val)
+  : name_(t_name)
+  , value_(t_val)
 {
-  set(t_name, t_val);
-}
-rtask::commons::Property::Property(const std::string& t_name, int t_val)
-{
-  set(t_name, t_val);
-};
-
-rtask::commons::Property::Property(const std::string& t_name, double t_val)
-{
-  set(t_name, t_val);
-};
-
-rtask::commons::Property::Property(const std::string& t_name, std::string t_val)
-{
-  set(t_name, t_val);
+  valid_ = !name_.empty() && !value_.valueless_by_exception();
 };
 
 rtask::commons::Property::Property(const rtask_msgs::PropertyConstPtr t_msg_ptr)
@@ -142,85 +130,46 @@ rtask_msgs::Property rtask::commons::Property::toMsg() const
   return msg;
 }
 
-void rtask::commons::Property::set(const std::string& t_name, const bool t_val)
+void rtask::commons::Property::set(const std::string& t_name, const PropertyVariant& t_val)
 {
   name_ = t_name;
   value_ = t_val;
   valid_ = !t_name.empty();
 }
-void rtask::commons::Property::set(const std::string& t_name, const int t_val)
+
+bool rtask::commons::Property::get(std::string& t_name, PropertyVariant& t_val) const
 {
-  name_ = t_name;
-  value_ = t_val;
-  valid_ = !t_name.empty();
-}
-void rtask::commons::Property::set(const std::string& t_name, const double t_val)
-{
-  name_ = t_name;
-  value_ = t_val;
-  valid_ = !t_name.empty();
-}
-void rtask::commons::Property::set(const std::string& t_name, const std::string& t_val)
-{
-  name_ = t_name;
-  value_ = t_val;
-  valid_ = (!t_name.empty() && !t_val.empty());
+  t_name = name_;
+  t_val = value_;
+  return valid_;
 }
 
-void rtask::commons::Property::updValue(const bool t_val)
+void rtask::commons::Property::setValue(const PropertyVariant& t_val)
 {
   value_ = t_val;
-  valid_ = !name_.empty();
+  valid_ = !name_.empty() && !t_val.valueless_by_exception();
 }
 
-void rtask::commons::Property::updValue(const int t_val)
+bool rtask::commons::Property::getValue(PropertyVariant& t_val) const
 {
-  value_ = t_val;
-  valid_ = !name_.empty();
+  t_val = value_;
+  return valid_;
 }
 
-void rtask::commons::Property::updValue(const double t_val)
+bool rtask::commons::Property::operator==(const Property& t_property) const
 {
-  value_ = t_val;
-  valid_ = !name_.empty();
+  bool eq = name_ == t_property.getName();
+  eq &= valid_ == t_property.isValid();
+  PropertyVariant v;
+  t_property.getValue(v);
+  eq &= (v == value_);
+  return eq;
 }
 
-void rtask::commons::Property::updValue(const std::string& t_val)
+rtask::commons::Property& rtask::commons::Property::operator=(const Property& t_property)
 {
-  value_ = t_val;
-  valid_ = (!name_.empty() && !t_val.empty());
-}
-
-bool rtask::commons::Property::getValue(bool& t_val) const
-{
-  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::BOOL) {
-    return false;
-  }
-  t_val = std::get<bool>(value_);
-  return true;
-}
-
-bool rtask::commons::Property::getValue(int& t_val) const
-{
-  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::INT) {
-    return false;
-  }
-  t_val = std::get<int>(value_);
-  return true;
-}
-bool rtask::commons::Property::getValue(double& t_val) const
-{
-  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::DOUBLE) {
-    return false;
-  }
-  t_val = std::get<double>(value_);
-  return true;
-}
-bool rtask::commons::Property::getValue(std::string& t_val) const
-{
-  if (!valid_ || static_cast<PropertyType>(value_.index()) != PropertyType::STRING) {
-    return false;
-  }
-  t_val = std::get<std::string>(value_);
-  return true;
+  t_property.getValue(value_);
+  name_ = t_property.getName();
+  valid_ = t_property.isValid();
+  return *this;
 }
