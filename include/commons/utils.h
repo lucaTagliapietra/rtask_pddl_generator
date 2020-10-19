@@ -8,8 +8,10 @@
 namespace rtask {
   namespace commons {
     namespace utils {
-      bool
-      checkXmlRpcSanity(const std::string& t_tag, XmlRpc::XmlRpcValue& t_node, const XmlRpc::XmlRpcValue::Type t_type);
+      bool checkXmlRpcSanity(const std::string& t_tag,
+                             XmlRpc::XmlRpcValue& t_node,
+                             const XmlRpc::XmlRpcValue::Type t_type,
+                             bool allow_empty_string = false);
       XmlRpc::XmlRpcValue::Type getTagValueType(const std::string& t_tag, XmlRpc::XmlRpcValue& t_node);
 
     } // namespace utils
