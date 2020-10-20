@@ -84,6 +84,29 @@ namespace rtask {
       return out << std::endl;
     }
 
+    static std::ostream& operator<<(std::ostream& out, const PropertyType& pt)
+    {
+      switch (pt) {
+        case PropertyType::BOOL: {
+          out << "Bool";
+          break;
+        };
+        case PropertyType::INT: {
+          out << "Int";
+          break;
+        };
+        case PropertyType::DOUBLE: {
+          out << "Double";
+          break;
+        };
+        case PropertyType::STRING: {
+          out << "String";
+          break;
+        };
+      }
+      return out << std::endl;
+    }
+
   } // namespace commons
 } // namespace rtask
 
