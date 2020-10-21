@@ -86,4 +86,7 @@ if(CATKIN_ENABLE_TESTING)
  add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
  target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
+ add_rostest_gtest(capability_test launch/capability_test.test test/capability_test.cpp)
+ target_link_libraries(capability_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
 endif()

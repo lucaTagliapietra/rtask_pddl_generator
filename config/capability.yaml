@@ -1,5 +1,7 @@
 capability:
-  name: "moving"
+  name: "capability"
   properties:
-    - { name: "degrees_of_freedom", value: 6 }
-    - { name: "payload", value: 5 }
+    - { name: "bool_prop_", value: false }
+    - { name: "int_prop_", value: 1 }
+    - { name: "double_prop_", value: 0.1 }
+    - { name: "string_prop_", value: "string" }
