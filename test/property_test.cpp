@@ -10,11 +10,18 @@
 class PropertyTest : public ::testing::Test
 {
 public:
-  std::string property_name;
-  double property_value;
+  std::string bool_name_ = "bool_property";
+  std::string int_name_ = "int_property";
+  std::string double_name_ = "double_property";
+  std::string string_name_ = "string_property";
 
-  rtask_msgs::Property property_msg;
-  rtask::commons::Property property;
+  rtask::commons::PropertyVariant bool_value_ = false;
+  rtask::commons::PropertyVariant int_value_ = 1;
+  rtask::commons::PropertyVariant double_value_ = 0.5;
+  rtask::commons::PropertyVariant string_value_ = std::string("string");
+
+  rtask_msgs::Property prop_msg_;
+  rtask::commons::Property bool_prop_, int_prop_, double_prop_, string_prop_;
 
   ros::NodeHandle m_nh;
 
@@ -22,64 +29,140 @@ public:
     : m_nh("~")
   {
 
-    property_name = "robot_weight";
-    property_value = 18.4;
-
-    property.setProperty(property_name, property_value);
+    bool_prop_ = {bool_name_, bool_value_};
+    int_prop_ = {int_name_, int_value_};
+    double_prop_ = {double_name_, double_value_};
+    string_prop_ = {string_name_, string_value_};
   }
 
   ~PropertyTest() {}
 };
 
-TEST_F(PropertyTest, sameProperty)
+TEST_F(PropertyTest, equalityOperator)
 {
-  rtask::commons::Property dual_property = property;
-  ASSERT_TRUE(dual_property == property);
+  rtask::commons::Property dual_property = bool_prop_;
+  ASSERT_TRUE(dual_property == bool_prop_);
 }
 
 TEST_F(PropertyTest, getName)
 {
-  ASSERT_EQ(property.getName(), property_name);
+  ASSERT_EQ(bool_prop_.getName(), bool_name_);
+  ASSERT_EQ(int_prop_.getName(), int_name_);
+  ASSERT_EQ(double_prop_.getName(), double_name_);
+  ASSERT_EQ(string_prop_.getName(), string_name_);
 }
 
 TEST_F(PropertyTest, getType)
 {
-  ASSERT_EQ(property.getType(), rtask::commons::Property::Type::Double);
+  ASSERT_EQ(bool_prop_.getType(), rtask::commons::PropertyType::BOOL);
+  ASSERT_EQ(int_prop_.getType(), rtask::commons::PropertyType::INT);
+  ASSERT_EQ(double_prop_.getType(), rtask::commons::PropertyType::DOUBLE);
+  ASSERT_EQ(string_prop_.getType(), rtask::commons::PropertyType::STRING);
 }
 
 TEST_F(PropertyTest, getValue)
 {
-  double property_value_output;
-  property.getValue(property_value_output);
-  ASSERT_EQ(property_value_output, property_value);
-}
+  std::pair<bool, rtask::commons::PropertyVariant> prop_value_out_;
+  prop_value_out_ = bool_prop_.getValue();
+  ASSERT_EQ(prop_value_out_.second, bool_value_);
 
-TEST_F(PropertyTest, toAndFromPropertyMsg)
-{
-  rtask_msgs::PropertyPtr property_msg_ptr = property.toPropertyMsg();
+  prop_value_out_ = int_prop_.getValue();
+  ASSERT_EQ(prop_value_out_.second, int_value_);
 
-  rtask::commons::Property property_check;
-  property_check.setFromPropertyMsg(property_msg_ptr);
+  prop_value_out_ = double_prop_.getValue();
+  ASSERT_EQ(prop_value_out_.second, double_value_);
 
-  ASSERT_TRUE(property_check == property);
-}
-
-TEST_F(PropertyTest, fromXml)
-{
-
-  XmlRpc::XmlRpcValue property_description;
-  rtask::commons::Property property_check;
-
-  m_nh.getParam("property_description", property_description);
-
-  property_check.setPropertyFromXmlRpc(property_description);
-
-  ASSERT_TRUE(property_check == property);
+  prop_value_out_ = string_prop_.getValue();
+  ASSERT_EQ(prop_value_out_.second, string_value_);
 }
 
 TEST_F(PropertyTest, isValid)
 {
-  ASSERT_EQ(property.isValid(), true);
+  ASSERT_EQ(bool_prop_.isValid(), true);
+  ASSERT_EQ(int_prop_.isValid(), true);
+  ASSERT_EQ(double_prop_.isValid(), true);
+  ASSERT_EQ(string_prop_.isValid(), true);
+}
+
+TEST_F(PropertyTest, toMsg)
+{
+  rtask_msgs::Property bool_prop_msg_, int_prop_msg_, double_prop_msg_, string_prop_msg_;
+  rtask::commons::Property bool_prop_check_, int_prop_check_, double_prop_check_, string_prop_check_;
+
+  bool_prop_msg_ = bool_prop_.toMsg();
+  bool_prop_check_ = {bool_prop_msg_};
+
+  int_prop_msg_ = int_prop_.toMsg();
+  int_prop_check_ = {int_prop_msg_};
+
+  double_prop_msg_ = double_prop_.toMsg();
+  double_prop_check_ = {double_prop_msg_};
+
+  string_prop_msg_ = string_prop_.toMsg();
+  string_prop_check_ = {string_prop_msg_};
+
+  ASSERT_TRUE(bool_prop_check_ == bool_prop_);
+  ASSERT_TRUE(int_prop_check_ == int_prop_);
+  ASSERT_TRUE(double_prop_check_ == double_prop_);
+  ASSERT_TRUE(string_prop_check_ == string_prop_);
+}
+
+TEST_F(PropertyTest, set)
+{
+  rtask::commons::Property bool_prop_check_, int_prop_check_, double_prop_check_, string_prop_check_;
+
+  bool_prop_check_.set(bool_name_, bool_value_);
+  int_prop_check_.set(int_name_, int_value_);
+  double_prop_check_.set(double_name_, double_value_);
+  string_prop_check_.set(string_name_, string_value_);
+
+  ASSERT_TRUE(bool_prop_check_ == bool_prop_);
+  ASSERT_TRUE(int_prop_check_ == int_prop_);
+  ASSERT_TRUE(double_prop_check_ == double_prop_);
+  ASSERT_TRUE(string_prop_check_ == string_prop_);
+}
+
+TEST_F(PropertyTest, setValue)
+{
+  rtask::commons::Property bool_prop_check_, int_prop_check_, double_prop_check_, string_prop_check_;
+  bool_prop_check_ = {bool_name_};
+  int_prop_check_ = {int_name_};
+  double_prop_check_ = {double_name_};
+  string_prop_check_ = {string_name_};
+
+  bool_prop_check_.setValue(bool_value_);
+  int_prop_check_.setValue(int_value_);
+  double_prop_check_.setValue(double_value_);
+  string_prop_check_.setValue(string_value_);
+
+  ASSERT_TRUE(bool_prop_check_ == bool_prop_);
+  ASSERT_TRUE(int_prop_check_ == int_prop_);
+  ASSERT_TRUE(double_prop_check_ == double_prop_);
+  ASSERT_TRUE(string_prop_check_ == string_prop_);
+}
+
+TEST_F(PropertyTest, fromXmlRpc)
+{
+  XmlRpc::XmlRpcValue bool_prop_descr_, int_prop_descr_, double_prop_descr_, string_prop_descr_;
+  rtask::commons::Property bool_prop_check_, int_prop_check_, double_prop_check_, string_prop_check_;
+
+  m_nh.getParam("bool_property", bool_prop_descr_);
+  m_nh.getParam("int_property", int_prop_descr_);
+  m_nh.getParam("double_property", double_prop_descr_);
+  m_nh.getParam("string_property", string_prop_descr_);
+
+  bool_prop_check_ = rtask::commons::Property(bool_prop_descr_);
+  int_prop_check_ = rtask::commons::Property(int_prop_descr_);
+  double_prop_check_ = rtask::commons::Property(double_prop_descr_);
+  string_prop_check_ = rtask::commons::Property(string_prop_descr_);
+
+  // std::cerr << "bool_prop_check_: " << bool_prop_check_ << std::endl;
+  // std::cerr << "bool_prop_: " << bool_prop_ << std::endl;
+
+  ASSERT_TRUE(bool_prop_check_ == bool_prop_);
+  ASSERT_TRUE(int_prop_check_ == int_prop_);
+  ASSERT_TRUE(double_prop_check_ == double_prop_);
+  ASSERT_TRUE(string_prop_check_ == string_prop_);
 }
 
 int main(int argc, char* argv[])
