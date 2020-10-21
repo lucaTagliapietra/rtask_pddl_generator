@@ -1,146 +1,102 @@
 #ifndef rtask_commons_agent_h
 #define rtask_commons_agent_h
 
-#include <limits>
-#include <map>
 #include <string>
 #include <vector>
 
-#include "rtask_msgs/Agent.h"
+#include "xmlrpcpp/XmlRpcValue.h"
 
-#include "component.h"
+#include "rtask_msgs/Agent.h"
 
 namespace rtask {
   namespace commons {
+
+    enum AgentStatus
+    {
+      UNKNOWN = 0,
+      READY = 1,
+      BUSY = 2,
+      DISCONNECTED = 3
+    };
+
     class Agent
     {
     public:
-      Agent() {}
-      Agent(const unsigned int t_id,
-            const std::string& t_name,
-            const std::vector<Component> t_comps = {},
-            const std::string& t_description = "",
-            const std::string& t_urdf_link = "",
-            const std::string& t_base_link = "");
-      Agent(const rtask_msgs::Agent& t_msg);
-      Agent(const rtask_msgs::AgentConstPtr& t_msg_ptr);
-      Agent(XmlRpc::XmlRpcValue& t_node);
+      Agent() = default;
+      ~Agent() = default;
 
-      ~Agent() {}
+      Agent(const std::string& t_name, const AgentStatus& t_status = {}, const std::string& t_description = {});
+      Agent(const rtask_msgs::Agent& t_msg);
+      Agent(const rtask_msgs::AgentConstPtr t_msg_ptr);
+      Agent(XmlRpc::XmlRpcValue& t_rpc_val);
 
       // -----------
       // Agent Level
       // -----------
-      rtask_msgs::AgentPtr toAgentMsg() const;
-
-      bool setAgentFromXmlRpc(XmlRpc::XmlRpcValue& t_node);
-      void setFromAgentMsg(const rtask_msgs::Agent& t_msg);
-      void setFromAgentMsg(const rtask_msgs::AgentConstPtr t_msg_ptr);
-      void setAgent(const unsigned int t_id,
-                    const std::string& t_name,
-                    const std::vector<Component> t_comps = {},
-                    const std::string& t_description = "",
-                    const std::string& t_urdf_link = "",
-                    const std::string& t_base_link = "");
-      void setDescription(const std::string& t_value) { m_params.description = t_value; }
-      void setUrdfLink(const std::string& t_value) { m_params.urdf_link = t_value; }
-      void setBaseLink(const std::string& t_value) { m_params.base_link = t_value; }
       void clear();
+      void set(const std::string& t_name, const AgentStatus& t_status = {}, const std::string& t_description = {});
 
-      bool isValid() const { return m_params.valid; }
-      unsigned int getId() const { return m_params.id; }
-      std::string getName() const { return m_params.name; }
-      std::string getDescription() const { return m_params.description; }
-      std::string getUrdfLink() const { return m_params.urdf_link; }
-      std::string getBaseLink() const { return m_params.base_link; }
-      void getComponents(std::vector<Component>& t_components) const;
-      void getComponentNames(std::vector<std::string>& t_component_names) const;
-      void getCapabilities(std::vector<std::string>& t_capabilities) const;
-      bool hasCapability(const std::string& t_capability) const;
+      rtask_msgs::Agent toMsg() const;
 
-      // ---------------
-      // Component Level
-      // ---------------
-      bool hasComponent(const std::string& t_component_name) const;
-      bool removeComponent(const std::string& t_component_name);
-      bool getComponent(const std::string& t_component_name, Component& t_component) const;
-      bool addComponent(const Component& t_component);
-      void setComponent(const Component& t_component);
+      inline std::string getName() const { return name_; }
+      inline std::string getDescription() const { return description_; }
+      inline AgentStatus getStatus() const { return status_; }
 
-      bool getComponentId(const std::string& t_component_name, unsigned int& t_id) const;
-      bool getComponentModel(const std::string& t_component_name, std::string& t_model) const;
-      bool getComponentManufacturer(const std::string& t_component_name, std::string& t_manufacturer) const;
-      bool getComponentDescription(const std::string& t_component_name, std::string& t_description) const;
-      bool getComponentUrdfLink(const std::string& t_component_name, std::string& t_urdf_link) const;
-      bool getComponentMoveitGroupName(const std::string& t_component_name, std::string& t_moveit_group) const;
-      bool getComponentReferenceFrame(const std::string& t_component_name, std::string& t_ref_frame) const;
-      bool getComponentParentLink(const std::string& t_component_name, std::string& t_parent_link) const;
-      bool getComponentCapacities(const std::string& t_component_name, std::vector<Capacity>& t_capacities) const;
-      bool getComponentCapabilities(const std::string& t_component_name,
-                                    std::vector<std::string>& t_capacity_names) const;
+      inline bool isValid() const { return valid_; }
+      inline bool isReady() const { return status_ == AgentStatus::READY; }
+      inline bool isBusy() const { return status_ == AgentStatus::BUSY; }
+      inline bool isConnected() const { return status_ == AgentStatus::READY || status_ == AgentStatus::BUSY; }
 
-      // --------------
-      // Capacity Level
-      // --------------
-      bool hasComponentCapacity(const std::string& t_component_name, const std::string& t_capacity_name) const;
-      bool removeComponentCapacity(const std::string& t_component_name, const std::string& t_capacity_name);
-      bool getComponentCapacity(const std::string& t_component_name,
-                                const std::string& t_capacity_name,
-                                Capacity& t_capacity) const;
-      bool getComponentCapacityProperties(const std::string& t_component_name,
-                                          const std::string& t_capacity_name,
-                                          std::vector<Property>& t_props) const;
-      bool addComponentCapacity(const std::string& t_component_name, const Capacity& t_capacity);
-      bool setComponentCapacity(const std::string& t_component_name, const Capacity& t_capacity);
-
-      // --------------
-      // Property level
-      // --------------
-      bool hasComponentCapacityProperty(const std::string& t_component_name,
-                                        const std::string& t_capacity_name,
-                                        const std::string& t_prop_name) const;
-      bool removeComponentCapacityProperty(const std::string& t_component_name,
-                                           const std::string& t_capacity_name,
-                                           const std::string& t_prop_name);
-      bool getComponentCapacityProperty(const std::string& t_component_name,
-                                        const std::string& t_capacity_name,
-                                        const std::string& t_prop_name,
-                                        Property& t_prop) const;
-      bool addComponentCapacityProperty(const std::string& t_component_name,
-                                        const std::string& t_capacity_name,
-                                        const Property& t_prop);
-      bool setComponentCapacityProperty(const std::string& t_component_name,
-                                        const std::string& t_capacity_name,
-                                        const Property& t_prop);
+      inline void setDescription(std::string& t_description) { description_ = t_description; }
+      inline void setStatus(AgentStatus t_status) { status_ = t_status; }
 
       // ---------
       // Operators
       // ---------
-
-      bool operator==(const Agent& t_agent);
+      bool operator==(const Agent& t_agent) const;
+      Agent& operator=(const Agent& t_agent);
 
     private:
-      struct AgentParameters
-      {
-        unsigned int id = std::numeric_limits<unsigned int>::quiet_NaN();
-        std::string name = "";
-        std::string description = "";
-        std::string urdf_link = "";
-        std::string base_link = "";
-        bool valid = false;
+      bool valid_{false};
+      std::string name_{};
+      std::string description_{};
+      AgentStatus status_{AgentStatus::UNKNOWN};
 
-        std::map<std::string, Component> components{};
-      };
-
-      AgentParameters m_params;
-      std::map<std::string, std::vector<std::string>> m_capability_to_component{};
-
-      void clearComponents();
-
-      void updCapabilityMap();
-      void updCapabilityMap(const Component& t_comp);
-      bool updValidity();
+      void updValidity();
+      void fromMsg(const rtask_msgs::Agent& t_msg);
     };
+
+    static std::ostream& operator<<(std::ostream& out, const Agent& ag)
+    {
+      out << "Agent name: " << ag.getName() << std::endl;
+      out << " - Valid: " << ag.isValid() << std::endl;
+      out << " - Description: " << ag.getDescription() << std::endl;
+      out << " - Status: " << ag.getStatus();
+      return out << std::endl;
+    }
+
+    static std::ostream& operator<<(std::ostream& out, const AgentStatus& as)
+    {
+      switch (as) {
+        case AgentStatus::UNKNOWN: {
+          out << "Unknown";
+          break;
+        };
+        case AgentStatus::READY: {
+          out << "Ready";
+          break;
+        };
+        case AgentStatus::BUSY: {
+          out << "Busy";
+          break;
+        };
+        case AgentStatus::DISCONNECTED: {
+          out << "Disconnected";
+          break;
+        };
+      }
+      return out << std::endl;
+    }
   } // namespace commons
 } // namespace rtask
 
