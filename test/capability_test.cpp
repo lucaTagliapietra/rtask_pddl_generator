@@ -24,7 +24,6 @@ public:
 
   std::vector<rtask::commons::Property> cap_props_;
 
-  rtask_msgs::Capability cap_msg_;
   rtask::commons::Capability cap_;
 
   ros::NodeHandle m_nh;

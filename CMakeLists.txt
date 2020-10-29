@@ -89,4 +89,7 @@ if(CATKIN_ENABLE_TESTING)
  add_rostest_gtest(capability_test launch/capability_test.test test/capability_test.cpp)
  target_link_libraries(capability_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
+ add_rostest_gtest(device_test launch/device_test.test test/device_test.cpp)
+ target_link_libraries(device_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
 endif()

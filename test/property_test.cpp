@@ -20,7 +20,6 @@ public:
   rtask::commons::PropertyVariant double_value_ = 0.5;
   rtask::commons::PropertyVariant string_value_ = std::string("string");
 
-  rtask_msgs::Property prop_msg_;
   rtask::commons::Property bool_prop_, int_prop_, double_prop_, string_prop_;
 
   ros::NodeHandle m_nh;
