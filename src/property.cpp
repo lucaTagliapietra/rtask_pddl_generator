@@ -28,6 +28,7 @@ rtask::commons::Property::Property(XmlRpc::XmlRpcValue& t_rpc_val)
     std::string name = static_cast<std::string>(t_rpc_val["name"]);
 
     auto type = utils::getTagValueType("value", t_rpc_val);
+
     switch (type) {
       case XmlRpc::XmlRpcValue::TypeBoolean: {
         name_ = name;
@@ -46,7 +47,7 @@ rtask::commons::Property::Property(XmlRpc::XmlRpcValue& t_rpc_val)
       }
       case XmlRpc::XmlRpcValue::TypeString: {
         name_ = name;
-        value_ = static_cast<int>(t_rpc_val["value"]);
+        value_ = static_cast<std::string>(t_rpc_val["value"]);
         break;
       }
       default: {
@@ -56,6 +57,7 @@ rtask::commons::Property::Property(XmlRpc::XmlRpcValue& t_rpc_val)
         break;
       }
     }
+    valid_ = true;
   }
   else {
     std::cout << " Invalid Property" << std::endl;

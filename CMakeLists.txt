@@ -81,22 +81,16 @@ target_include_directories(${PROJECT_NAME}_lib
                            PUBLIC include
                            PRIVATE ${catkin_INCLUDE_DIRS})
 
-add_executable(test_property test/property_test_main.cpp)
-target_link_libraries(test_property ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+if(CATKIN_ENABLE_TESTING)
+ find_package(rostest REQUIRED)
 
-#if(CATKIN_ENABLE_TESTING)
-# find_package(rostest REQUIRED)
- 
-# add_rostest_gtest(capacity_test launch/capacity_test.test test/capacity_test.cpp)
-# target_link_libraries(capacity_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+ add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
+ target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
-# add_rostest_gtest(property_test launch/property_test.test test/property_test.cpp)
-# target_link_libraries(property_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+ add_rostest_gtest(capability_test launch/capability_test.test test/capability_test.cpp)
+ target_link_libraries(capability_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
-# add_rostest_gtest(component_test launch/component_test.test test/component_test.cpp)
-# target_link_libraries(component_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+ add_rostest_gtest(device_test launch/device_test.test test/device_test.cpp)
+ target_link_libraries(device_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
-## add_rostest_gtest(agent_test launch/agent_test.test test/agent_test.cpp)
-## target_link_libraries(agent_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
-
-#endif()
+endif()

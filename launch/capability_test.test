@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="yaml_capability_file" default="capability"/>
+
+  <test test-name="unit-property-test" pkg="rtask_commons" type="capability_test" name="CapabilityTest">
+    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_capability_file).yaml" />
+  </test>
+
+</launch>

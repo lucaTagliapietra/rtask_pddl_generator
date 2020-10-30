@@ -1,0 +1,3 @@
+bool_property:
+  name: "bool_property"
+  value: false

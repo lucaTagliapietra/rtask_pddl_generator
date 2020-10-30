@@ -1,3 +1,0 @@
-<launch>
-<test test-name="unit-test" pkg="rtask_commons" type="agent_test" name="AgentTest"/>
-</launch>

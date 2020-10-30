@@ -1,10 +1,16 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="yaml_file" default="property_test"/>
+  <arg name="yaml_bool_file" default="bool_property"/>
+  <arg name="yaml_int_file" default="int_property"/>
+  <arg name="yaml_double_file" default="double_property"/>
+  <arg name="yaml_string_file" default="string_property"/>
 
   <test test-name="unit-property-test" pkg="rtask_commons" type="property_test" name="PropertyTest">
-    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_file).yaml" />
+    <rosparam command="load" file="$(find rtask_commons)/config/property/$(arg yaml_bool_file).yaml" />
+    <rosparam command="load" file="$(find rtask_commons)/config/property/$(arg yaml_int_file).yaml" />
+    <rosparam command="load" file="$(find rtask_commons)/config/property/$(arg yaml_double_file).yaml" />
+    <rosparam command="load" file="$(find rtask_commons)/config/property/$(arg yaml_string_file).yaml" />
   </test>
 
 </launch>
