@@ -1,0 +1,42 @@
+problem:
+  name: "logistics-4-0"
+  domain: "logistics"
+  requirements:
+    equality: False
+    strips: True
+    typing: True
+  objects:
+     - { name: "apn1", type: "airplane" }
+     - { name: "apt1", type: "airport" }
+     - { name: "apt2", type: "airport" }
+     - { name: "pos2", type: "location" }
+     - { name: "pos1", type: "location" }
+     - { name: "cit2", type: "city" }
+     - { name: "cit1", type: "city" }
+     - { name: "tru2", type: "truck" }
+     - { name: "tru1", type: "truck" }
+     - { name: "obj23", type: "package" }
+     - { name: "obj22", type: "package" }
+     - { name: "obj21", type: "package" }
+     - { name: "obj13", type: "package" }
+     - { name: "obj12", type: "package" }
+     - { name: "obj11", type: "package" }
+  init:
+    - { name: "at", args: ["apn1", "apt2"] }
+    - { name: "at", args: ["tru1", "pos1"] }
+    - { name: "at", args: ["obj11", "pos1"] }
+    - { name: "at", args: ["obj12", "pos1"] }
+    - { name: "at", args: ["obj13", "pos1"] }
+    - { name: "at", args: ["tru2", "pos2"] }
+    - { name: "at", args: ["obj21", "pos2"] }
+    - { name: "at", args: ["obj22", "pos2"] }
+    - { name: "at", args: ["obj23", "pos2"] }
+    - { name: "in-city", args: ["pos1", "cit1"] }
+    - { name: "in-city", args: ["apt1", "cit1"] }
+    - { name: "in-city", args: ["pos2", "cit2"] }
+    - { name: "in-city", args: ["apt2", "cit2"] }
+  goal:
+    - { name: "at", args: ["obj11", "apt1"] }
+    - { name: "at", args: ["obj23", "pos1"] }
+    - { name: "at", args: ["obj13", "apt1"] }
+    - { name: "at", args: ["obj21", "pos1"] }
