@@ -1,0 +1,43 @@
+problem:
+  name: "depotprob1818"
+  domain: "Depot"
+  requirements:
+    equality: False
+    strips: False
+    typing: True
+  objects:
+     - { name: "depot0", type: "Depot" }
+     - { name: "distributor0", type: "Distributor" }
+     - { name: "distributor1", type: "Distributor" }
+     - { name: "truck0", type: "Truck" }
+     - { name: "truck1", type: "Truck" }
+     - { name: "pallet0", type: "Pallet" }
+     - { name: "pallet1", type: "Pallet" }
+     - { name: "pallet2", type: "Pallet" }
+     - { name: "crate0", type: "Crate" }
+     - { name: "crate1", type: "Crate" }
+     - { name: "hoist0", type: "Hoist" }
+     - { name: "hoist1", type: "Hoist" }
+     - { name: "hoist2", type: "Hoist" }
+  init:
+    - { name: "at", args: ["pallet0", "depot0"] }
+    - { name: "clear", args: ["crate1"] }
+    - { name: "at", args: ["pallet1", "distributor0"] }
+    - { name: "clear", args: ["crate0"] }
+    - { name: "at", args: ["pallet2", "distributor1"] }
+    - { name: "clear", args: ["pallet2"] }
+    - { name: "at", args: ["truck0", "distributor1"] }
+    - { name: "at", args: ["truck1", "depot0"] }
+    - { name: "at", args: ["hoist0", "depot0"] }
+    - { name: "available", args: ["hoist0"] }
+    - { name: "at", args: ["hoist1", "distributor0"] }
+    - { name: "available", args: ["hoist1"] }
+    - { name: "at", args: ["hoist2", "distributor1"] }
+    - { name: "available", args: ["hoist2"] }
+    - { name: "at", args: ["crate0", "distributor0"] }
+    - { name: "on", args: ["crate0", "pallet1"] }
+    - { name: "at", args: ["crate1", "depot0"] }
+    - { name: "on", args: ["crate1", "pallet0"] }
+  goal:
+    - { name: "on", args: ["crate0", "pallet2"] }
+    - { name: "on", args: ["crate1", "pallet1"] }
