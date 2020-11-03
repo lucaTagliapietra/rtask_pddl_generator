@@ -1,5 +1,5 @@
 domain:
-  name: "blocks"
+  name: "BLOCKS"
   requirements:
     equality: False
     strips: False
