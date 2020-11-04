@@ -113,35 +113,35 @@ TEST_F(DeviceTest, getCapabilities)
 
 TEST_F(DeviceTest, getUniquePropertyList)
 {
-  std::vector<std::string> unique_prop_list_;
+  std::vector<std::string> unique_prop_list_check_;
 
   for (auto& up_ : dev_unique_props_) {
-    unique_prop_list_.push_back(up_.getName());
+    unique_prop_list_check_.push_back(up_.getName());
   }
 
-  ASSERT_EQ(dev_.getUniquePropertyList(), unique_prop_list_);
+  ASSERT_EQ(dev_.getUniquePropertyList(), unique_prop_list_check_);
 }
 
 TEST_F(DeviceTest, getExtraPropertyList)
 {
-  std::vector<std::string> extra_prop_list_;
+  std::vector<std::string> extra_prop_list_check_;
 
   for (auto& ep_ : dev_extra_props_) {
-    extra_prop_list_.push_back(ep_.getName());
+    extra_prop_list_check_.push_back(ep_.getName());
   }
 
-  ASSERT_EQ(dev_.getExtraPropertyList(), extra_prop_list_);
+  ASSERT_EQ(dev_.getExtraPropertyList(), extra_prop_list_check_);
 }
 
 TEST_F(DeviceTest, getCapabilityList)
 {
-  std::vector<std::string> cap_list_;
+  std::vector<std::string> cap_list_check_;
 
   for (auto& c_ : dev_cap_) {
-    cap_list_.push_back(c_.getName());
+    cap_list_check_.push_back(c_.getName());
   }
 
-  ASSERT_EQ(dev_.getCapabilityList(), cap_list_);
+  ASSERT_EQ(dev_.getCapabilityList(), cap_list_check_);
 }
 
 TEST_F(DeviceTest, hasUniqueProperty)
@@ -162,8 +162,8 @@ TEST_F(DeviceTest, isUniquePropertyValid)
 {
   bool valid_ = true;
 
-  for (auto& p : dev_.getUniqueProperties())
-    valid_ &= dev_.isUniquePropertyValid(p.getName());
+  for (auto& p_ : dev_.getUniqueProperties())
+    valid_ &= dev_.isUniquePropertyValid(p_.getName());
 
   ASSERT_EQ(valid_, true);
 }
@@ -173,8 +173,8 @@ TEST_F(DeviceTest, getUniqueProperty)
   std::vector<rtask::commons::Property> unique_prop_check_{};
   std::vector<std::string> unique_prop_names_check_ = dev_.getUniquePropertyList();
 
-  for (auto& n : unique_prop_names_check_)
-    unique_prop_check_.push_back(dev_.getUniqueProperty(n).second);
+  for (auto& n_ : unique_prop_names_check_)
+    unique_prop_check_.push_back(dev_.getUniqueProperty(n_).second);
 }
 TEST_F(DeviceTest, setUniqueProperty)
 {
@@ -205,8 +205,8 @@ TEST_F(DeviceTest, isExtraPropertyValid)
 {
   bool valid_ = true;
 
-  for (auto& p : dev_.getExtraProperties())
-    valid_ &= dev_.isExtraPropertyValid(p.getName());
+  for (auto& p_ : dev_.getExtraProperties())
+    valid_ &= dev_.isExtraPropertyValid(p_.getName());
 
   ASSERT_EQ(valid_, true);
 }
@@ -215,8 +215,8 @@ TEST_F(DeviceTest, getExtraProperty)
   std::vector<rtask::commons::Property> extra_prop_check_{};
   std::vector<std::string> extra_prop_names_check_ = dev_.getExtraPropertyList();
 
-  for (auto& n : extra_prop_names_check_)
-    extra_prop_check_.push_back(dev_.getExtraProperty(n).second);
+  for (auto& n_ : extra_prop_names_check_)
+    extra_prop_check_.push_back(dev_.getExtraProperty(n_).second);
 
   ASSERT_EQ(extra_prop_check_, dev_.getExtraProperties());
 }
@@ -252,8 +252,8 @@ TEST_F(DeviceTest, isCapabilityValid)
 {
   bool valid_ = true;
 
-  for (auto& c : dev_.getCapabilities())
-    valid_ &= dev_.isCapabilityValid(c.getName());
+  for (auto& c_ : dev_.getCapabilities())
+    valid_ &= dev_.isCapabilityValid(c_.getName());
 
   ASSERT_EQ(valid_, true);
 }
@@ -263,8 +263,8 @@ TEST_F(DeviceTest, getCapability)
   std::vector<rtask::commons::Capability> cap_check_{};
   std::vector<std::string> cap_names_check_ = dev_.getCapabilityList();
 
-  for (auto& n : cap_names_check_)
-    cap_check_.push_back(dev_.getCapability(n).second);
+  for (auto& n_ : cap_names_check_)
+    cap_check_.push_back(dev_.getCapability(n_).second);
 
   ASSERT_EQ(cap_check_, dev_.getCapabilities());
 }
@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
 {
   testing::InitGoogleTest(&argc, argv);
 
-  ros::init(argc, argv, "capability_test_node");
+  ros::init(argc, argv, "device_test_node");
 
   std::thread t([] {
     while (ros::ok())

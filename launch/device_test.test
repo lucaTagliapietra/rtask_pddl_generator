@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="yaml_device_file" default="device"/>
+  <arg name="yaml_file" default="device"/>
 
   <test test-name="unit-property-test" pkg="rtask_commons" type="device_test" name="DeviceTest">
-    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_device_file).yaml" />
+    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_file).yaml" />
   </test>
 
 </launch>
