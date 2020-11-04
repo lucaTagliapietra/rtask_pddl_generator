@@ -138,7 +138,7 @@ TEST_F(CapabilityTest, isPropertyValid)
 {
   bool valid_ = true;
   for (auto& p : cap_.getProperties())
-    valid_ &= p.isValid();
+    valid_ &= cap_.isPropertyValid(p.getName());
 
   ASSERT_EQ(valid_, true);
 }

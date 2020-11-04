@@ -144,28 +144,141 @@ TEST_F(DeviceTest, getCapabilityList)
   ASSERT_EQ(dev_.getCapabilityList(), cap_list_);
 }
 
-// TEST_F(CapabilityTest, deleteProperty)
-//{
-//  cap_.deleteProperty(cap_prop_.getName());
+TEST_F(DeviceTest, hasUniqueProperty)
+{
+  std::string unique_prop_name_check_ = dev_unique_props_.at(0).getName();
+  ASSERT_EQ(dev_.hasUniqueProperty(unique_prop_name_check_), true);
+}
+TEST_F(DeviceTest, deleteUniqueProperty)
+{
+  std::vector<rtask::commons::Property> unique_prop_check_ = dev_unique_props_;
+  unique_prop_check_.pop_back();
 
-//  ASSERT_EQ(cap_.getProperties(), cap_props_1_);
-//}
+  dev_.deleteUniqueProperty(dev_unique_props_.back().getName());
 
-// TEST_F(CapabilityTest, isPropertyValid)
-//{
-//  bool valid_ = true;
-//  for (auto& p : cap_.getProperties())
-//    valid_ &= p.isValid();
+  ASSERT_EQ(dev_.getUniqueProperties(), unique_prop_check_);
+}
+TEST_F(DeviceTest, isUniquePropertyValid)
+{
+  bool valid_ = true;
 
-//  ASSERT_EQ(valid_, true);
-//}
+  for (auto& p : dev_.getUniqueProperties())
+    valid_ &= dev_.isUniquePropertyValid(p.getName());
 
-// TEST_F(CapabilityTest, getProperty)
-//{
-//  bool equal_ = (cap_.getProperty(cap_prop_.getName()).second == cap_prop_);
+  ASSERT_EQ(valid_, true);
+}
 
-//  ASSERT_EQ(equal_, true);
-//}
+TEST_F(DeviceTest, getUniqueProperty)
+{
+  std::vector<rtask::commons::Property> unique_prop_check_{};
+  std::vector<std::string> unique_prop_names_check_ = dev_.getUniquePropertyList();
+
+  for (auto& n : unique_prop_names_check_)
+    unique_prop_check_.push_back(dev_.getUniqueProperty(n).second);
+}
+TEST_F(DeviceTest, setUniqueProperty)
+{
+  rtask::commons::Property unique_prop_in_{"bool_prop_", true};
+
+  dev_.setUniqueProperty(unique_prop_in_.getName(), unique_prop_in_.getValue().second);
+
+  rtask::commons::Property unique_prop_check_ = dev_.getUniqueProperty(unique_prop_in_.getName()).second;
+
+  ASSERT_EQ(unique_prop_in_, unique_prop_check_);
+}
+
+TEST_F(DeviceTest, hasExtraProperty)
+{
+  std::string extra_prop_name_check_ = dev_extra_props_.at(0).getName();
+  ASSERT_EQ(dev_.hasExtraProperty(extra_prop_name_check_), true);
+}
+TEST_F(DeviceTest, deleteExtraProperty)
+{
+  std::vector<rtask::commons::Property> extra_prop_check_ = dev_extra_props_;
+  extra_prop_check_.pop_back();
+
+  dev_.deleteExtraProperty(dev_extra_props_.back().getName());
+
+  ASSERT_EQ(dev_.getExtraProperties(), extra_prop_check_);
+}
+TEST_F(DeviceTest, isExtraPropertyValid)
+{
+  bool valid_ = true;
+
+  for (auto& p : dev_.getExtraProperties())
+    valid_ &= dev_.isExtraPropertyValid(p.getName());
+
+  ASSERT_EQ(valid_, true);
+}
+TEST_F(DeviceTest, getExtraProperty)
+{
+  std::vector<rtask::commons::Property> extra_prop_check_{};
+  std::vector<std::string> extra_prop_names_check_ = dev_.getExtraPropertyList();
+
+  for (auto& n : extra_prop_names_check_)
+    extra_prop_check_.push_back(dev_.getExtraProperty(n).second);
+
+  ASSERT_EQ(extra_prop_check_, dev_.getExtraProperties());
+}
+
+TEST_F(DeviceTest, setExtraProperty)
+{
+  rtask::commons::Property extra_prop_in_{"bool_prop_", true};
+
+  dev_.setExtraProperty(extra_prop_in_.getName(), extra_prop_in_.getValue().second);
+
+  rtask::commons::Property extra_prop_check_ = dev_.getExtraProperty(extra_prop_in_.getName()).second;
+
+  ASSERT_EQ(extra_prop_in_, extra_prop_check_);
+}
+
+TEST_F(DeviceTest, hasCapability)
+{
+  std::string cap_name_check_ = dev_cap_.at(0).getName();
+  ASSERT_EQ(dev_.hasCapability(cap_name_check_), true);
+}
+
+TEST_F(DeviceTest, deleteCapability)
+{
+  std::vector<rtask::commons::Capability> cap_check_ = dev_cap_;
+  cap_check_.pop_back();
+
+  dev_.deleteCapability(dev_cap_.back().getName());
+
+  ASSERT_EQ(dev_.getCapabilities(), cap_check_);
+}
+
+TEST_F(DeviceTest, isCapabilityValid)
+{
+  bool valid_ = true;
+
+  for (auto& c : dev_.getCapabilities())
+    valid_ &= dev_.isCapabilityValid(c.getName());
+
+  ASSERT_EQ(valid_, true);
+}
+
+TEST_F(DeviceTest, getCapability)
+{
+  std::vector<rtask::commons::Capability> cap_check_{};
+  std::vector<std::string> cap_names_check_ = dev_.getCapabilityList();
+
+  for (auto& n : cap_names_check_)
+    cap_check_.push_back(dev_.getCapability(n).second);
+
+  ASSERT_EQ(cap_check_, dev_.getCapabilities());
+}
+
+TEST_F(DeviceTest, setCapability)
+{
+  rtask::commons::Capability cap_in_{cap_name_, props_};
+
+  dev_.setCapability(cap_in_.getName(), cap_in_.getProperties());
+
+  rtask::commons::Capability cap_check_ = dev_.getCapability(cap_in_.getName()).second;
+
+  ASSERT_EQ(cap_in_, cap_check_);
+}
 
 int main(int argc, char* argv[])
 {
