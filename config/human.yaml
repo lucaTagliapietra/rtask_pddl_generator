@@ -1,0 +1,46 @@
+human:
+  name: "human"
+  tools:
+    - name: "tool_0"
+      class: "Tool" # ontogy has UpperCase
+      unique_properties:
+        - { name: "bool_prop_", value: false }
+        - { name: "int_prop_", value: 1 }
+        - { name: "double_prop_", value: 0.1 }
+        - { name: "string_prop_", value: "string" }
+      extra_properties:
+        - { name: "bool_prop_", value: false }
+        - { name: "int_prop_", value: 1 }
+        - { name: "double_prop_", value: 0.1 }
+        - { name: "string_prop_", value: "string" }
+      capabilities:
+        - name: "capability"
+          properties:
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
+    - name: "tool_1"
+      class: "Tool" # ontogy has UpperCase
+      unique_properties:
+        - { name: "bool_prop_", value: false }
+        - { name: "int_prop_", value: 1 }
+        - { name: "double_prop_", value: 0.1 }
+        - { name: "string_prop_", value: "string" }
+      extra_properties:
+        - { name: "bool_prop_", value: false }
+        - { name: "int_prop_", value: 1 }
+        - { name: "double_prop_", value: 0.1 }
+        - { name: "string_prop_", value: "string" }
+      capabilities:
+        - name: "capability"
+          properties:
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
+  extra_properties:
+    - { name: "bool_prop_", value: false }
+    - { name: "int_prop_", value: 1 }
+    - { name: "double_prop_", value: 0.1 }
+    - { name: "string_prop_", value: "string" }

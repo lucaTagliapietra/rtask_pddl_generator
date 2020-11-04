@@ -99,4 +99,7 @@ if(CATKIN_ENABLE_TESTING)
  add_rostest_gtest(collective_robotic_system_test launch/collective_robotic_system_test.test test/collective_robotic_system_test.cpp)
  target_link_libraries(collective_robotic_system_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
+ add_rostest_gtest(human_test launch/human_test.test test/human_test.cpp)
+ target_link_libraries(human_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
 endif()
