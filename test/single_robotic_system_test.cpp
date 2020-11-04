@@ -227,7 +227,17 @@ TEST_F(SingleRoboticSystemTest, getDevice)
   ASSERT_EQ(devs_check_, srs_.getDevices());
 }
 
-TEST_F(SingleRoboticSystemTest, setDeviceAllInputs) {}
+TEST_F(SingleRoboticSystemTest, setDeviceAllInputs)
+{
+  rtask::commons::Device dev_in_{
+    dev_name_0_, dev_class_0_, dev_subclass_, dev_unique_props_, dev_extra_props_, dev_cap_};
+
+  srs_.setDevice(dev_name_0_, dev_class_0_, dev_subclass_, dev_unique_props_, dev_extra_props_, dev_cap_);
+
+  rtask::commons::Device dev_check_ = srs_.getDevice(dev_in_.getName()).second;
+
+  ASSERT_EQ(dev_in_, dev_check_);
+}
 
 TEST_F(SingleRoboticSystemTest, setDevice)
 {

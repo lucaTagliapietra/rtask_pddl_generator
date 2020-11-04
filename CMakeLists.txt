@@ -96,4 +96,7 @@ if(CATKIN_ENABLE_TESTING)
  add_rostest_gtest(single_robotic_system_test launch/single_robotic_system_test.test test/single_robotic_system_test.cpp)
  target_link_libraries(single_robotic_system_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
+ add_rostest_gtest(collective_robotic_system_test launch/collective_robotic_system_test.test test/collective_robotic_system_test.cpp)
+ target_link_libraries(collective_robotic_system_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
 endif()

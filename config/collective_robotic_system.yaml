@@ -1,55 +1,102 @@
 collective_robotic_system:
-  name: "collective_robotic_system_0"
+  name: "collective_robotic_system"
   single_robotic_systems:
     - name: "single_robotic_system_0"
       devices:
-        - name: "device_0"            # ontogy has UpperCase
-          class: "Robot"               # ontogy has UpperCase
-          subclass: "AutonomousRobot"
+        - name: "device_0"
+          class: "Robot" # ontogy has UpperCase
+          subclass: "Subclass" # ontogy has UpperCase
           unique_properties:
-            - { name: "model", value: "ur5" }
-            - { name: "manufacturer", value: "universal_robot" }
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
           extra_properties:
-            - { name: "description", value: "URDF description and properties of a Universal Robot UR5 robot arm" }
-            - { name: "urdf_link", value: "https://raw.githubusercontent.com/ros-industrial/universal_robot/kinetic-devel/ur_description/urdf/ur5_robot.urdf.xacro" }
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
           capabilities:
-            - name: "moving"
+            - name: "capability"
               properties:
-                - { name: "degrees_of_freedom", value: 6 }
-                - { name: "payload", value: 5 }
+                - { name: "bool_prop_", value: false }
+                - { name: "int_prop_", value: 1 }
+                - { name: "double_prop_", value: 0.1 }
+                - { name: "string_prop_", value: "string" }
         - name: "device_1"
-          class: "Sensor"              # ontogy has UpperCase
-          subclass: "VisionSensor"     # ontogy has UpperCase
+          class: "Gripper" # ontogy has UpperCase
+          subclass: "Subclass" # ontogy has UpperCase
           unique_properties:
-            - { name: "model", value: "kinect_one" }
-            - { name: "manufacturer", value: "microsoft" }
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
           extra_properties:
-            - { name: "description", value: "URDF description and properties of a Microsoft Kinect One vision sensor" }
-            - { name: "urdf_link", value: "https://github.com/code-iai/iai_robots/blob/master/iai_kinect2_description/urdf/kinect2.urdf.xacro" }
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
           capabilities:
-            - name: "seeing"
+            - name: "capability"
               properties:
-                - { name: "maximum_distance", value: 4.5 }
-                - { name: "schnittstelle", value: "USB 3.0" }
-                - { name: "weight", value: 1.4 }
+                - { name: "bool_prop_", value: false }
+                - { name: "int_prop_", value: 1 }
+                - { name: "double_prop_", value: 0.1 }
+                - { name: "string_prop_", value: "string" }
       extra_properties:
-        - { name: "description", value: "URDF description and properties of a Universal Robot UR5 robot arm with a Kinect One vision sensor" }
+        - { name: "bool_prop_", value: false }
+        - { name: "int_prop_", value: 1 }
+        - { name: "double_prop_", value: 0.1 }
+        - { name: "string_prop_", value: "string" }
     - name: "single_robotic_system_1"
       devices:
-        - name: "device_2"            # ontogy has UpperCase
-          class: "Robot"               # ontogy has UpperCase
-          subclass: "AutonomousRobot"
+        - name: "device_0"
+          class: "Robot" # ontogy has UpperCase
+          subclass: "Subclass" # ontogy has UpperCase
           unique_properties:
-            - { name: "model", value: "husky" }
-            - { name: "manufacturer", value: "clearpath" }
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
           extra_properties:
-            - { name: "description", value: "URDF description and properties of a Husky robot" }
-            - { name: "urdf_link", value: "https://raw.githubusercontent.com/husky/husky/melodic-devel/husky_description/urdf/husky.urdf.xacro" }
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
           capabilities:
-            - name: "moving"
+            - name: "capability"
               properties:
-                - { name: "payload", value: 75 }
+                - { name: "bool_prop_", value: false }
+                - { name: "int_prop_", value: 1 }
+                - { name: "double_prop_", value: 0.1 }
+                - { name: "string_prop_", value: "string" }
+        - name: "device_1"
+          class: "Gripper" # ontogy has UpperCase
+          subclass: "Subclass" # ontogy has UpperCase
+          unique_properties:
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
+          extra_properties:
+            - { name: "bool_prop_", value: false }
+            - { name: "int_prop_", value: 1 }
+            - { name: "double_prop_", value: 0.1 }
+            - { name: "string_prop_", value: "string" }
+          capabilities:
+            - name: "capability"
+              properties:
+                - { name: "bool_prop_", value: false }
+                - { name: "int_prop_", value: 1 }
+                - { name: "double_prop_", value: 0.1 }
+                - { name: "string_prop_", value: "string" }
       extra_properties:
-        - { name: "description", value: "URDF description and properties of a Husky robot" }
+        - { name: "bool_prop_", value: false }
+        - { name: "int_prop_", value: 1 }
+        - { name: "double_prop_", value: 0.1 }
+        - { name: "string_prop_", value: "string" }
   extra_properties:
-    - { name: "description", value: "Husky robot equipped with a Universal Robot UR5 and a Kinect One vision sensor" }
+    - { name: "bool_prop_", value: false }
+    - { name: "int_prop_", value: 1 }
+    - { name: "double_prop_", value: 0.1 }
+    - { name: "string_prop_", value: "string" }
