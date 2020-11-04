@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="yaml_file" default="single_robotic_system"/>
+
+  <test test-name="unit-property-test" pkg="rtask_commons" type="single_robotic_system_test" name="SingleRoboticSystemTest">
+    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_file).yaml" />
+  </test>
+
+</launch>
