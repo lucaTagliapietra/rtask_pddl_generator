@@ -1,0 +1,85 @@
+#include "commons/parameter.h"
+#include "commons/utils.h"
+
+// ------------
+// CONSTRUCTORS
+// ------------
+rtask::commons::Parameter::Parameter(const std::string& t_name, const std::string& t_type)
+{
+  set(t_name, t_type);
+}
+
+rtask::commons::Parameter::Parameter(const rtask_msgs::ParameterConstPtr t_msg_ptr)
+{
+  fromMsg(*t_msg_ptr);
+}
+
+rtask::commons::Parameter::Parameter(const rtask_msgs::Parameter& t_msg)
+{
+  fromMsg(t_msg);
+}
+
+rtask::commons::Parameter::Parameter(XmlRpc::XmlRpcValue& t_rpc_val)
+{
+  if (commons::utils::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString), true) {
+    name_ = static_cast<std::string>(t_rpc_val["name"]);
+  }
+  if (commons::utils::checkXmlRpcSanity("type", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
+    type_ = static_cast<std::string>(t_rpc_val["type"]);
+  }
+
+  valid_ = !name_.empty();
+}
+void rtask::commons::Parameter::fromMsg(const rtask_msgs::Parameter& t_msg)
+{
+  name_ = t_msg.name;
+  type_ = t_msg.type;
+
+  valid_ = !name_.empty();
+}
+
+rtask_msgs::Parameter rtask::commons::Parameter::toMsg() const
+{
+  rtask_msgs::Parameter msg;
+  msg.name = name_;
+  msg.type = type_;
+  return msg;
+}
+
+void rtask::commons::Parameter::set(const std::string& t_name, const std::string& t_type)
+{
+  name_ = t_name;
+  type_ = t_type;
+  valid_ = !name_.empty();
+}
+
+void rtask::commons::Parameter::setType(const std::string& t_type)
+{
+  type_ = t_type;
+  valid_ = !name_.empty();
+}
+
+std::string rtask::commons::Parameter::toPddl(const bool t_typing) const
+{
+  std::string out{};
+  if (valid_) {
+    out += "?" + name_;
+    if (t_typing) {
+      out += " - " + type_;
+    }
+  }
+  return out;
+}
+
+bool rtask::commons::Parameter::operator==(const Parameter& t_parameter) const
+{
+  return (name_ == t_parameter.getName()) && (valid_ == t_parameter.isValid()) && (t_parameter.getType() == type_);
+}
+
+rtask::commons::Parameter& rtask::commons::Parameter::operator=(const Parameter& t_parameter)
+{
+  name_ = t_parameter.getName();
+  valid_ = t_parameter.isValid();
+  type_ = t_parameter.getType();
+  return *this;
+}
