@@ -101,5 +101,11 @@ if(CATKIN_ENABLE_TESTING)
 
  add_rostest_gtest(human_test launch/human_test.test test/human_test.cpp)
  target_link_libraries(human_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+ 
+ add_rostest_gtest(agent_test launch/agent_test.test test/agent_test.cpp)
+ target_link_libraries(agent_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+ add_rostest_gtest(agent_group_test launch/agent_group_test.test test/agent_group_test.cpp)
+ target_link_libraries(agent_group_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
 endif()

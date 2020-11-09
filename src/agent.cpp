@@ -7,9 +7,9 @@
 // ------------
 // CONSTRUCTORS
 // ------------
-rtask::commons::Agent::Agent(const std::string& t_name, const AgentStatus& t_status, const std::string& t_description)
+rtask::commons::Agent::Agent(const std::string& t_name, const std::string& t_description, const AgentStatus& t_status)
 {
-  set(t_name, t_status, t_description);
+  set(t_name, t_description, t_status);
 }
 rtask::commons::Agent::Agent(const rtask_msgs::Agent& t_msg)
 {
@@ -60,12 +60,12 @@ void rtask::commons::Agent::clear()
   valid_ = false;
 }
 void rtask::commons::Agent::set(const std::string& t_name,
-                                const AgentStatus& t_status,
-                                const std::string& t_description)
+                                const std::string& t_description,
+                                const AgentStatus& t_status)
 {
   name_ = t_name;
-  status_ = t_status;
   description_ = t_description;
+  status_ = t_status;
   updValidity();
 
   valid_ = !t_name.empty();
