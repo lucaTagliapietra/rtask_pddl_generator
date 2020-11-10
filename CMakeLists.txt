@@ -45,6 +45,9 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/collectiveRoboticSystem.cpp
                                 src/agent.cpp
                                 src/agentGroup.cpp
+                                src/parameter.cpp
+                                src/predicate.cpp
+                                src/condition.cpp
 #                                src/action.cpp
 #                                src/taskDefinition.cpp
 #                                src/domain.cpp
@@ -80,7 +83,7 @@ set_target_properties(${PROJECT_NAME}_lib PROPERTIES CXX_STANDARD 17)
 
 target_include_directories(${PROJECT_NAME}_lib
                            PUBLIC include
-                           PRIVATE ${catkin_INCLUDE_DIRS})
+                           PUBLIC ${catkin_INCLUDE_DIRS})
 
 if(CATKIN_ENABLE_TESTING)
  find_package(rostest REQUIRED)
