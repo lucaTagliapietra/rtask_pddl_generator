@@ -44,6 +44,7 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/human.cpp
                                 src/collectiveRoboticSystem.cpp
                                 src/agent.cpp
+                                src/agentGroup.cpp
 #                                src/action.cpp
 #                                src/taskDefinition.cpp
 #                                src/domain.cpp
