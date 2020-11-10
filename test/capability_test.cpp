@@ -13,6 +13,8 @@ public:
   std::string cap_name_{"capability"};
   rtask::commons::Property cap_prop_{"bool_prop_", false};
 
+  rtask::commons::Property cap_prop_in_{"in_prop_", false};
+
   std::vector<rtask::commons::Property> cap_props_1_{{"int_prop_", 1},
                                                      {"double_prop_", 0.1},
                                                      {"string_prop_", std::string("string")}};
@@ -35,7 +37,7 @@ public:
     cap_props_.insert(cap_props_.end(), cap_props_1_.begin(), cap_props_1_.end());
 
     cap_ = {cap_name_, cap_props_};
-    cap_.setProperty("bool_prop_", false);
+    cap_.setProperty(cap_prop_.getName(), cap_prop_.getValue().second);
   }
 
   ~CapabilityTest() {}
@@ -132,6 +134,15 @@ TEST_F(CapabilityTest, deleteProperty)
   cap_.deleteProperty(cap_prop_.getName());
 
   ASSERT_EQ(cap_.getProperties(), cap_props_1_);
+}
+
+TEST_F(CapabilityTest, setProperty)
+{
+  cap_.setProperty(cap_prop_in_.getName(), cap_prop_in_.getValue().second);
+
+  rtask::commons::Property prop_check_ = cap_.getProperty(cap_prop_in_.getName()).second;
+
+  ASSERT_EQ(cap_prop_in_, prop_check_);
 }
 
 TEST_F(CapabilityTest, isPropertyValid)
