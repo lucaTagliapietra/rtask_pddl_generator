@@ -40,6 +40,9 @@ namespace rtask {
 
       std::string toPddl(const bool t_typing = true) const;
 
+      bool isEqual(const Predicate& t_other, const bool t_typing = true) const;
+      bool isEquivalent(const Predicate& t_other, const bool t_typing = true) const;
+
       // ---------------
       // Parameter Level
       // ---------------
@@ -52,7 +55,7 @@ namespace rtask {
       // ---------
       // Operators
       // ---------
-      bool operator==(const Predicate& t_predicate) const;
+      // bool operator==(const Predicate& t_predicate) const;
       Predicate& operator=(const Predicate& t_predicate);
 
     private:

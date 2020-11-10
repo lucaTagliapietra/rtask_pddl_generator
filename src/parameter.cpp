@@ -71,10 +71,24 @@ std::string rtask::commons::Parameter::toPddl(const bool t_typing) const
   return out;
 }
 
-bool rtask::commons::Parameter::operator==(const Parameter& t_parameter) const
+bool rtask::commons::Parameter::isEquivalent(const Parameter& t_other, const bool t_typing) const
 {
-  return (name_ == t_parameter.getName()) && (valid_ == t_parameter.isValid()) && (t_parameter.getType() == type_);
+  if (!t_typing) {
+    return true;
+  }
+  // Same validity status and same type
+  return type_ == t_other.getType();
 }
+
+bool rtask::commons::Parameter::isEqual(const Parameter& t_other, const bool t_typing) const
+{
+  return isEquivalent(t_other, t_typing) && valid_ == t_other.isValid() && name_ == t_other.getName();
+}
+
+// bool rtask::commons::Parameter::operator==(const Parameter& t_parameter) const
+// {
+//   return isEquivalent(t_parameter) && name_ == t_parameter.getName();
+// }
 
 rtask::commons::Parameter& rtask::commons::Parameter::operator=(const Parameter& t_parameter)
 {

@@ -120,23 +120,44 @@ std::string rtask::commons::Condition::toPddl(const bool t_typing) const
   return out;
 };
 
-bool rtask::commons::Condition::operator==(const rtask::commons::Condition& t_condition) const
+bool rtask::commons::Condition::isEquivalent(const Condition& t_other, const bool t_typing) const
 {
-  if (!(name_ == t_condition.getName() && valid_ == t_condition.isValid() && negated_ == t_condition.getNegated())) {
-    return false;
+  bool eq = name_ == t_other.getName() && valid_ && t_other.isValid() && negated_ == t_other.getNegated();
+  if (eq) {
+    eq &= args_.size() == t_other.getArgs().size();
   }
-
-  auto other_args = t_condition.getArgs();
-  if (args_.size() != other_args.size()) {
-    return false;
-  }
-  for (unsigned int i = 0; i < args_.size(); ++i) {
-    if (args_.at(i) != other_args.at(i)) {
-      return false;
-    }
-  }
-  return true;
+  return eq;
 }
+
+bool rtask::commons::Condition::isEqual(const Condition& t_other, const bool t_typing) const
+{
+  bool eq = isEquivalent(t_other, t_typing);
+  if (eq) {
+    const auto other_args = t_other.getArgs();
+    for (unsigned int i = 0; i < args_.size() && eq; ++i) {
+      eq &= args_.at(i) == other_args.at(i);
+    };
+  }
+  return eq;
+}
+
+// bool rtask::commons::Condition::operator==(const rtask::commons::Condition& t_condition) const
+// {
+//   if (!(name_ == t_condition.getName() && valid_ == t_condition.isValid() && negated_ == t_condition.getNegated())) {
+//     return false;
+//   }
+
+//   auto other_args = t_condition.getArgs();
+//   if (args_.size() != other_args.size()) {
+//     return false;
+//   }
+//   for (unsigned int i = 0; i < args_.size(); ++i) {
+//     if (args_.at(i) != other_args.at(i)) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
 
 rtask::commons::Condition& rtask::commons::Condition::operator=(const rtask::commons::Condition& t_condition)
 {

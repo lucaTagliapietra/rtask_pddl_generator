@@ -170,21 +170,49 @@ bool rtask::commons::Predicate::isParameterValid(const std::string& t_name) cons
   return it->isValid();
 }
 
-bool rtask::commons::Predicate::operator==(const rtask::commons::Predicate& t_predicate) const
+bool rtask::commons::Predicate::isEquivalent(const Predicate& t_other, const bool t_typing) const
 {
-  if (!(name_ == t_predicate.getName() && valid_ == t_predicate.isValid())) {
-    return false;
-  }
+  bool eq = name_ == t_other.getName() && valid_ && t_other.isValid();
+  if (eq) {
+    const auto other_params = t_other.getParameters();
+    eq &= parameters_.size() == other_params.size();
 
-  auto other_params = t_predicate.getParameters();
-  for (const auto& p : parameters_) {
-    auto it = std::find_if(other_params.begin(), other_params.end(), [p](auto& op) { return p == op; });
-    if (it == other_params.end()) {
-      return false;
+    if (t_typing && eq) {
+      for (unsigned int i = 0; i < parameters_.size() && eq; ++i) {
+        eq &= parameters_.at(i).isEquivalent(other_params.at(i), t_typing);
+      };
     }
   }
-  return true;
+  return eq;
 }
+
+bool rtask::commons::Predicate::isEqual(const Predicate& t_other, const bool t_typing) const
+{
+  bool eq = isEquivalent(t_other, t_typing);
+  if (eq) {
+    const auto other_params = t_other.getParameters();
+    for (unsigned int i = 0; i < parameters_.size() && eq; ++i) {
+      eq &= parameters_.at(i).isEqual(other_params.at(i));
+    };
+  }
+  return eq;
+}
+
+// bool rtask::commons::Predicate::operator==(const rtask::commons::Predicate& t_predicate) const
+// {
+//   if (!(name_ == t_predicate.getName() && valid_ == t_predicate.isValid())) {
+//     return false;
+//   }
+
+//   auto other_params = t_predicate.getParameters();
+//   for (const auto& p : parameters_) {
+//     auto it = std::find_if(other_params.begin(), other_params.end(), [p](auto& op) { return p == op; });
+//     if (it == other_params.end()) {
+//       return false;
+//     }
+//   }
+//   return true;
+//}
 
 rtask::commons::Predicate& rtask::commons::Predicate::operator=(const rtask::commons::Predicate& t_predicate)
 {

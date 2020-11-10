@@ -37,10 +37,13 @@ namespace rtask {
 
       std::string toPddl(const bool t_typing = true) const;
 
+      bool isEqual(const Condition& t_other, const bool t_typing = true) const;
+      bool isEquivalent(const Condition& t_other, const bool t_typing = true) const;
+
       // ---------
       // Operators
       // ---------
-      bool operator==(const Condition& t_condition) const;
+      // bool operator==(const Condition& t_condition) const;
       Condition& operator=(const Condition& t_condition);
 
     private:
