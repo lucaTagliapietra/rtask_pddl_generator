@@ -112,4 +112,15 @@ if(CATKIN_ENABLE_TESTING)
  add_rostest_gtest(agent_group_test launch/agent_group_test.test test/agent_group_test.cpp)
  target_link_libraries(agent_group_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
+ add_rostest_gtest(param_test launch/param_test.test test/param_test.cpp)
+ target_link_libraries(param_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+ add_rostest_gtest(predicate_test launch/predicate_test.test test/predicate_test.cpp)
+ target_link_libraries(predicate_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+ add_rostest_gtest(condition_test launch/condition_test.test test/condition_test.cpp)
+ target_link_libraries(condition_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
+
+
+
 endif()
