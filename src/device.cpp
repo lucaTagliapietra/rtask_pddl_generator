@@ -224,6 +224,8 @@ void rtask::commons::Device::setUniqueProperty(const std::string& t_name, const 
 
   if (it == unique_properties_.end()) {
     unique_properties_.emplace_back(t_name, t_val);
+    updValidity();
+    return;
   }
   it->setValue(t_val);
   updValidity();
@@ -275,6 +277,8 @@ void rtask::commons::Device::setExtraProperty(const std::string& t_name, const P
 
   if (it == extra_properties_.end()) {
     extra_properties_.emplace_back(t_name, t_val);
+    updValidity();
+    return;
   }
   it->setValue(t_val);
   updValidity();
@@ -327,6 +331,8 @@ void rtask::commons::Device::setCapability(const std::string& t_name, const std:
 
   if (it == capabilities_.end()) {
     capabilities_.emplace_back(t_name, t_val);
+    updValidity();
+    return;
   }
   it->set(t_name, t_val);
   updValidity();

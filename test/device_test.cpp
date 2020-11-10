@@ -14,6 +14,8 @@ public:
   rtask::commons::DeviceClass dev_class_ = rtask::commons::DeviceClass::ROBOT;
   std::string dev_subclass_{"Subclass"};
 
+  rtask::commons::Property prop_in_{"in_prop_", true};
+
   std::vector<rtask::commons::Property> props_ = {{"bool_prop_", false},
                                                   {"int_prop_", 1},
                                                   {"double_prop_", 0.1},
@@ -23,7 +25,10 @@ public:
   std::vector<rtask::commons::Property> dev_extra_props_ = props_;
 
   std::string cap_name_{"capability"};
+  std::string cap_in_name_{"capability_in"};
   std::vector<rtask::commons::Capability> dev_cap_ = {{cap_name_, props_}};
+
+  rtask::commons::Capability cap_in_{cap_in_name_, props_};
 
   rtask::commons::Device dev_;
 
@@ -178,13 +183,12 @@ TEST_F(DeviceTest, getUniqueProperty)
 }
 TEST_F(DeviceTest, setUniqueProperty)
 {
-  rtask::commons::Property unique_prop_in_{"bool_prop_", true};
 
-  dev_.setUniqueProperty(unique_prop_in_.getName(), unique_prop_in_.getValue().second);
+  dev_.setUniqueProperty(prop_in_.getName(), prop_in_.getValue().second);
 
-  rtask::commons::Property unique_prop_check_ = dev_.getUniqueProperty(unique_prop_in_.getName()).second;
+  rtask::commons::Property unique_prop_check_ = dev_.getUniqueProperty(prop_in_.getName()).second;
 
-  ASSERT_EQ(unique_prop_in_, unique_prop_check_);
+  ASSERT_EQ(prop_in_, unique_prop_check_);
 }
 
 TEST_F(DeviceTest, hasExtraProperty)
@@ -223,13 +227,12 @@ TEST_F(DeviceTest, getExtraProperty)
 
 TEST_F(DeviceTest, setExtraProperty)
 {
-  rtask::commons::Property extra_prop_in_{"bool_prop_", true};
 
-  dev_.setExtraProperty(extra_prop_in_.getName(), extra_prop_in_.getValue().second);
+  dev_.setExtraProperty(prop_in_.getName(), prop_in_.getValue().second);
 
-  rtask::commons::Property extra_prop_check_ = dev_.getExtraProperty(extra_prop_in_.getName()).second;
+  rtask::commons::Property extra_prop_check_ = dev_.getExtraProperty(prop_in_.getName()).second;
 
-  ASSERT_EQ(extra_prop_in_, extra_prop_check_);
+  ASSERT_EQ(prop_in_, extra_prop_check_);
 }
 
 TEST_F(DeviceTest, hasCapability)
@@ -271,7 +274,6 @@ TEST_F(DeviceTest, getCapability)
 
 TEST_F(DeviceTest, setCapability)
 {
-  rtask::commons::Capability cap_in_{cap_name_, props_};
 
   dev_.setCapability(cap_in_.getName(), cap_in_.getProperties());
 
