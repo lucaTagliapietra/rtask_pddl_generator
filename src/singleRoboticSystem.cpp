@@ -162,6 +162,8 @@ void rtask::commons::SingleRoboticSystem::setExtraProperty(const std::string& t_
 
   if (it == extra_properties_.end()) {
     extra_properties_.emplace_back(t_name, t_val);
+    updValidity();
+    return;
   }
   it->setValue(t_val);
   updValidity();
@@ -215,6 +217,8 @@ void rtask::commons::SingleRoboticSystem::setDevice(const std::string& t_name,
   if (it == devices_.end()) {
     devices_.emplace_back(
       t_name, t_dev_class, t_dev_subclass, t_dev_unique_props, t_dev_extra_properties, t_dev_capabilities);
+    updValidity();
+    return;
   }
   it->set(t_name, t_dev_class, t_dev_subclass, t_dev_unique_props, t_dev_extra_properties, t_dev_capabilities);
   updValidity();
@@ -226,6 +230,8 @@ void rtask::commons::SingleRoboticSystem::setDevice(const std::string& t_name, c
 
   if (it == devices_.end()) {
     devices_.emplace_back(t_dev);
+    updValidity();
+    return;
   }
   it->set(t_name,
           t_dev.getClass(),
@@ -252,8 +258,8 @@ bool rtask::commons::SingleRoboticSystem::operator==(const rtask::commons::Singl
   return true;
 }
 
-rtask::commons::SingleRoboticSystem&
-rtask::commons::SingleRoboticSystem::operator=(const rtask::commons::SingleRoboticSystem& t_srs)
+rtask::commons::SingleRoboticSystem& rtask::commons::SingleRoboticSystem::
+operator=(const rtask::commons::SingleRoboticSystem& t_srs)
 {
   name_ = t_srs.getName();
   valid_ = t_srs.isValid();

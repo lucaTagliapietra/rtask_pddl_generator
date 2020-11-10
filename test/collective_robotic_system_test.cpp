@@ -12,14 +12,15 @@ class CollectiveRoboticSystemTest : public ::testing::Test
 public:
   std::string crs_name_{"collective_robotic_system"};
 
-  std::string srs_name_0_{"single_robotic_system_0"};
-  std::string srs_name_1_{"single_robotic_system_1"};
+  std::string srs_0_name_{"single_robotic_system_0"};
+  std::string srs_1_name_{"single_robotic_system_1"};
+  std::string srs_in_name_{"single_robotic_system_in"};
 
-  std::string dev_name_0_{"device_0"};
-  std::string dev_name_1_{"device_1"};
+  std::string dev_0_name_{"device_0"};
+  std::string dev_1_name_{"device_1"};
 
-  rtask::commons::DeviceClass dev_class_0_ = rtask::commons::DeviceClass::ROBOT;
-  rtask::commons::DeviceClass dev_class_1_ = rtask::commons::DeviceClass::GRIPPER;
+  rtask::commons::DeviceClass dev_0_class_ = rtask::commons::DeviceClass::ROBOT;
+  rtask::commons::DeviceClass dev_1_class_ = rtask::commons::DeviceClass::GRIPPER;
 
   std::string dev_subclass_{"Subclass"};
 
@@ -28,6 +29,8 @@ public:
                                                   {"double_prop_", 0.1},
                                                   {"string_prop_", std::string("string")}};
 
+  rtask::commons::Property extra_prop_in_{"in_prop_", true};
+
   std::vector<rtask::commons::Property> dev_unique_props_ = props_;
 
   std::vector<rtask::commons::Property> dev_extra_props_ = props_;
@@ -35,14 +38,14 @@ public:
   std::string cap_name_{"capability"};
   std::vector<rtask::commons::Capability> dev_cap_ = {{cap_name_, props_}};
 
-  rtask::commons::Device dev_0_{dev_name_0_,
-                                dev_class_0_,
+  rtask::commons::Device dev_0_{dev_0_name_,
+                                dev_0_class_,
                                 dev_subclass_,
                                 dev_unique_props_,
                                 dev_extra_props_,
                                 dev_cap_};
-  rtask::commons::Device dev_1_{dev_name_1_,
-                                dev_class_1_,
+  rtask::commons::Device dev_1_{dev_1_name_,
+                                dev_1_class_,
                                 dev_subclass_,
                                 dev_unique_props_,
                                 dev_extra_props_,
@@ -52,8 +55,9 @@ public:
 
   std::vector<rtask::commons::Property> srs_extra_props_ = props_;
 
-  rtask::commons::SingleRoboticSystem srs_0_{srs_name_0_, srs_devs_, srs_extra_props_};
-  rtask::commons::SingleRoboticSystem srs_1_{srs_name_1_, srs_devs_, srs_extra_props_};
+  rtask::commons::SingleRoboticSystem srs_0_{srs_0_name_, srs_devs_, srs_extra_props_};
+  rtask::commons::SingleRoboticSystem srs_1_{srs_1_name_, srs_devs_, srs_extra_props_};
+  rtask::commons::SingleRoboticSystem srs_in_{srs_in_name_, srs_devs_, srs_extra_props_};
 
   std::vector<rtask::commons::SingleRoboticSystem> crs_srs_{srs_0_, srs_1_};
 
@@ -191,7 +195,6 @@ TEST_F(CollectiveRoboticSystemTest, getExtraProperty)
 
 TEST_F(CollectiveRoboticSystemTest, setExtraProperty)
 {
-  rtask::commons::Property extra_prop_in_{"bool_prop_", true};
 
   crs_.setExtraProperty(extra_prop_in_.getName(), extra_prop_in_.getValue().second);
 
@@ -239,8 +242,6 @@ TEST_F(CollectiveRoboticSystemTest, getSingleRoboticSystem)
 
 TEST_F(CollectiveRoboticSystemTest, setSingleRoboticSystemAllInputs)
 {
-  rtask::commons::SingleRoboticSystem srs_in_{srs_name_0_, srs_devs_, srs_extra_props_};
-
   crs_.setSingleRoboticSystem(srs_in_.getName(), srs_in_.getDevices(), srs_in_.getExtraProperties());
 
   rtask::commons::SingleRoboticSystem srs_check_ = crs_.getSingleRoboticSystem(srs_in_.getName()).second;
@@ -250,7 +251,6 @@ TEST_F(CollectiveRoboticSystemTest, setSingleRoboticSystemAllInputs)
 
 TEST_F(CollectiveRoboticSystemTest, setSingleRoboticSystem)
 {
-  rtask::commons::SingleRoboticSystem srs_in_{srs_name_0_, srs_devs_, srs_extra_props_};
 
   crs_.setSingleRoboticSystem(srs_in_.getName(), srs_in_);
 

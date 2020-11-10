@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="yaml_file" default="agent"/>
+
+  <test test-name="unit-property-test" pkg="rtask_commons" type="agent_test" name="AgentTest">
+    <rosparam command="load" file="$(find rtask_commons)/config/$(arg yaml_file).yaml" />
+  </test>
+
+</launch>

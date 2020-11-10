@@ -1,0 +1,16 @@
+agent_group:
+  name: "agent_group"
+  description: "agent_group_description"
+  agents:
+    - name: "agent_0"
+      description: "agent_0_description"
+      status: 0
+    - name: "agent_1"
+      description: "agent_1_description"
+      status: 1
+    - name: "agent_2"
+      description: "agent_2_description"
+      status: 2
+    - name: "agent_3"
+      description: "agent_3_description"
+      status: 3

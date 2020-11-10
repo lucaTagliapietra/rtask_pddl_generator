@@ -142,6 +142,8 @@ void rtask::commons::Capability::setProperty(const std::string& t_name, const rt
 
   if (it == properties_.end()) {
     properties_.emplace_back(t_name, t_val);
+    updValidity();
+    return;
   }
   it->setValue(t_val);
   updValidity();

@@ -25,7 +25,7 @@ namespace rtask {
       Agent() = default;
       ~Agent() = default;
 
-      Agent(const std::string& t_name, const AgentStatus& t_status = {}, const std::string& t_description = {});
+      Agent(const std::string& t_name, const std::string& t_description = {}, const AgentStatus& t_status = {});
       Agent(const rtask_msgs::Agent& t_msg);
       Agent(const rtask_msgs::AgentConstPtr t_msg_ptr);
       Agent(XmlRpc::XmlRpcValue& t_rpc_val);
@@ -34,7 +34,7 @@ namespace rtask {
       // Agent Level
       // -----------
       void clear();
-      void set(const std::string& t_name, const AgentStatus& t_status = {}, const std::string& t_description = {});
+      void set(const std::string& t_name, const std::string& t_description = {}, const AgentStatus& t_status = {});
 
       rtask_msgs::Agent toMsg() const;
 

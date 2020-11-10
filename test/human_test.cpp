@@ -12,8 +12,9 @@ class HumanTest : public ::testing::Test
 public:
   std::string human_name_{"human"};
 
-  std::string tool_name_0_{"tool_0"};
-  std::string tool_name_1_{"tool_1"};
+  std::string tool_0_name_{"tool_0"};
+  std::string tool_1_name_{"tool_1"};
+  std::string tool_in_name_{"tool_in"};
 
   rtask::commons::DeviceClass tool_class_ = rtask::commons::DeviceClass::TOOL;
 
@@ -29,12 +30,15 @@ public:
   std::string cap_name_{"capability"};
   std::vector<rtask::commons::Capability> tool_cap_ = {{cap_name_, props_}};
 
-  rtask::commons::Device tool_0_{tool_name_0_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_};
-  rtask::commons::Device tool_1_{tool_name_1_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_};
+  rtask::commons::Device tool_0_{tool_0_name_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_};
+  rtask::commons::Device tool_1_{tool_1_name_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_};
+  rtask::commons::Device tool_in_{tool_in_name_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_};
 
   std::vector<rtask::commons::Device> human_tools_{tool_0_, tool_1_};
 
   std::vector<rtask::commons::Property> human_extra_props_ = props_;
+
+  rtask::commons::Property extra_prop_in_{"in_prop_", true};
 
   rtask::commons::Human human_;
 
@@ -168,8 +172,6 @@ TEST_F(HumanTest, getExtraProperty)
 
 TEST_F(HumanTest, setExtraProperty)
 {
-  rtask::commons::Property extra_prop_in_{"bool_prop_", true};
-
   human_.setExtraProperty(extra_prop_in_.getName(), extra_prop_in_.getValue().second);
 
   rtask::commons::Property extra_prop_check_ = human_.getExtraProperty(extra_prop_in_.getName()).second;
@@ -214,11 +216,18 @@ TEST_F(HumanTest, getTool)
   ASSERT_EQ(tools_check_, human_.getTools());
 }
 
+TEST_F(HumanTest, setToolAllInputs)
+{
+  human_.setTool(tool_in_name_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_);
+
+  rtask::commons::Device tool_check_ = human_.getTool(tool_in_.getName()).second;
+
+  ASSERT_EQ(tool_in_, tool_check_);
+}
+
 TEST_F(HumanTest, setTool)
 {
-  rtask::commons::Device tool_in_{tool_name_0_, tool_class_, {}, tool_unique_props_, tool_extra_props_, tool_cap_};
-
-  human_.setTool(tool_name_0_, tool_0_);
+  human_.setTool(tool_in_name_, tool_in_);
 
   rtask::commons::Device tool_check_ = human_.getTool(tool_in_.getName()).second;
 

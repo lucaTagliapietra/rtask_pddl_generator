@@ -161,6 +161,8 @@ void rtask::commons::Human::setExtraProperty(const std::string& t_name, const Pr
 
   if (it == extra_properties_.end()) {
     extra_properties_.emplace_back(t_name, t_val);
+    updValidity();
+    return;
   }
   it->setValue(t_val);
   updValidity();
@@ -214,6 +216,8 @@ void rtask::commons::Human::setTool(const std::string& t_name,
   if (it == tools_.end()) {
     tools_.emplace_back(
       t_name, t_tool_class, t_tool_subclass, t_tool_unique_props, t_tool_extra_properties, t_tool_capabilities);
+    updValidity();
+    return;
   }
   it->set(t_name, t_tool_class, t_tool_subclass, t_tool_unique_props, t_tool_extra_properties, t_tool_capabilities);
   updValidity();
@@ -225,6 +229,8 @@ void rtask::commons::Human::setTool(const std::string& t_name, const Device& t_t
 
   if (it == tools_.end()) {
     tools_.emplace_back(t_tool);
+    updValidity();
+    return;
   }
   it->set(t_name,
           t_tool.getClass(),
