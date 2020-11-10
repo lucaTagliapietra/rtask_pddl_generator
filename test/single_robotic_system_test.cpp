@@ -12,11 +12,13 @@ class SingleRoboticSystemTest : public ::testing::Test
 public:
   std::string srs_name_{"single_robotic_system"};
 
-  std::string dev_name_0_{"device_0"};
-  std::string dev_name_1_{"device_1"};
+  std::string dev_0_name_{"device_0"};
+  std::string dev_1_name_{"device_1"};
+  std::string dev_in_name_{"device_in"};
 
-  rtask::commons::DeviceClass dev_class_0_ = rtask::commons::DeviceClass::ROBOT;
-  rtask::commons::DeviceClass dev_class_1_ = rtask::commons::DeviceClass::GRIPPER;
+  rtask::commons::DeviceClass dev_0_class_ = rtask::commons::DeviceClass::ROBOT;
+  rtask::commons::DeviceClass dev_1_class_ = rtask::commons::DeviceClass::GRIPPER;
+  rtask::commons::DeviceClass dev_in_class_ = rtask::commons::DeviceClass::ROBOT;
 
   std::string dev_subclass_{"Subclass"};
 
@@ -32,14 +34,14 @@ public:
   std::string cap_name_{"capability"};
   std::vector<rtask::commons::Capability> dev_cap_ = {{cap_name_, props_}};
 
-  rtask::commons::Device dev_0_{dev_name_0_,
-                                dev_class_0_,
+  rtask::commons::Device dev_0_{dev_0_name_,
+                                dev_0_class_,
                                 dev_subclass_,
                                 dev_unique_props_,
                                 dev_extra_props_,
                                 dev_cap_};
-  rtask::commons::Device dev_1_{dev_name_1_,
-                                dev_class_1_,
+  rtask::commons::Device dev_1_{dev_1_name_,
+                                dev_1_class_,
                                 dev_subclass_,
                                 dev_unique_props_,
                                 dev_extra_props_,
@@ -50,6 +52,14 @@ public:
   std::vector<rtask::commons::Property> srs_extra_props_ = props_;
 
   rtask::commons::SingleRoboticSystem srs_;
+
+  rtask::commons::Property extra_prop_in_{"in_prop_", true};
+  rtask::commons::Device dev_in_{dev_in_name_,
+                                 dev_in_class_,
+                                 dev_subclass_,
+                                 dev_unique_props_,
+                                 dev_extra_props_,
+                                 dev_cap_};
 
   ros::NodeHandle m_nh;
 
@@ -181,8 +191,6 @@ TEST_F(SingleRoboticSystemTest, getExtraProperty)
 
 TEST_F(SingleRoboticSystemTest, setExtraProperty)
 {
-  rtask::commons::Property extra_prop_in_{"bool_prop_", true};
-
   srs_.setExtraProperty(extra_prop_in_.getName(), extra_prop_in_.getValue().second);
 
   rtask::commons::Property extra_prop_check_ = srs_.getExtraProperty(extra_prop_in_.getName()).second;
@@ -229,10 +237,7 @@ TEST_F(SingleRoboticSystemTest, getDevice)
 
 TEST_F(SingleRoboticSystemTest, setDeviceAllInputs)
 {
-  rtask::commons::Device dev_in_{
-    dev_name_0_, dev_class_0_, dev_subclass_, dev_unique_props_, dev_extra_props_, dev_cap_};
-
-  srs_.setDevice(dev_name_0_, dev_class_0_, dev_subclass_, dev_unique_props_, dev_extra_props_, dev_cap_);
+  srs_.setDevice(dev_in_name_, dev_in_class_, dev_subclass_, dev_unique_props_, dev_extra_props_, dev_cap_);
 
   rtask::commons::Device dev_check_ = srs_.getDevice(dev_in_.getName()).second;
 
@@ -241,10 +246,6 @@ TEST_F(SingleRoboticSystemTest, setDeviceAllInputs)
 
 TEST_F(SingleRoboticSystemTest, setDevice)
 {
-
-  rtask::commons::Device dev_in_{
-    dev_name_0_, dev_class_0_, dev_subclass_, dev_unique_props_, dev_extra_props_, dev_cap_};
-
   srs_.setDevice(dev_in_.getName(),
                  dev_in_.getClass(),
                  dev_in_.getSubclass(),
