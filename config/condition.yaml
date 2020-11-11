@@ -1,0 +1,4 @@
+condition:
+  name: "condition"
+  args: ["arg_0", "arg_1"]
+  not: true
