@@ -156,6 +156,8 @@ void rtask::commons::Predicate::setParameter(const std::string& t_name, const st
 
   if (it == parameters_.end()) {
     parameters_.emplace_back(t_name, t_type);
+    updValidity();
+    return;
   }
   it->setType(t_type);
   updValidity();
