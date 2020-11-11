@@ -180,10 +180,12 @@ TEST_F(DeviceTest, getUniqueProperty)
 
   for (auto& n_ : unique_prop_names_check_)
     unique_prop_check_.push_back(dev_.getUniqueProperty(n_).second);
+
+  ASSERT_EQ(dev_.getUniqueProperties(), unique_prop_check_);
 }
+
 TEST_F(DeviceTest, setUniqueProperty)
 {
-
   dev_.setUniqueProperty(prop_in_.getName(), prop_in_.getValue().second);
 
   rtask::commons::Property unique_prop_check_ = dev_.getUniqueProperty(prop_in_.getName()).second;
