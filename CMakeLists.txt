@@ -45,9 +45,9 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/collectiveRoboticSystem.cpp
                                 src/agent.cpp
                                 src/agentGroup.cpp
-                                src/parameter.cpp
-                                src/predicate.cpp
-                                src/condition.cpp
+                                src/typedName.cpp
+#                                src/predicate.cpp
+#                                src/condition.cpp
 #                                src/action.cpp
 #                                src/taskDefinition.cpp
 #                                src/domain.cpp
