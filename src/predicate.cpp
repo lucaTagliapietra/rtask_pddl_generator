@@ -4,9 +4,9 @@
 // ------------
 // CONSTRUCTORS
 // ------------
-rtask::commons::Predicate::Predicate(const std::string& t_name, const std::vector<Parameter>& t_params)
+rtask::commons::Predicate::Predicate(const std::string& t_name, const std::vector<TypedName>& t_args)
 {
-  set(t_name, t_params);
+  set(t_name, t_args);
 }
 
 rtask::commons::Predicate::Predicate(const rtask_msgs::PredicateConstPtr t_msg_ptr)
@@ -21,8 +21,11 @@ rtask::commons::Predicate::Predicate(const rtask_msgs::Predicate& t_msg)
 
 rtask::commons::Predicate::Predicate(XmlRpc::XmlRpcValue& t_rpc_val)
 {
+  std::string name = {};
+  std::vector<TypedName> args = {};
+
   if (commons::utils::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString), true) {
-    name_ = static_cast<std::string>(t_rpc_val["name"]);
+    name = static_cast<std::string>(t_rpc_val["name"]);
   }
   if (commons::utils::checkXmlRpcSanity("params", t_rpc_val, XmlRpc::XmlRpcValue::TypeArray)) {
     if (t_rpc_val["params"].size() == 0) {
@@ -30,68 +33,19 @@ rtask::commons::Predicate::Predicate(XmlRpc::XmlRpcValue& t_rpc_val)
     }
     else {
       for (int i = 0; i < t_rpc_val["params"].size(); ++i) {
-        Parameter p(t_rpc_val["params"][i]);
-        if (p.isValid()) {
-          parameters_.push_back(p);
-        }
+        args.emplace_back(t_rpc_val["params"][i]);
       }
     }
   }
-
-  valid_ = !name_.empty();
-}
-
-void rtask::commons::Predicate::set(const std::string& t_name, const std::vector<Parameter>& t_params)
-{
-  if (t_name.empty()) {
-    valid_ = false;
-    return;
-  }
-
-  name_ = t_name;
-  valid_ = true;
-
-  for (const auto& p : t_params) {
-    if (p.isValid()) {
-      parameters_.push_back(p);
-    }
-    else {
-      valid_ = false;
-    }
-  }
-}
-
-void rtask::commons::Predicate::fromMsg(const rtask_msgs::Predicate& t_msg)
-{
-  if (t_msg.name.empty()) {
-    valid_ = false;
-    return;
-  }
-  name_ = t_msg.name;
-  valid_ = true;
-  for (const auto& p_msg : t_msg.params) {
-    auto param = Parameter(p_msg);
-    if (param.isValid()) {
-      parameters_.push_back(param);
-    }
-    else {
-      valid_ = false;
-    }
-  }
-}
-
-void rtask::commons::Predicate::updValidity()
-{
-  valid_ = !name_.empty();
-  std::for_each(parameters_.begin(), parameters_.end(), [this](const auto& p) { valid_ &= p.isValid(); });
+  set(name, args);
 }
 
 rtask_msgs::Predicate rtask::commons::Predicate::toMsg() const
 {
   rtask_msgs::Predicate msg;
   msg.name = name_;
-  for (const auto& p : parameters_) {
-    msg.params.push_back(p.toMsg());
+  for (const auto& arg : args_) {
+    msg.params.push_back(arg.toMsg());
   }
   return msg;
 }
@@ -99,125 +53,87 @@ rtask_msgs::Predicate rtask::commons::Predicate::toMsg() const
 void rtask::commons::Predicate::clear()
 {
   name_.clear();
-  parameters_.clear();
-  valid_ = false;
+  args_.clear();
 }
 
-std::vector<std::string> rtask::commons::Predicate::getParameterList() const
+void rtask::commons::Predicate::set(const std::string& t_name, const std::vector<TypedName>& t_args)
+{
+  if (t_name.empty()) {
+    std::cerr << "Empty Predicate name" << std::endl;
+    return;
+  }
+
+  name_ = std::move(t_name);
+  args_ = std::move(t_args);
+}
+
+std::vector<std::string> rtask::commons::Predicate::getArgumentNames() const
 {
   std::vector<std::string> out;
-  std::for_each(parameters_.begin(), parameters_.end(), [&out](const auto& p) { out.emplace_back(p.getName()); });
+  std::for_each(args_.begin(), args_.end(), [&out](const auto& tn) { out.emplace_back(tn.getName()); });
+  return out;
+}
+
+std::vector<std::string> rtask::commons::Predicate::getArgumentTypeNames() const
+{
+  std::vector<std::string> out;
+  std::for_each(args_.begin(), args_.end(), [&out](const auto& tn) { out.emplace_back(tn.getTypeName()); });
   return out;
 }
 
 std::string rtask::commons::Predicate::toPddl(const bool t_typing) const
 {
+  if (name_.empty()) {
+    return {};
+  };
+
   std::string out{};
-  if (valid_) {
-    out += "(" + name_;
-    for (const auto& p : parameters_) {
-      out += " " + p.toPddl(t_typing);
-    }
-    out += ")";
+  out += "(" + name_;
+  for (const auto& arg : args_) {
+    out += " " + arg.toPddl(t_typing);
   }
+  out += ")";
   return out;
 }
 
-bool rtask::commons::Predicate::hasParameter(const std::string& t_name) const
+bool rtask::commons::Predicate::validate(const UnorderedTypedNameMap& t_known_types) const
 {
-  auto it = std::find_if(parameters_.begin(), parameters_.end(), [t_name](auto& p) { return p.getName() == t_name; });
-  return it != parameters_.end();
-}
-
-bool rtask::commons::Predicate::deleteParameter(const std::string& t_name)
-{
-  auto it = std::find_if(parameters_.begin(), parameters_.end(), [t_name](auto& p) { return p.getName() == t_name; });
-  if (it == parameters_.end()) {
+  if (name_.empty()) {
+    std::cerr << "VALIDATION ERROR: Empty predicate name" << std::endl;
     return false;
   }
 
-  parameters_.erase(it);
-  updValidity();
+  for (const auto& arg : args_) {
+    if (!arg.validate(t_known_types)) {
+      std::cerr << "\t(In definition of Predicate **" << name_ << "**" << std::endl;
+      return false;
+    }
+  }
+
   return true;
 }
 
-std::pair<bool, rtask::commons::Parameter> rtask::commons::Predicate::getParameter(const std::string& t_name) const
+bool rtask::commons::Predicate::operator==(const rtask::commons::Predicate& t_other) const
 {
-  auto it = std::find_if(parameters_.begin(), parameters_.end(), [t_name](auto& p) { return p.getName() == t_name; });
-  if (it == parameters_.end()) {
-    return {false, {}};
-  }
-  return {true, *it};
-}
-
-void rtask::commons::Predicate::setParameter(const std::string& t_name, const std::string& t_type)
-{
-  auto it = std::find_if(parameters_.begin(), parameters_.end(), [t_name](auto& p) { return p.getName() == t_name; });
-
-  if (it == parameters_.end()) {
-    parameters_.emplace_back(t_name, t_type);
-  }
-  it->setType(t_type);
-  updValidity();
-}
-
-bool rtask::commons::Predicate::isParameterValid(const std::string& t_name) const
-{
-  auto it = std::find_if(parameters_.begin(), parameters_.end(), [t_name](auto& p) { return p.getName() == t_name; });
-  if (it == parameters_.end()) {
+  if (name_ != t_other.getName()) {
     return false;
   }
-  return it->isValid();
-}
-
-bool rtask::commons::Predicate::isEquivalent(const Predicate& t_other, const bool t_typing) const
-{
-  bool eq = name_ == t_other.getName() && valid_ && t_other.isValid();
-  if (eq) {
-    const auto other_params = t_other.getParameters();
-    eq &= parameters_.size() == other_params.size();
-
-    if (t_typing && eq) {
-      for (unsigned int i = 0; i < parameters_.size() && eq; ++i) {
-        eq &= parameters_.at(i).isEquivalent(other_params.at(i), t_typing);
-      };
+  const auto& other_args = t_other.getArguments();
+  if (other_args.size() != args_.size()) {
+    return false;
+  }
+  else {
+    for (unsigned int i = 0; i < args_.size(); ++i) {
+      if (!(args_.at(i) == other_args.at(i))) {
+        return false;
+      }
     }
   }
-  return eq;
+  return true;
 }
 
-bool rtask::commons::Predicate::isEqual(const Predicate& t_other, const bool t_typing) const
+rtask::commons::Predicate& rtask::commons::Predicate::operator=(const rtask::commons::Predicate& t_other)
 {
-  bool eq = isEquivalent(t_other, t_typing);
-  if (eq) {
-    const auto other_params = t_other.getParameters();
-    for (unsigned int i = 0; i < parameters_.size() && eq; ++i) {
-      eq &= parameters_.at(i).isEqual(other_params.at(i));
-    };
-  }
-  return eq;
-}
-
-// bool rtask::commons::Predicate::operator==(const rtask::commons::Predicate& t_predicate) const
-// {
-//   if (!(name_ == t_predicate.getName() && valid_ == t_predicate.isValid())) {
-//     return false;
-//   }
-
-//   auto other_params = t_predicate.getParameters();
-//   for (const auto& p : parameters_) {
-//     auto it = std::find_if(other_params.begin(), other_params.end(), [p](auto& op) { return p == op; });
-//     if (it == other_params.end()) {
-//       return false;
-//     }
-//   }
-//   return true;
-//}
-
-rtask::commons::Predicate& rtask::commons::Predicate::operator=(const rtask::commons::Predicate& t_predicate)
-{
-  name_ = t_predicate.getName();
-  valid_ = t_predicate.isValid();
-  parameters_ = t_predicate.getParameters();
+  set(t_other.getName(), t_other.getArguments());
   return *this;
 }

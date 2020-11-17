@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "commons/parameter.h"
+#include "commons/typedName.h"
 
 #include "rtask_msgs/Predicate.h"
 
@@ -19,7 +19,7 @@ namespace rtask {
       Predicate() = default;
       ~Predicate() = default;
 
-      Predicate(const std::string& t_name, const std::vector<Parameter>& t_params = {});
+      Predicate(const std::string& t_name, const std::vector<TypedName>& t_args = {});
       Predicate(const rtask_msgs::PredicateConstPtr t_msg_ptr);
       Predicate(const rtask_msgs::Predicate& t_msg);
       Predicate(XmlRpc::XmlRpcValue& t_rpc_val);
@@ -30,50 +30,40 @@ namespace rtask {
       rtask_msgs::Predicate toMsg() const;
 
       void clear();
-      void set(const std::string& t_name, const std::vector<Parameter>& t_params);
+      void set(const std::string& t_name, const std::vector<TypedName>& t_args = {});
 
       inline std::string getName() const { return name_; }
-      inline std::vector<Parameter> getParameters() const { return parameters_; }
-      inline bool isValid() const { return valid_; }
+      inline std::vector<TypedName> getArguments() const { return args_; }
+      inline void setName(const std::string& t_name) { name_ = std::move(t_name); }
+      inline void setArguments(const std::vector<TypedName>& t_args) { args_ = std::move(t_args); }
 
-      std::vector<std::string> getParameterList() const;
+      std::vector<std::string> getArgumentNames() const;
+      std::vector<std::string> getArgumentTypeNames() const;
 
       std::string toPddl(const bool t_typing = true) const;
 
-      bool isEqual(const Predicate& t_other, const bool t_typing = true) const;
-      bool isEquivalent(const Predicate& t_other, const bool t_typing = true) const;
-
-      // ---------------
-      // Parameter Level
-      // ---------------
-      bool hasParameter(const std::string& t_name) const;
-      bool deleteParameter(const std::string& t_name);
-      bool isParameterValid(const std::string& t_name) const;
-      std::pair<bool, Parameter> getParameter(const std::string& t_name) const;
-      void setParameter(const std::string& t_name, const std::string& t_type = {});
+      bool validate(const UnorderedTypedNameMap& t_known_types) const;
 
       // ---------
       // Operators
       // ---------
-      // bool operator==(const Predicate& t_predicate) const;
-      Predicate& operator=(const Predicate& t_predicate);
+      bool operator==(const Predicate& t_other) const;
+      Predicate& operator=(const Predicate& t_other);
 
     private:
       void fromMsg(const rtask_msgs::Predicate& t_msg);
-      void updValidity();
 
       std::string name_{};
-      std::vector<Parameter> parameters_{};
-      bool valid_{false};
+      std::vector<TypedName> args_{};
     };
 
     static std::ostream& operator<<(std::ostream& out, const Predicate& p)
     {
-      out << "name: " << p.getName() << std::endl << "valid: " << p.isValid() << std::endl;
+      out << "name: " << p.getName() << std::endl;
       unsigned int i = 0;
-      for (const auto& par : p.getParameters()) {
+      for (const auto& arg : p.getArguments()) {
         out << "\t"
-            << " - params[" << i << "]: " << par;
+            << " - args[" << i << "]: " << arg;
         ++i;
       }
       return out << std::endl;
