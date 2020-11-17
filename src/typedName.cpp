@@ -78,6 +78,11 @@ std::string rtask::commons::TypedName::toPddl(const bool t_typing) const
 
 bool rtask::commons::TypedName::validate(const UnorderedTypedNameMap& t_known_types) const
 {
+  if (name_.empty()) {
+    std::cerr << "VALIDATION ERROR: Empty TypedName name" << std::endl;
+    return false;
+  }
+
   if (!t_known_types.count(type_name_)) {
     std::cerr << "VALIDATION ERROR: Unknown Type **" << type_name_ << "**" << std::endl;
     return false;

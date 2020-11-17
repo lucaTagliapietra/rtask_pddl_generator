@@ -27,8 +27,8 @@ namespace rtask {
       rtask_msgs::Parameter toMsg() const;
 
       void set(const std::string& t_name, const std::string& t_type);
-      inline void setName(const std::string& t_name) { name_ = t_name; }
-      inline void setType(const std::string& t_type) { type_name_ = t_type; }
+      inline void setName(const std::string& t_name) { name_ = std::move(t_name); }
+      inline void setType(const std::string& t_type) { type_name_ = std::move(t_type); }
 
       inline std::string getName() const { return name_; }
       inline std::string getTypeName() const { return type_name_; }
