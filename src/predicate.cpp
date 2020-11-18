@@ -105,7 +105,7 @@ bool rtask::commons::Predicate::validate(const UnorderedTypedNameMap& t_known_ty
 
   for (const auto& arg : args_) {
     if (!arg.validate(t_known_types)) {
-      std::cerr << "\t(In definition of Predicate **" << name_ << "**" << std::endl;
+      std::cerr << "\t(In definition of Predicate **" << name_ << "**)" << std::endl;
       return false;
     }
   }
@@ -137,3 +137,12 @@ rtask::commons::Predicate& rtask::commons::Predicate::operator=(const rtask::com
   set(t_other.getName(), t_other.getArguments());
   return *this;
 }
+
+void rtask::commons::Predicate::fromMsg(const rtask_msgs::Predicate& t_msg)
+{
+  std::vector<TypedName> args{};
+  for (const auto& arg : t_msg.params) {
+    args.emplace_back(arg);
+  }
+  set(t_msg.name, args);
+};
