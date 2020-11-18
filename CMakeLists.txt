@@ -47,7 +47,7 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/agentGroup.cpp
                                 src/typedName.cpp
                                 src/predicate.cpp
-#                                src/condition.cpp
+                                src/literalCondition.cpp
 #                                src/action.cpp
 #                                src/taskDefinition.cpp
 #                                src/domain.cpp
