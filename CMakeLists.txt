@@ -38,7 +38,8 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # packages don't collide add_executable(${PROJECT_NAME}_node
 
 add_library(${PROJECT_NAME}_pddl_generator_lib src/utils.cpp
-                                               src/pddl_generator/LiteralTerm.cpp)
+                                               src/pddl_generator/LiteralTerm.cpp
+                                               src/pddl_generator/NumericalTerm.cpp)
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/property.cpp

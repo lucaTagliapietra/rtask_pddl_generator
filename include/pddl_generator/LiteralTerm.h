@@ -19,7 +19,7 @@ namespace rtask {
       class LiteralTerm : public Term
       {
       public:
-        LiteralTerm() = default;
+        LiteralTerm();
         ~LiteralTerm() override = default;
 
         LiteralTerm(const std::string& t_name, const std::string& t_type = {"object"});
@@ -32,12 +32,14 @@ namespace rtask {
         inline std::string getName() const { return name_; }
         inline std::string getType() const { return type_; }
 
-        std::string toPddl(const bool t_typing = true) const override;
-
         bool validate(const UnordStrToLitTermMap& t_types) const;
 
         bool operator==(const LiteralTerm& t_other) const;
         LiteralTerm& operator=(const LiteralTerm& t_other);
+
+        std::string toPddl(const bool t_typing = true) const override;
+        std::any getAsChild(Term& t_parent) const override;
+        std::any getAsChild(std::shared_ptr<Term> t_parent_ptr) const override;
 
       private:
         std::string name_{};
@@ -46,7 +48,7 @@ namespace rtask {
 
       static std::ostream& operator<<(std::ostream& t_out, const LiteralTerm& t_tn)
       {
-        t_out << "name: " << t_tn.getName() << std::endl << "type: " << t_tn.getType() << std::endl;
+        t_out << "name: " << t_tn.getName() << std::endl << "type: " << t_tn.getType();
         return t_out;
       }
 

@@ -2,6 +2,9 @@
 #define rtask_commons_pddl_generator_term_h
 
 #include "xmlrpcpp/XmlRpc.h"
+
+#include <any>
+#include <memory>
 #include <string>
 
 namespace rtask {
@@ -18,13 +21,16 @@ namespace rtask {
       class Term
       {
       public:
-        virtual ~Term() {}
+        Term() = default;
+        virtual ~Term() = default;
 
-        virtual std::string toPddl(const bool t_typing = true) const;
+        virtual std::string toPddl(const bool t_typing = true) const { return {}; }
+        virtual std::any getAsChild(Term& t_parent) const;
+        virtual std::any getAsChild(std::shared_ptr<Term> t_parent_ptr) const;
 
         inline TermType getObjectType() const { return obj_type_; }
 
-      private:
+      protected:
         TermType obj_type_{TermType::Base};
       };
 

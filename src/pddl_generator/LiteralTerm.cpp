@@ -2,18 +2,25 @@
 #include "commons/utils.h"
 
 using namespace rtask::commons::pddl_generator;
+
 // ------------
 // CONSTRUCTORS
 // ------------
+LiteralTerm::LiteralTerm()
+{
+  obj_type_ = TermType::LiteralTerm;
+}
+
 LiteralTerm::LiteralTerm(const std::string& t_name, const std::string& t_type)
 {
   set(t_name, t_type);
+  obj_type_ = TermType::LiteralTerm;
 }
 
 LiteralTerm::LiteralTerm(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  std::string name = {};
-  std::string type = {};
+
+  std::string name, type = {};
 
   if (commons::utils::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
     name = static_cast<std::string>(t_rpc_val["name"]);
@@ -23,22 +30,7 @@ LiteralTerm::LiteralTerm(XmlRpc::XmlRpcValue& t_rpc_val)
   }
 
   set(name, type);
-}
-
-void LiteralTerm::set(const std::string& t_name, const std::string& t_type)
-{
-  if (t_name.empty()) {
-    std::cerr << "Empty TypedName object name" << std::endl;
-    return;
-  }
-  std::string type = std::move(t_type);
-  if (type.empty()) {
-    std::cout << "Empty TypedName object Type not allowed, setting to default **object** type" << std::endl;
-    type = "object";
-  }
-
-  name_ = std::move(t_name);
-  type_ = std::move(type);
+  obj_type_ = TermType::LiteralTerm;
 }
 
 std::string LiteralTerm::toPddl(const bool t_typing) const
@@ -77,4 +69,30 @@ LiteralTerm& LiteralTerm::operator=(const LiteralTerm& t_other)
 {
   set(t_other.getName(), t_other.getType());
   return *this;
+}
+
+void LiteralTerm::set(const std::string& t_name, const std::string& t_type)
+{
+  if (t_name.empty()) {
+    std::cerr << "Empty TypedName object name" << std::endl;
+    return;
+  }
+  std::string type = std::move(t_type);
+  if (type.empty()) {
+    std::cout << "Empty TypedName object Type not allowed, setting to default **object** type" << std::endl;
+    type = "object";
+  }
+
+  name_ = std::move(t_name);
+  type_ = std::move(type);
+}
+
+std::any LiteralTerm::getAsChild(Term& t_parent) const
+{
+  return {dynamic_cast<LiteralTerm&>(t_parent)};
+}
+
+std::any LiteralTerm::getAsChild(std::shared_ptr<Term> t_parent) const
+{
+  return {std::dynamic_pointer_cast<LiteralTerm>(t_parent)};
 }
