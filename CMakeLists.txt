@@ -21,8 +21,8 @@ catkin_package(CATKIN_DEPENDS roscpp
 # Specify additional locations of header files Your package locations should be
 # listed before other locations
 include_directories(include
-                     ${catkin_INCLUDE_DIRS}
-                     )
+                    ${catkin_INCLUDE_DIRS}
+                    )
 
 # Display additional files in qtcreator
 file(GLOB_RECURSE
@@ -36,6 +36,10 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # Declare a C++ executable With catkin_make all packages are built within a
 # single CMake context The recommended prefix ensures that target names across
 # packages don't collide add_executable(${PROJECT_NAME}_node
+
+add_library(${PROJECT_NAME}_pddl_generator_lib src/utils.cpp
+                                               src/pddl_generator/LiteralTerm.cpp)
+
 add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/property.cpp
                                 src/capability.cpp
@@ -46,7 +50,7 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/agent.cpp
                                 src/agentGroup.cpp
                                 src/typedTerm.cpp
-                                src/literalFormula.cpp
+#                                src/literalFormula.cpp
 #                                src/predicate.cpp
 #                                src/literalCondition.cpp
 #                                src/action.cpp
@@ -67,7 +71,7 @@ add_library(${PROJECT_NAME}_lib src/utils.cpp
 #                                  "lib")
 
 catkin_package(INCLUDE_DIRS include
-               LIBRARIES ${PROJECT_NAME}_lib)
+               LIBRARIES ${PROJECT_NAME}_lib ${PROJECT_NAME}_pddl_generator_lib)
 
 # Add cmake target dependencies of the executable same as for the library above
 add_dependencies(${PROJECT_NAME}_lib
@@ -85,6 +89,18 @@ set_target_properties(${PROJECT_NAME}_lib PROPERTIES CXX_STANDARD 17)
 target_include_directories(${PROJECT_NAME}_lib
                            PUBLIC include
                            PUBLIC ${catkin_INCLUDE_DIRS})
+
+# Specify libraries to link a library or executable target against
+target_link_libraries(${PROJECT_NAME}_pddl_generator_lib ${catkin_LIBRARIES})
+
+set_target_properties(${PROJECT_NAME}_pddl_generator_lib
+                      PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+set_target_properties(${PROJECT_NAME}_pddl_generator_lib PROPERTIES CXX_STANDARD 17)
+
+target_include_directories(${PROJECT_NAME}_pddl_generator_lib
+                          PUBLIC include/pddl_generator
+                          PUBLIC ${catkin_INCLUDE_DIRS})
 
 if(CATKIN_ENABLE_TESTING)
  find_package(rostest REQUIRED)
