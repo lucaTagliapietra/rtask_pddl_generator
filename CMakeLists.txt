@@ -39,7 +39,8 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 
 add_library(${PROJECT_NAME}_pddl_generator_lib src/utils.cpp
                                                src/pddl_generator/LiteralTerm.cpp
-                                               src/pddl_generator/NumericalTerm.cpp)
+                                               src/pddl_generator/NumericalTerm.cpp
+                                               src/pddl_generator/LiteralBooleanExpression.cpp)
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp
                                 src/property.cpp
