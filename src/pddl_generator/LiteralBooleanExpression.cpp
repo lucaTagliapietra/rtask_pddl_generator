@@ -1,5 +1,5 @@
 #include "pddl_generator/LiteralBooleanExpression.h"
-#include "commons/utils.h"
+#include "pddl_generator/Helpers.h"
 
 using namespace rtask::commons::pddl_generator;
 
@@ -23,11 +23,11 @@ LiteralBooleanExpression::LiteralBooleanExpression(XmlRpc::XmlRpcValue& t_rpc_va
   std::string name{};
   std::vector<std::string> args{};
 
-  if (commons::utils::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
+  if (helpers::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
     name = static_cast<std::string>(t_rpc_val["name"]);
   }
 
-  if (commons::utils::checkXmlRpcSanity("args", t_rpc_val, XmlRpc::XmlRpcValue::TypeArray)) {
+  if (helpers::checkXmlRpcSanity("args", t_rpc_val, XmlRpc::XmlRpcValue::TypeArray)) {
     if (t_rpc_val["args"].size() == 0) {
       std::cout << "Empty args vector for LiteralBooleanExpression " << name << std::endl;
     }

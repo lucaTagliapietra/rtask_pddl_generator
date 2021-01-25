@@ -37,7 +37,7 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 # single CMake context The recommended prefix ensures that target names across
 # packages don't collide add_executable(${PROJECT_NAME}_node
 
-add_library(${PROJECT_NAME}_pddl_generator_lib src/utils.cpp
+add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/LiteralTerm.cpp
                                                src/pddl_generator/NumericalTerm.cpp
                                                src/pddl_generator/LiteralBooleanExpression.cpp)

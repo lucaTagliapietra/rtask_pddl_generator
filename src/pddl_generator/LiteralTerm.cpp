@@ -1,5 +1,5 @@
 #include "pddl_generator/LiteralTerm.h"
-#include "commons/utils.h"
+#include "pddl_generator/Helpers.h"
 
 using namespace rtask::commons::pddl_generator;
 
@@ -22,10 +22,10 @@ LiteralTerm::LiteralTerm(XmlRpc::XmlRpcValue& t_rpc_val)
 
   std::string name, type = {};
 
-  if (commons::utils::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
+  if (helpers::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
     name = static_cast<std::string>(t_rpc_val["name"]);
   }
-  if (commons::utils::checkXmlRpcSanity("type", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
+  if (helpers::checkXmlRpcSanity("type", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
     type = static_cast<std::string>(t_rpc_val["type"]);
   }
 

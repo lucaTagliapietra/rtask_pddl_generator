@@ -1,5 +1,5 @@
 #include "pddl_generator/NumericalTerm.h"
-#include "commons/utils.h"
+#include "pddl_generator/Helpers.h"
 
 using namespace rtask::commons::pddl_generator;
 
@@ -20,7 +20,7 @@ NumericalTerm::NumericalTerm(XmlRpc::XmlRpcValue& t_rpc_val)
 {
   double value{};
 
-  if (commons::utils::checkXmlRpcSanity("value", t_rpc_val, XmlRpc::XmlRpcValue::TypeDouble, true)) {
+  if (helpers::checkXmlRpcSanity("value", t_rpc_val, XmlRpc::XmlRpcValue::TypeDouble, true)) {
     value = static_cast<double>(t_rpc_val["name"]);
   }
 
