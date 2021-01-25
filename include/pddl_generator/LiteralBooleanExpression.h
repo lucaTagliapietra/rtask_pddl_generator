@@ -5,9 +5,7 @@
 #include "LiteralTerm.h"
 #include "xmlrpcpp/XmlRpc.h"
 
-#include <any>
 #include <iostream>
-#include <string>
 
 namespace rtask {
   namespace commons {
@@ -39,8 +37,6 @@ namespace rtask {
         LiteralBooleanExpression& operator=(const LiteralBooleanExpression& t_other);
 
         std::string toPddl(const bool t_typing = true) const override;
-        std::any getAsChild(BooleanExpression& t_parent) const override;
-        std::any getAsChild(std::shared_ptr<BooleanExpression> t_parent_ptr) const override;
 
       private:
         //   string expression_name is already protected in parent class

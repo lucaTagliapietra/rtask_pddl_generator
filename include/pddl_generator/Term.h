@@ -25,8 +25,6 @@ namespace rtask {
         virtual ~Term() = default;
 
         virtual std::string toPddl(const bool t_typing = true) const { return {}; }
-        virtual std::any getAsChild(Term& t_parent) const;
-        virtual std::any getAsChild(std::shared_ptr<Term> t_parent_ptr) const;
 
         inline TermType getObjectType() const { return obj_type_; }
 

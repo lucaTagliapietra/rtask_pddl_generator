@@ -4,9 +4,7 @@
 #include "Term.h"
 #include "xmlrpcpp/XmlRpc.h"
 
-#include <any>
 #include <iostream>
-#include <string>
 
 namespace rtask {
   namespace commons {
@@ -28,8 +26,6 @@ namespace rtask {
         NumericalTerm& operator=(const NumericalTerm& t_other);
 
         std::string toPddl(const bool t_typing = true) const override;
-        std::any getAsChild(Term& t_parent) const override;
-        std::any getAsChild(std::shared_ptr<Term> t_parent_ptr) const override;
 
       private:
         double value_{};

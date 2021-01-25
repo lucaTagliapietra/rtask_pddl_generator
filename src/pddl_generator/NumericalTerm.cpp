@@ -42,13 +42,3 @@ std::string NumericalTerm::toPddl(const bool) const
 {
   return std::to_string(value_);
 }
-
-std::any NumericalTerm::getAsChild(Term& t_parent) const
-{
-  return {dynamic_cast<NumericalTerm&>(t_parent)};
-}
-
-std::any NumericalTerm::getAsChild(std::shared_ptr<Term> t_parent) const
-{
-  return {std::dynamic_pointer_cast<NumericalTerm>(t_parent)};
-}

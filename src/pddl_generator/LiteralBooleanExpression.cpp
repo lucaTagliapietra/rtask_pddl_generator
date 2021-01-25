@@ -112,16 +112,6 @@ std::string LiteralBooleanExpression::toPddl(const bool t_typing) const
   return out;
 }
 
-std::any LiteralBooleanExpression::getAsChild(BooleanExpression& t_parent) const
-{
-  return {dynamic_cast<LiteralBooleanExpression&>(t_parent)};
-}
-
-std::any LiteralBooleanExpression::getAsChild(std::shared_ptr<BooleanExpression> t_parent) const
-{
-  return {std::dynamic_pointer_cast<LiteralBooleanExpression>(t_parent)};
-}
-
 // TODO: This strongly depends on the implementation of the action class, check it
 bool LiteralBooleanExpression::validate(const UnordStrToLitTermMap& t_known_constants,
                                         const UnordStrToUIntMap& t_belonging_action_args,

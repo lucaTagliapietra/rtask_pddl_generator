@@ -38,8 +38,6 @@ namespace rtask {
         LiteralTerm& operator=(const LiteralTerm& t_other);
 
         std::string toPddl(const bool t_typing = true) const override;
-        std::any getAsChild(Term& t_parent) const override;
-        std::any getAsChild(std::shared_ptr<Term> t_parent_ptr) const override;
 
       private:
         std::string name_{};

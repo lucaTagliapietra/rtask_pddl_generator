@@ -86,13 +86,3 @@ void LiteralTerm::set(const std::string& t_name, const std::string& t_type)
   name_ = std::move(t_name);
   type_ = std::move(type);
 }
-
-std::any LiteralTerm::getAsChild(Term& t_parent) const
-{
-  return {dynamic_cast<LiteralTerm&>(t_parent)};
-}
-
-std::any LiteralTerm::getAsChild(std::shared_ptr<Term> t_parent) const
-{
-  return {std::dynamic_pointer_cast<LiteralTerm>(t_parent)};
-}

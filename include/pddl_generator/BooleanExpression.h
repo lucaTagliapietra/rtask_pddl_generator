@@ -3,9 +3,6 @@
 
 #include "xmlrpcpp/XmlRpc.h"
 
-#include <any>
-#include <memory>
-#include <string>
 #include <unordered_map>
 
 namespace rtask {
@@ -37,9 +34,6 @@ namespace rtask {
 
         inline std::string getExpressionName() const { return expression_name_; }
         inline BooleanExpressionType getExpressionType() const { return expr_type_; }
-
-        virtual std::any getAsChild(BooleanExpression& t_parent) const;
-        virtual std::any getAsChild(std::shared_ptr<BooleanExpression> t_parent_ptr) const;
 
       protected:
         std::string expression_name_{};
