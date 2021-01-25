@@ -13,15 +13,16 @@ namespace rtask {
 
       enum class BooleanExpressionType
       {
-        BooleanExpressionBase = 0,
-        NotExpression = 1,
-        AndExpression = 2,
-        OrExpression = 3,
-        CompareExpression = 4,
-        WhenExpression = 5,
-        ExistsExpression = 6,
-        ForAllExpression = 7,
-        LiteralBooleanExpression = 8
+        Invalid = 0,
+        BooleanExpressionBase,
+        NotExpression,
+        AndExpression,
+        OrExpression,
+        CompareExpression,
+        WhenExpression,
+        ExistsExpression,
+        ForAllExpression,
+        LiteralBooleanExpression
       };
 
       class BooleanExpression

@@ -13,9 +13,10 @@ namespace rtask {
 
       enum class TermType
       {
-        Base = 0,
-        LiteralTerm = 1,
-        NumericalTerm = 2
+        Invalid = 0,
+        Base,
+        LiteralTerm,
+        NumericalTerm
       };
 
       class Term
