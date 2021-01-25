@@ -1,4 +1,8 @@
 #include "pddl_generator/Helpers.h"
+#include "pddl_generator/NotExpression.h"
+
+#include "pddl_generator/LiteralTerm.h"
+#include "pddl_generator/NumericalTerm.h"
 
 using namespace rtask::commons::pddl_generator;
 
@@ -85,4 +89,52 @@ XmlRpc::XmlRpcValue::Type helpers::getTagValueType(const std::string& t_tag, Xml
     return XmlRpc::XmlRpcValue::Type::TypeInvalid;
   }
   return t_node[t_tag].getType();
+}
+
+std::any helpers::getAsChild(Term& t_parent)
+{
+  TermType type = t_parent.getObjectType();
+  switch (type) {
+    case TermType::LiteralTerm:
+      return dynamic_cast<LiteralTerm&>(t_parent);
+    case TermType::NumericalTerm:
+      return dynamic_cast<NumericalTerm&>(t_parent);
+    default:
+      return {};
+  }
+}
+
+std::any helpers::getAsChild(std::shared_ptr<Term> t_parent)
+{
+  TermType type = t_parent->getObjectType();
+  switch (type) {
+    case TermType::LiteralTerm:
+      return std::dynamic_pointer_cast<LiteralTerm>(t_parent);
+    case TermType::NumericalTerm:
+      return std::dynamic_pointer_cast<NumericalTerm>(t_parent);
+    default:
+      return {};
+  }
+}
+
+std::any helpers::getAsChild(BooleanExpression& t_parent)
+{
+  BooleanExpressionType type = t_parent.getExpressionType();
+  switch (type) {
+    case BooleanExpressionType::NotExpression:
+      return dynamic_cast<NotExpression&>(t_parent);
+    default:
+      return {};
+  }
+}
+
+std::any helpers::getAsChild(std::shared_ptr<BooleanExpression> t_parent)
+{
+  BooleanExpressionType type = t_parent->getExpressionType();
+  switch (type) {
+    case BooleanExpressionType::NotExpression:
+      return std::dynamic_pointer_cast<NotExpression>(t_parent);
+    default:
+      return {};
+  }
 }

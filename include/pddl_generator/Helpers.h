@@ -4,6 +4,7 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include "BooleanExpression.h"
+#include "Term.h"
 
 #include <any>
 #include <iostream>
@@ -36,21 +37,13 @@ namespace rtask {
 
         XmlRpc::XmlRpcValue::Type getTagValueType(const std::string& t_tag, XmlRpc::XmlRpcValue& t_node);
 
-        //        std::any getAsChild(BooleanExpression& t_parent) { return {}; }
-        //        std::any getAsChild(std::shared_ptr<BooleanExpression> t_parent_ptr) { return {}; }
+        std::any getAsChild(Term& t_parent);
+        std::any getAsChild(std::shared_ptr<Term> t_parent_ptr);
 
-        //        std::any NumericalTerm::getAsChild(Term& t_parent) const
-        //        {
-        //          return {dynamic_cast<NumericalTerm&>(t_parent)};
-        //        }
-
-        //        std::any NumericalTerm::getAsChild(std::shared_ptr<Term> t_parent) const
-        //        {
-        //          return {std::dynamic_pointer_cast<NumericalTerm>(t_parent)};
-        //        }
+        std::any getAsChild(BooleanExpression& t_parent);
+        std::any getAsChild(std::shared_ptr<BooleanExpression> t_parent_ptr);
 
       } // namespace helpers
-
     } // namespace pddl_generator
   } // namespace commons
 } // namespace rtask
