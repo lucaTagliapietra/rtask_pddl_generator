@@ -172,7 +172,6 @@ std::any helpers::getAsChild(std::shared_ptr<BooleanExpression> t_parent)
 }
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<BooleanExpression> t_expr)
 {
-  t_out << "Expression Name: " << t_expr->getExpressionName() << std::endl;
   switch (t_expr->getExpressionType()) {
     case BooleanExpressionType::LiteralBooleanExpression:
       t_out << *std::dynamic_pointer_cast<LiteralBooleanExpression>(t_expr);

@@ -48,7 +48,7 @@ namespace rtask {
 
       static std::ostream& operator<<(std::ostream& t_out, const NotExpression& t_expr)
       {
-        t_out << "Expression Name: " << t_expr.getExpressionName() << std::endl;
+        t_out << "NotExpression name: " << t_expr.getExpressionName() << std::endl;
         t_out << t_expr.getExpression();
         return t_out;
       }
