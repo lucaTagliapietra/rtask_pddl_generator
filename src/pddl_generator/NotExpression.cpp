@@ -30,7 +30,7 @@ NotExpression::NotExpression(XmlRpc::XmlRpcValue& t_rpc_val)
   expr_ = helpers::getBooleanExprFromXmlRpc(t_rpc_val);
 
   if (!expr_) {
-    std::cerr << "Invalid Boolean Expression as argument of current NotExpression" << std::endl;
+    std::cerr << "Fatal: Invalid Boolean Expression as argument of current NotExpression" << std::endl;
     exit(EXIT_FAILURE);
   }
   expression_name_ = "not";
@@ -45,9 +45,9 @@ void NotExpression::clear()
 std::string NotExpression::toPddl(const bool t_typing) const
 {
   std::string out{};
-  out += "(" + expression_name_ + " ( ";
+  out += expression_name_ + " (";
   out += ::helpers::booleanExprToPddl(expr_, t_typing);
-  out += ") )";
+  out += " )";
   return out;
 }
 

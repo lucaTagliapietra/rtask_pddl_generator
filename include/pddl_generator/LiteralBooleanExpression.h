@@ -45,7 +45,7 @@ namespace rtask {
 
       static std::ostream& operator<<(std::ostream& t_out, const LiteralBooleanExpression& t_expr)
       {
-        t_out << "Expresison Name: " << t_expr.getExpressionName() << std::endl;
+        t_out << "Expression Name: " << t_expr.getExpressionName();
         unsigned int i = 0;
         for (const auto& a : t_expr.getExpressionArgs()) {
           t_out << std::endl

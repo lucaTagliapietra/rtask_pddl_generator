@@ -97,18 +97,17 @@ LiteralBooleanExpression& LiteralBooleanExpression::operator=(const LiteralBoole
   return *this;
 }
 
-std::string LiteralBooleanExpression::toPddl(const bool t_typing) const
+std::string LiteralBooleanExpression::toPddl(const bool) const
 {
   if (expression_name_.empty()) {
     return {};
   };
 
   std::string out{};
-  out += "(" + expression_name_; // Open args list
+  out += expression_name_;
   for (const auto& a : args_) {
     out += " ?" + a;
   }
-  out += ")"; // Close args list
   return out;
 }
 
