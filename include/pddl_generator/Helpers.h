@@ -49,10 +49,11 @@ namespace rtask {
         std::any getAsChild(BooleanExpression& t_parent);
         std::any getAsChild(std::shared_ptr<BooleanExpression> t_parent_ptr);
 
-        std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<BooleanExpression> t_expr);
         bool operator==(const BooleanExpression& t_first, const BooleanExpression& t_second);
 
       } // namespace helpers
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<BooleanExpression> t_expr);
+
     } // namespace pddl_generator
   } // namespace commons
 } // namespace rtask

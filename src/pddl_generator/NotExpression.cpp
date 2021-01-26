@@ -27,9 +27,7 @@ NotExpression::NotExpression(std::shared_ptr<BooleanExpression> t_expr_ptr)
 
 NotExpression::NotExpression(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  if (helpers::checkXmlRpcSanity("not", t_rpc_val, XmlRpc::XmlRpcValue::TypeStruct)) {
-    expr_ = helpers::getBooleanExprFromXmlRpc(t_rpc_val["not"]);
-  }
+  expr_ = helpers::getBooleanExprFromXmlRpc(t_rpc_val);
 
   if (!expr_) {
     std::cerr << "Invalid Boolean Expression as argument of current NotExpression" << std::endl;

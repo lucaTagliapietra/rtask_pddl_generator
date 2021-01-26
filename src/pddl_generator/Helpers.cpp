@@ -41,10 +41,10 @@ BooleanExpressionType helpers::getBooleanExprTypeFromXmlRpc(XmlRpc::XmlRpcValue&
 std::shared_ptr<BooleanExpression> helpers::getBooleanExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
   if (t_rpc_val.hasMember("not")) {
-    return std::make_shared<NotExpression>(t_rpc_val);
+    return std::make_shared<NotExpression>(t_rpc_val["not"]);
   }
   else if (t_rpc_val.hasMember("expr")) {
-    return std::make_shared<LiteralBooleanExpression>(t_rpc_val);
+    return std::make_shared<LiteralBooleanExpression>(t_rpc_val["expr"]);
   }
   //  else if (t_rpc_val.hasMember("and")) {
   //    return std::make_shared<AndExpression>(t_rpc_val);
@@ -170,7 +170,7 @@ std::any helpers::getAsChild(std::shared_ptr<BooleanExpression> t_parent)
       return {};
   }
 }
-std::ostream& helpers::operator<<(std::ostream& t_out, std::shared_ptr<BooleanExpression> t_expr)
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<BooleanExpression> t_expr)
 {
   t_out << "Expressison Name: " << t_expr->getExpressionName() << std::endl;
   switch (t_expr->getExpressionType()) {
