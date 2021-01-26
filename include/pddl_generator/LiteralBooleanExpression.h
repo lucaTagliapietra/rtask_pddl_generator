@@ -49,8 +49,7 @@ namespace rtask {
         unsigned int i = 0;
         for (const auto& a : t_expr.getExpressionArgs()) {
           (i != 0) ? t_out << std::endl : t_out << "";
-          t_out << std::endl
-                << "\t"
+          t_out << "\t"
                 << " - args[" << i << "]: " << a;
           ++i;
         }
