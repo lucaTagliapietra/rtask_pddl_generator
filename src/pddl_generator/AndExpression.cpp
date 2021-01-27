@@ -43,7 +43,7 @@ void AndExpression::clear()
   expr_vec_.clear();
 }
 
-int AndExpression::findExpression(std::shared_ptr<LogicalExpression> t_expr) const
+int AndExpression::findExpression(LogicalExprPtr t_expr) const
 {
   for (unsigned int i = 0; i < expr_vec_.size(); ++i) {
     if (helpers::operator==(*t_expr, *expr_vec_[i]))
@@ -52,7 +52,7 @@ int AndExpression::findExpression(std::shared_ptr<LogicalExpression> t_expr) con
   return -1;
 }
 
-bool AndExpression::hasExpression(std::shared_ptr<LogicalExpression> t_expr) const
+bool AndExpression::hasExpression(LogicalExprPtr t_expr) const
 {
   for (const auto& expr : expr_vec_) {
     if (helpers::operator==(*t_expr, *expr)) {
@@ -62,7 +62,7 @@ bool AndExpression::hasExpression(std::shared_ptr<LogicalExpression> t_expr) con
   return false;
 }
 
-bool AndExpression::addExpression(std::shared_ptr<LogicalExpression> t_expr)
+bool AndExpression::addExpression(LogicalExprPtr t_expr)
 {
   if (hasExpression(t_expr)) {
     return false;
@@ -70,7 +70,7 @@ bool AndExpression::addExpression(std::shared_ptr<LogicalExpression> t_expr)
   expr_vec_.push_back(t_expr);
   return true;
 }
-bool AndExpression::removeExpression(std::shared_ptr<LogicalExpression> t_expr)
+bool AndExpression::removeExpression(LogicalExprPtr t_expr)
 {
   int pos = findExpression(t_expr);
   if (pos != -1) {

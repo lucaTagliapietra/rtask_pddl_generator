@@ -44,7 +44,7 @@ LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue&
   }
 }
 
-std::shared_ptr<LogicalExpression> helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
+LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
   if (t_rpc_val.hasMember("not")) {
     return std::make_shared<NotExpression>(t_rpc_val["not"]);
@@ -172,7 +172,7 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
   }
 }
 
-std::any helpers::getAsChild(std::shared_ptr<LogicalExpression> t_parent)
+std::any helpers::getAsChild(LogicalExprPtr t_parent)
 {
   LogicalExpressionType type = t_parent->getExpressionType();
   switch (type) {
@@ -184,11 +184,13 @@ std::any helpers::getAsChild(std::shared_ptr<LogicalExpression> t_parent)
       return std::dynamic_pointer_cast<AndExpression>(t_parent);
     case LogicalExpressionType::Or:
       return std::dynamic_pointer_cast<OrExpression>(t_parent);
+    case LogicalExpressionType::When:
+      return std::dynamic_pointer_cast<WhenExpression>(t_parent);
     default:
       return {};
   }
 }
-std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<LogicalExpression> t_expr)
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, LogicalExprPtr t_expr)
 {
   switch (t_expr->getExpressionType()) {
     case LogicalExpressionType::Literal:
@@ -226,12 +228,14 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
       return operator==(dynamic_cast<const AndExpression&>(t_first), dynamic_cast<const AndExpression&>(t_second));
     case LogicalExpressionType::Or:
       return operator==(dynamic_cast<const OrExpression&>(t_first), dynamic_cast<const OrExpression&>(t_second));
+    case LogicalExpressionType::When:
+      return operator==(dynamic_cast<const WhenExpression&>(t_first), dynamic_cast<const WhenExpression&>(t_second));
     default:
       return false;
   }
 }
 
-std::string helpers::logicalExprToPddl(std::shared_ptr<LogicalExpression> t_ptr, const bool t_typing)
+std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, const bool t_typing)
 {
   LogicalExpressionType type = t_ptr->getExpressionType();
   switch (type) {

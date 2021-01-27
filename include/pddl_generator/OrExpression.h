@@ -13,8 +13,6 @@ namespace rtask {
   namespace commons {
     namespace pddl_generator {
 
-      using LogicalExprPtrVector = std::vector<std::shared_ptr<LogicalExpression>>;
-
       class OrExpression : public LogicalExpression
       {
       public:
@@ -28,10 +26,10 @@ namespace rtask {
 
         inline void set(const LogicalExprPtrVector& t_expr_vec = {}) { expr_vec_ = t_expr_vec; }
 
-        int findExpression(std::shared_ptr<LogicalExpression> t_expr) const;
-        bool hasExpression(std::shared_ptr<LogicalExpression> t_expr) const;
-        bool addExpression(std::shared_ptr<LogicalExpression> t_expr);
-        bool removeExpression(std::shared_ptr<LogicalExpression> t_expr);
+        int findExpression(LogicalExprPtr t_expr) const;
+        bool hasExpression(LogicalExprPtr t_expr) const;
+        bool addExpression(LogicalExprPtr t_expr);
+        bool removeExpression(LogicalExprPtr t_expr);
 
         inline std::string getExpressionName() const { return expr_name_; }
         inline LogicalExprPtrVector getExpressions() const { return expr_vec_; }

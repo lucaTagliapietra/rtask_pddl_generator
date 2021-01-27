@@ -3,13 +3,12 @@
 
 #include "xmlrpcpp/XmlRpc.h"
 
+#include <memory>
 #include <unordered_map>
 
 namespace rtask {
   namespace commons {
     namespace pddl_generator {
-
-      using UnordStrToUIntMap = std::unordered_map<std::string, unsigned int>;
 
       enum class LogicalExpressionType
       {
@@ -41,6 +40,10 @@ namespace rtask {
         std::string expr_name_{};
         LogicalExpressionType expr_type_{LogicalExpressionType::Base};
       };
+
+      using UnordStrToUIntMap = std::unordered_map<std::string, unsigned int>;
+      using LogicalExprPtr = std::shared_ptr<LogicalExpression>;
+      using LogicalExprPtrVector = std::vector<std::shared_ptr<LogicalExpression>>;
 
     } // namespace pddl_generator
   } // namespace commons

@@ -20,16 +20,16 @@ namespace rtask {
         ~NotExpression() override = default;
 
         NotExpression(const LogicalExpression& t_expr);
-        NotExpression(std::shared_ptr<LogicalExpression> t_expr_ptr);
+        NotExpression(LogicalExprPtr t_expr_ptr);
         NotExpression(XmlRpc::XmlRpcValue& t_rpc_val);
 
         void clear();
 
-        inline void set(std::shared_ptr<LogicalExpression> t_expr) { expr_ = t_expr; }
-        inline void setExpression(std::shared_ptr<LogicalExpression> t_expr) { set(t_expr); }
+        inline void set(LogicalExprPtr t_expr) { expr_ = t_expr; }
+        inline void setExpression(LogicalExprPtr t_expr) { set(t_expr); }
 
         inline std::string getExpressionName() const { return expr_name_; }
-        inline std::shared_ptr<LogicalExpression> getExpression() const { return expr_; }
+        inline LogicalExprPtr getExpression() const { return expr_; }
 
         // bool validate(const UnordStrToLitTermMap& t_known_constants,
         //               const UnordStrToUIntMap& t_belonging_action_args,
@@ -41,7 +41,7 @@ namespace rtask {
 
       private:
         // string expression_name is already protected in parent class
-        std::shared_ptr<LogicalExpression> expr_ = nullptr;
+        LogicalExprPtr expr_ = nullptr;
       };
 
       bool operator==(const NotExpression& t_first, const NotExpression& t_second);

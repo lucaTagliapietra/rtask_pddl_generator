@@ -18,7 +18,7 @@ NotExpression::NotExpression(const LogicalExpression& t_expr)
   set(std::make_shared<LogicalExpression>(t_expr));
 }
 
-NotExpression::NotExpression(std::shared_ptr<LogicalExpression> t_expr_ptr)
+NotExpression::NotExpression(LogicalExprPtr t_expr_ptr)
 {
   expr_type_ = LogicalExpressionType::Not;
   expr_name_ = "not";

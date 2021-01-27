@@ -43,7 +43,7 @@ void OrExpression::clear()
   expr_vec_.clear();
 }
 
-int OrExpression::findExpression(std::shared_ptr<LogicalExpression> t_expr) const
+int OrExpression::findExpression(LogicalExprPtr t_expr) const
 {
   for (unsigned int i = 0; i < expr_vec_.size(); ++i) {
     if (helpers::operator==(*t_expr, *expr_vec_[i]))
@@ -52,7 +52,7 @@ int OrExpression::findExpression(std::shared_ptr<LogicalExpression> t_expr) cons
   return -1;
 }
 
-bool OrExpression::hasExpression(std::shared_ptr<LogicalExpression> t_expr) const
+bool OrExpression::hasExpression(LogicalExprPtr t_expr) const
 {
   for (const auto& expr : expr_vec_) {
     if (helpers::operator==(*t_expr, *expr)) {
@@ -62,7 +62,7 @@ bool OrExpression::hasExpression(std::shared_ptr<LogicalExpression> t_expr) cons
   return false;
 }
 
-bool OrExpression::addExpression(std::shared_ptr<LogicalExpression> t_expr)
+bool OrExpression::addExpression(LogicalExprPtr t_expr)
 {
   if (hasExpression(t_expr)) {
     return false;
@@ -70,7 +70,7 @@ bool OrExpression::addExpression(std::shared_ptr<LogicalExpression> t_expr)
   expr_vec_.push_back(t_expr);
   return true;
 }
-bool OrExpression::removeExpression(std::shared_ptr<LogicalExpression> t_expr)
+bool OrExpression::removeExpression(LogicalExprPtr t_expr)
 {
   int pos = findExpression(t_expr);
   if (pos != -1) {
