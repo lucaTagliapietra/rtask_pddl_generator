@@ -1,0 +1,119 @@
+domain:
+  name: "BLOCKS"
+  requirements:
+    equality: False
+    strips: False
+    typing: True
+  types:
+    - { type_names: ["block"] }
+  predicates:
+    - name: "on"
+      params:
+        - { name: "x", type: "block" }
+        - { name: "y", type: "block" }
+    - name: "ontable"
+      params:
+        - { name: "x", type: "block" }
+    - name: "clear"
+      params:
+        - { name: "x", type: "block" }
+    - name: "handempty"
+    - name: "holding"
+      params:
+        - { name: "x", type: "block" }
+  actions:
+    - name: "pick-up"
+      params:
+        - { name: "x", type: "block" }
+      preconditions:
+        and:
+            - or:
+                - not:
+                    and:
+                        - not:
+                            not:
+                                not:
+                                    expr: { name: "clear", args: ["x", "y", "z"] }
+                        - expr: { name: "clear", args: ["x"] }
+                        - not:
+                            expr: {name: "test", args: ["a", "b"] }
+                - bool_expr: { name: "ontable", args: ["x"] }
+                - exists:
+                    args: ["x", "y"]
+                    condition:
+                        expr: { name: "clear", args: ["x"] }
+                - forall:
+                    args: ["x", "y"]
+                    condition:
+                        expr: { name: "clear", args: ["x"] }
+            - expr: { name: "handempty" }
+            - imply:
+                condition:
+                   expr: { name: "clear", args: ["x"] }
+                consequence:
+                    expr: { name: "clear", args: ["x"] }
+            - compare:
+                operator: "<="
+                lhs:
+                    num_op:
+                        name: "+"
+                        lhs:
+                            num_expr: {name: "battery_level", args: ["x"]}
+                        rhs:
+                            num_val: 10
+                rhs:
+                    num_val: 5
+      effects:
+        and:
+            - when:
+                condition:
+                    and:
+                        - expr: {name: "ontable", args: ["x"]}
+                        - expr: {name: "ontable", args: ["x"]}
+                consequence:
+                        expr: {name: "ontable", args: ["x"]}
+            - not:
+                expr: {name: "ontable", args: ["x"]}
+            - not:
+                {name: "clear", args: ["x"]}
+            - not:
+                {name: "handempty"}
+            - expr: {name: "holding", args: ["x"] }
+
+    - name: "put-down"
+      params:
+        - { name: "x", type: "block" }
+      preconditions:
+        - { name: "holding", args: ["x"] }
+      effects:
+        - { name: "holding", args: ["x"], not: true }
+        - { name: "clear", args: ["x"] }
+        - { name: "handempty" }
+        - { name: "ontable", args: ["x"] }
+    - name: "stack"
+      params:
+        - { name: "x", type: "block" }
+        - { name: "y", type: "block" }
+      preconditions:
+        - { name: "holding", args: ["x"] }
+        - { name: "clear", args: ["y"] }
+      effects:
+        - { name: "holding", args: ["x"], not: true }
+        - { name: "clear", args: ["y"], not: true }
+        - { name: "clear", args: ["x"] }
+        - { name: "handempty" }
+        - { name: "on", args: ["x", "y"] }
+    - name: "unstack"
+      params:
+        - { name: "x", type: "block" }
+        - { name: "y", type: "block" }
+      preconditions:
+        - { name: "on", args: ["x", "y"] }
+        - { name: "clear", args: ["x"] }
+        - { name: "handempty" }
+      effects:
+        - { name: "holding", args: ["x"] }
+        - { name: "clear", args: ["y"] }
+        - { name: "clear", args: ["x"], not: true }
+        - { name: "handempty", not: true }
+        - { name: "on", args: ["x", "y"], not: true }

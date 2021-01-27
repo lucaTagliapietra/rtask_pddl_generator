@@ -135,3 +135,24 @@ if(CATKIN_ENABLE_TESTING)
  target_link_libraries(agent_group_test ${catking_LIBRARIES} ${PROJECT_NAME}_lib)
 
 endif()
+
+add_executable(${PROJECT_NAME}_node
+               test/main.cpp)
+
+set_target_properties(${PROJECT_NAME}_node
+                      PROPERTIES OUTPUT_NAME
+                                 test
+                                 PREFIX
+                                 "")
+
+add_dependencies(${PROJECT_NAME}_node
+                 ${${PROJECT_NAME}_EXPORTED_TARGETS}
+                 ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(${PROJECT_NAME}_node
+                      ${catkin_LIBRARIES}
+                      ${PROJECT_NAME}_pddl_generator_lib)
+
+target_include_directories(${PROJECT_NAME}_node
+                           PRIVATE include
+                                   ${catkin_INCLUDE_DIRS})

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="rtask_commons" type="test" name="test" output="screen">
+    <rosparam command="load" file="$(find rtask_commons)/test/configs/test_xml.yaml"/>
+  </node>
+
+</launch>
