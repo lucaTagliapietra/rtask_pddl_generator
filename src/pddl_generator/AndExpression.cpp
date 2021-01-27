@@ -28,7 +28,6 @@ AndExpression::AndExpression(XmlRpc::XmlRpcValue& t_rpc_val)
   expr_name_ = "and";
   expr_type_ = LogicalExpressionType::And;
 
-  // std::cout << "Size: " << t_rpc_val["and"].size() << std::endl;
   for (int i = 0; i < t_rpc_val["and"].size(); ++i) {
     auto expr = helpers::getLogicalExprFromXmlRpc(t_rpc_val["and"][i]);
     if (!expr) {
@@ -36,7 +35,6 @@ AndExpression::AndExpression(XmlRpc::XmlRpcValue& t_rpc_val)
       exit(EXIT_FAILURE);
     }
     expr_vec_.push_back(expr);
-    std::cout << "Size: " << expr_vec_.size() << std::endl;
   }
 }
 

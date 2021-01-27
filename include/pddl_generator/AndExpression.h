@@ -54,7 +54,6 @@ namespace rtask {
       {
         t_out << "AndExpression name: " << t_expr.getExpressionName() << std::endl;
         unsigned int i = 0;
-        std::cout << t_expr.getExpressions().size() << std::endl;
         for (const auto& expr : t_expr.getExpressions()) {
           (i != 0) ? t_out << std::endl : t_out << "";
           t_out << "\t"
