@@ -1,5 +1,5 @@
 #include "pddl_generator/Helpers.h"
-#include "pddl_generator/LiteralBooleanExpression.h"
+#include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/NotExpression.h"
 
 #include "pddl_generator/LiteralTerm.h"
@@ -7,44 +7,47 @@
 
 using namespace rtask::commons::pddl_generator;
 
-BooleanExpressionType helpers::getBooleanExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
+LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
   if (t_rpc_val.hasMember("not")) {
-    return BooleanExpressionType::NotExpression;
+    return LogicalExpressionType::Not;
   }
   else if (t_rpc_val.hasMember("expr")) {
-    return BooleanExpressionType::LiteralBooleanExpression;
+    return LogicalExpressionType::Literal;
   }
   else if (t_rpc_val.hasMember("and")) {
-    return BooleanExpressionType::AndExpression;
+    return LogicalExpressionType::And;
   }
   else if (t_rpc_val.hasMember("or")) {
-    return BooleanExpressionType::OrExpression;
+    return LogicalExpressionType::Or;
   }
   else if (t_rpc_val.hasMember("compare")) {
-    return BooleanExpressionType::CompareExpression;
+    return LogicalExpressionType::Compare;
   }
   else if (t_rpc_val.hasMember("when")) {
-    return BooleanExpressionType::WhenExpression;
+    return LogicalExpressionType::When;
   }
   else if (t_rpc_val.hasMember("exists")) {
-    return BooleanExpressionType::ExistsExpression;
+    return LogicalExpressionType::Exists;
   }
   else if (t_rpc_val.hasMember("forall")) {
-    return BooleanExpressionType::ForAllExpression;
+    return LogicalExpressionType::ForAll;
+  }
+  else if (t_rpc_val.hasMember("modify")) {
+    return LogicalExpressionType::Arithmetic;
   }
   else {
-    return BooleanExpressionType::Invalid;
+    return LogicalExpressionType::Invalid;
   }
 }
 
-std::shared_ptr<BooleanExpression> helpers::getBooleanExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
+std::shared_ptr<LogicalExpression> helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
   if (t_rpc_val.hasMember("not")) {
     return std::make_shared<NotExpression>(t_rpc_val["not"]);
   }
   else if (t_rpc_val.hasMember("expr")) {
-    return std::make_shared<LiteralBooleanExpression>(t_rpc_val["expr"]);
+    return std::make_shared<LiteralExpression>(t_rpc_val["expr"]);
   }
   //  else if (t_rpc_val.hasMember("and")) {
   //    return std::make_shared<AndExpression>(t_rpc_val);
@@ -149,34 +152,38 @@ std::any helpers::getAsChild(std::shared_ptr<Term> t_parent)
   }
 }
 
-std::any helpers::getAsChild(BooleanExpression& t_parent)
+std::any helpers::getAsChild(LogicalExpression& t_parent)
 {
-  BooleanExpressionType type = t_parent.getExpressionType();
+  LogicalExpressionType type = t_parent.getExpressionType();
   switch (type) {
-    case BooleanExpressionType::NotExpression:
+    case LogicalExpressionType::Literal:
+      return dynamic_cast<LiteralExpression&>(t_parent);
+    case LogicalExpressionType::Not:
       return dynamic_cast<NotExpression&>(t_parent);
     default:
       return {};
   }
 }
 
-std::any helpers::getAsChild(std::shared_ptr<BooleanExpression> t_parent)
+std::any helpers::getAsChild(std::shared_ptr<LogicalExpression> t_parent)
 {
-  BooleanExpressionType type = t_parent->getExpressionType();
+  LogicalExpressionType type = t_parent->getExpressionType();
   switch (type) {
-    case BooleanExpressionType::NotExpression:
+    case LogicalExpressionType::Literal:
+      return std::dynamic_pointer_cast<LiteralExpression>(t_parent);
+    case LogicalExpressionType::Not:
       return std::dynamic_pointer_cast<NotExpression>(t_parent);
     default:
       return {};
   }
 }
-std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<BooleanExpression> t_expr)
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<LogicalExpression> t_expr)
 {
   switch (t_expr->getExpressionType()) {
-    case BooleanExpressionType::LiteralBooleanExpression:
-      t_out << *std::dynamic_pointer_cast<LiteralBooleanExpression>(t_expr);
+    case LogicalExpressionType::Literal:
+      t_out << *std::dynamic_pointer_cast<LiteralExpression>(t_expr);
       break;
-    case BooleanExpressionType::NotExpression:
+    case LogicalExpressionType::Not:
       t_out << *std::dynamic_pointer_cast<NotExpression>(t_expr);
       break;
     default:
@@ -185,31 +192,31 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, st
   return t_out;
 }
 
-bool helpers::operator==(const BooleanExpression& t_first, const BooleanExpression& t_second)
+bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpression& t_second)
 {
   if (t_first.getExpressionType() != t_second.getExpressionType()
       || t_first.getExpressionName() != t_second.getExpressionName()) {
     return false;
   }
-  BooleanExpressionType type = t_first.getExpressionType();
+  LogicalExpressionType type = t_first.getExpressionType();
   switch (type) {
-    case BooleanExpressionType::LiteralBooleanExpression:
-      return operator==(dynamic_cast<const LiteralBooleanExpression&>(t_first),
-                        dynamic_cast<const LiteralBooleanExpression&>(t_second));
-    case BooleanExpressionType::NotExpression:
+    case LogicalExpressionType::Literal:
+      return operator==(dynamic_cast<const LiteralExpression&>(t_first),
+                        dynamic_cast<const LiteralExpression&>(t_second));
+    case LogicalExpressionType::Not:
       return operator==(dynamic_cast<const NotExpression&>(t_first), dynamic_cast<const NotExpression&>(t_second));
     default:
       return false;
   }
 }
 
-std::string helpers::booleanExprToPddl(std::shared_ptr<BooleanExpression> t_ptr, const bool t_typing)
+std::string helpers::logicalExprToPddl(std::shared_ptr<LogicalExpression> t_ptr, const bool t_typing)
 {
-  BooleanExpressionType type = t_ptr->getExpressionType();
+  LogicalExpressionType type = t_ptr->getExpressionType();
   switch (type) {
-    case BooleanExpressionType::LiteralBooleanExpression:
-      return std::dynamic_pointer_cast<LiteralBooleanExpression>(t_ptr)->toPddl(t_typing);
-    case BooleanExpressionType::NotExpression:
+    case LogicalExpressionType::Literal:
+      return std::dynamic_pointer_cast<LiteralExpression>(t_ptr)->toPddl(t_typing);
+    case LogicalExpressionType::Not:
       return std::dynamic_pointer_cast<NotExpression>(t_ptr)->toPddl(t_typing);
     default:
       return {};

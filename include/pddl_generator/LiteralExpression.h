@@ -1,8 +1,8 @@
-#ifndef rtask_commons_pddl_generator_literal_boolean_expression_h
-#define rtask_commons_pddl_generator_literal_boolean_expression_h
+#ifndef rtask_commons_pddl_generator_literal_expression_h
+#define rtask_commons_pddl_generator_literal_expression_h
 
-#include "BooleanExpression.h"
 #include "LiteralTerm.h"
+#include "LogicalExpression.h"
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
@@ -11,14 +11,14 @@ namespace rtask {
   namespace commons {
     namespace pddl_generator {
 
-      class LiteralBooleanExpression : public BooleanExpression
+      class LiteralExpression : public LogicalExpression
       {
       public:
-        LiteralBooleanExpression();
-        ~LiteralBooleanExpression() override = default;
+        LiteralExpression();
+        ~LiteralExpression() override = default;
 
-        LiteralBooleanExpression(const std::string& t_name, const std::vector<std::string>& t_args = {});
-        LiteralBooleanExpression(XmlRpc::XmlRpcValue& t_rpc_val);
+        LiteralExpression(const std::string& t_name, const std::vector<std::string>& t_args = {});
+        LiteralExpression(XmlRpc::XmlRpcValue& t_rpc_val);
 
         void clear();
         bool set(const std::string& t_name, const std::vector<std::string>& t_args = {});
@@ -26,15 +26,15 @@ namespace rtask {
         bool setExpressionName(const std::string& t_expr_name);
         bool setExpressionArgs(const std::vector<std::string>& t_args);
 
-        inline std::string getExpressionName() const { return expression_name_; }
+        inline std::string getExpressionName() const { return expr_name_; }
         inline std::vector<std::string> getExpressionArgs() const { return args_; }
 
         bool validate(const UnordStrToLitTermMap& t_known_constants,
                       const UnordStrToUIntMap& t_belonging_action_args,
                       const std::string& t_belonging_action_name) const;
 
-        bool operator==(const LiteralBooleanExpression& t_other) const;
-        LiteralBooleanExpression& operator=(const LiteralBooleanExpression& t_other);
+        bool operator==(const LiteralExpression& t_other) const;
+        LiteralExpression& operator=(const LiteralExpression& t_other);
 
         std::string toPddl(const bool t_typing = true) const override;
 
@@ -43,9 +43,9 @@ namespace rtask {
         std::vector<std::string> args_{};
       };
 
-      static std::ostream& operator<<(std::ostream& t_out, const LiteralBooleanExpression& t_expr)
+      static std::ostream& operator<<(std::ostream& t_out, const LiteralExpression& t_expr)
       {
-        t_out << "LiteralBooleanExpression name: " << t_expr.getExpressionName() << std::endl;
+        t_out << "LiteralExpression name: " << t_expr.getExpressionName() << std::endl;
         unsigned int i = 0;
         for (const auto& a : t_expr.getExpressionArgs()) {
           (i != 0) ? t_out << std::endl : t_out << "";

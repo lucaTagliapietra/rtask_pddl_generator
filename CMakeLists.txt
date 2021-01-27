@@ -40,7 +40,7 @@ add_custom_target(additional_files_${PROJECT_NAME} SOURCES ${FILES_LIST})
 add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/LiteralTerm.cpp
                                                src/pddl_generator/NumericalTerm.cpp
-                                               src/pddl_generator/LiteralBooleanExpression.cpp
+                                               src/pddl_generator/LiteralExpression.cpp
                                                src/pddl_generator/NotExpression.cpp
                                                )
 
