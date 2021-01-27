@@ -45,7 +45,7 @@ void NotExpression::clear()
 std::string NotExpression::toPddl(const bool t_typing) const
 {
   std::string out{};
-  out += expr_name_ + " (";
+  out += " (" + expr_name_;
   out += ::helpers::logicalExprToPddl(expr_, t_typing);
   out += ")";
   return out;

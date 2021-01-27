@@ -104,10 +104,11 @@ std::string LiteralExpression::toPddl(const bool) const
   };
 
   std::string out{};
-  out += expr_name_;
+  out += " (" + expr_name_;
   for (const auto& a : args_) {
     out += " ?" + a;
   }
+  out += ")";
   return out;
 }
 
