@@ -42,6 +42,7 @@ add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/NumericalTerm.cpp
                                                src/pddl_generator/LiteralExpression.cpp
                                                src/pddl_generator/NotExpression.cpp
+                                               src/pddl_generator/AndExpression.cpp
                                                )
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp

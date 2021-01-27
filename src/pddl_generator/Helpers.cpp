@@ -1,4 +1,5 @@
 #include "pddl_generator/Helpers.h"
+#include "pddl_generator/AndExpression.h"
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/NotExpression.h"
 
@@ -49,9 +50,9 @@ std::shared_ptr<LogicalExpression> helpers::getLogicalExprFromXmlRpc(XmlRpc::Xml
   else if (t_rpc_val.hasMember("expr")) {
     return std::make_shared<LiteralExpression>(t_rpc_val["expr"]);
   }
-  //  else if (t_rpc_val.hasMember("and")) {
-  //    return std::make_shared<AndExpression>(t_rpc_val);
-  //  }
+  else if (t_rpc_val.hasMember("and")) {
+    return std::make_shared<AndExpression>(t_rpc_val["and"]);
+  }
   //  else if (t_rpc_val.hasMember("or")) {
   //    return std::make_shared<OrExpression>(t_rpc_val);
   //  }
@@ -160,6 +161,8 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
       return dynamic_cast<LiteralExpression&>(t_parent);
     case LogicalExpressionType::Not:
       return dynamic_cast<NotExpression&>(t_parent);
+    case LogicalExpressionType::And:
+      return dynamic_cast<AndExpression&>(t_parent);
     default:
       return {};
   }
@@ -173,6 +176,8 @@ std::any helpers::getAsChild(std::shared_ptr<LogicalExpression> t_parent)
       return std::dynamic_pointer_cast<LiteralExpression>(t_parent);
     case LogicalExpressionType::Not:
       return std::dynamic_pointer_cast<NotExpression>(t_parent);
+    case LogicalExpressionType::And:
+      return std::dynamic_pointer_cast<AndExpression>(t_parent);
     default:
       return {};
   }
@@ -185,6 +190,9 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, st
       break;
     case LogicalExpressionType::Not:
       t_out << *std::dynamic_pointer_cast<NotExpression>(t_expr);
+      break;
+    case LogicalExpressionType::And:
+      t_out << *std::dynamic_pointer_cast<AndExpression>(t_expr);
       break;
     default:
       break;
@@ -205,6 +213,8 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
                         dynamic_cast<const LiteralExpression&>(t_second));
     case LogicalExpressionType::Not:
       return operator==(dynamic_cast<const NotExpression&>(t_first), dynamic_cast<const NotExpression&>(t_second));
+    case LogicalExpressionType::And:
+      return operator==(dynamic_cast<const AndExpression&>(t_first), dynamic_cast<const AndExpression&>(t_second));
     default:
       return false;
   }
@@ -218,6 +228,8 @@ std::string helpers::logicalExprToPddl(std::shared_ptr<LogicalExpression> t_ptr,
       return std::dynamic_pointer_cast<LiteralExpression>(t_ptr)->toPddl(t_typing);
     case LogicalExpressionType::Not:
       return std::dynamic_pointer_cast<NotExpression>(t_ptr)->toPddl(t_typing);
+    case LogicalExpressionType::And:
+      return std::dynamic_pointer_cast<AndExpression>(t_ptr)->toPddl(t_typing);
     default:
       return {};
   }
