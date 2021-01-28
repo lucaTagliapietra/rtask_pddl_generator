@@ -1,4 +1,5 @@
 #include "pddl_generator/AndExpression.h"
+#include "pddl_generator/ExistsExpression.h"
 #include "pddl_generator/Helpers.h"
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/LiteralTerm.h"
@@ -38,6 +39,7 @@ int main(int argc, char* argv[])
   auto not_xml = and_xml["and"][0];
   auto or_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][1];
   auto when_xml = xml["actions"][0]["effects"]["and"][0];
+  auto exists_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][3];
 
   std::cout << "and_xml: " << and_xml << std::endl;
   std::cout << "and_xml type: " << and_xml.getType() << std::endl;
@@ -80,6 +82,13 @@ int main(int argc, char* argv[])
   //  std::cout << "when_expr:" << std::endl << when_expr << std::endl << std::endl;
   std::cout << "when_expr pddl:" << std::endl << when_expr.toPddl() << std::endl << std::endl;
   std::cout << "when_expr pddl:" << std::endl << when_expr.toPddl(true, -1) << std::endl << std::endl;
+
+  std::cout << std::endl << std::endl;
+  std::cout << "******** EXISTS ********" << std::endl;
+  ExistsExpression exists_expr(exists_xml);
+  //  std::cout << "when_expr:" << std::endl << when_expr << std::endl << std::endl;
+  std::cout << "exists_expr pddl:" << std::endl << exists_expr.toPddl() << std::endl << std::endl;
+  std::cout << "exists_expr pddl:" << std::endl << exists_expr.toPddl(true, -1) << std::endl << std::endl;
 
   ros::shutdown();
 }

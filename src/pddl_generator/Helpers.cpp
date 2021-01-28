@@ -4,6 +4,7 @@
 #include "pddl_generator/NumericalTerm.h"
 
 #include "pddl_generator/AndExpression.h"
+#include "pddl_generator/ExistsExpression.h"
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/NotExpression.h"
 #include "pddl_generator/OrExpression.h"
@@ -62,11 +63,11 @@ LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
   else if (t_rpc_val.hasMember("when")) {
     return std::make_shared<WhenExpression>(t_rpc_val);
   }
+  else if (t_rpc_val.hasMember("exists")) {
+    return std::make_shared<ExistsExpression>(t_rpc_val);
+  }
   //  else if (t_rpc_val.hasMember("compare")) {
   //    return std::make_shared<CompareExpression>(t_rpc_val);
-  //  }
-  //  else if (t_rpc_val.hasMember("exists")) {
-  //    return std::make_shared<ExistsExpression>(t_rpc_val);
   //  }
   //  else if (t_rpc_val.hasMember("forall")) {
   //    return std::make_shared<ForallExpression>(t_rpc_val);
@@ -170,6 +171,8 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
       return dynamic_cast<OrExpression&>(t_parent);
     case LogicalExpressionType::When:
       return dynamic_cast<WhenExpression&>(t_parent);
+    case LogicalExpressionType::Exists:
+      return dynamic_cast<ExistsExpression&>(t_parent);
     default:
       return {};
   }
@@ -189,6 +192,8 @@ std::any helpers::getAsChild(LogicalExprPtr t_parent)
       return std::dynamic_pointer_cast<OrExpression>(t_parent);
     case LogicalExpressionType::When:
       return std::dynamic_pointer_cast<WhenExpression>(t_parent);
+    case LogicalExpressionType::Exists:
+      return std::dynamic_pointer_cast<ExistsExpression>(t_parent);
     default:
       return {};
   }
@@ -210,6 +215,9 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, Lo
       break;
     case LogicalExpressionType::When:
       t_out << *std::dynamic_pointer_cast<WhenExpression>(t_expr);
+      break;
+    case LogicalExpressionType::Exists:
+      t_out << *std::dynamic_pointer_cast<ExistsExpression>(t_expr);
       break;
     default:
       break;
@@ -236,6 +244,9 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
       return operator==(dynamic_cast<const OrExpression&>(t_first), dynamic_cast<const OrExpression&>(t_second));
     case LogicalExpressionType::When:
       return operator==(dynamic_cast<const WhenExpression&>(t_first), dynamic_cast<const WhenExpression&>(t_second));
+    case LogicalExpressionType::Exists:
+      return operator==(dynamic_cast<const ExistsExpression&>(t_first),
+                        dynamic_cast<const ExistsExpression&>(t_second));
     default:
       return false;
   }
@@ -255,6 +266,8 @@ std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int 
       return std::dynamic_pointer_cast<OrExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::When:
       return std::dynamic_pointer_cast<WhenExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    case LogicalExpressionType::Exists:
+      return std::dynamic_pointer_cast<ExistsExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     default:
       return {};
   }

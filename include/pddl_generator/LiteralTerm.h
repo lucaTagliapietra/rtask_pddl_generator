@@ -5,6 +5,7 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -15,6 +16,7 @@ namespace rtask {
       class LiteralTerm;
 
       using UnordStrToLitTermMap = std::unordered_map<std::string, LiteralTerm>;
+      using LiteralTermPtr = std::shared_ptr<LiteralTerm>;
 
       class LiteralTerm : public Term
       {

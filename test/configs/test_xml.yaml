@@ -44,13 +44,13 @@ domain:
                     - expr: { name: "clear", args: ["x"] }
                     - not:
                         expr: {name: "test", args: ["a", "b"] }
-                - bool_expr: { name: "ontable", args: ["x"] }
+                - expr: { name: "ontable", args: ["x"] }
                 - exists:
-                    args: ["x", "y"]
+                    what: { name: "x", type: "block" }
                     condition:
                         expr: { name: "clear", args: ["x"] }
                 - forall:
-                    args: ["x", "y"]
+                    what: { name: "x", type: "block" }
                     condition:
                         expr: { name: "clear", args: ["x"] }
             - expr: { name: "handempty" }

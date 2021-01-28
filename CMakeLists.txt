@@ -45,6 +45,7 @@ add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/AndExpression.cpp
                                                src/pddl_generator/OrExpression.cpp
                                                src/pddl_generator/WhenExpression.cpp
+                                               src/pddl_generator/ExistsExpression.cpp
                                                )
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp
