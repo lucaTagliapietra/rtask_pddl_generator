@@ -81,14 +81,14 @@ LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 
 NumericalExpressionType helpers::getNumericalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  if (t_rpc_val.hasMember("num_expr")) {
-    return NumericalExpressionType::LiteralNumericalExpression;
+  if (t_rpc_val.hasMember("num_fcn")) {
+    return NumericalExpressionType::Function;
   }
   else if (t_rpc_val.hasMember("num_op")) {
-    return NumericalExpressionType::ArithmeticExpression;
+    return NumericalExpressionType::Operator;
   }
-  else if (t_rpc_val.hasMember("num_val")) {
-    return NumericalExpressionType::NumericalTerm;
+  else if (t_rpc_val.hasMember("num_term")) {
+    return NumericalExpressionType::Term;
   }
   else {
     return NumericalExpressionType::Invalid;
@@ -204,6 +204,7 @@ std::any helpers::getAsChild(LogicalExprPtr t_parent)
       return {};
   }
 }
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, LogicalExprPtr t_expr)
 {
   switch (t_expr->getExpressionType()) {

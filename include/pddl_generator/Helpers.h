@@ -4,6 +4,7 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include "LogicalExpression.h"
+#include "NumericalExpression.h"
 
 #include "Term.h"
 
@@ -16,15 +17,6 @@
 namespace rtask {
   namespace commons {
     namespace pddl_generator {
-
-      enum class NumericalExpressionType
-      {
-        Invalid = 0,
-        NumericExpressionBase,
-        LiteralNumericalExpression,
-        ArithmeticExpression,
-        NumericalTerm
-      };
 
       namespace helpers {
 

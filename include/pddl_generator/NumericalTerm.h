@@ -1,7 +1,9 @@
 #ifndef rtask_commons_pddl_generator_numerical_term_h
 #define rtask_commons_pddl_generator_numerical_term_h
 
+#include "NumericalExpression.h"
 #include "Term.h"
+
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
@@ -10,7 +12,9 @@ namespace rtask {
   namespace commons {
     namespace pddl_generator {
 
-      class NumericalTerm : public Term
+      class NumericalTerm
+        : public Term
+        , public NumericalExpression
       {
       public:
         NumericalTerm();
@@ -31,11 +35,11 @@ namespace rtask {
         double value_{};
       };
 
-      static std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt)
-      {
-        t_out << "value: " << t_nt.getValue();
-        return t_out;
-      }
+      //      std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt)
+      //      {
+      //        t_out << "value: " << t_nt.getValue();
+      //        return t_out;
+      //      }
 
     } // namespace pddl_generator
   } // namespace commons
