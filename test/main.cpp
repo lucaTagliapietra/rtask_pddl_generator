@@ -1,5 +1,6 @@
 #include "pddl_generator/AndExpression.h"
 #include "pddl_generator/ExistsExpression.h"
+#include "pddl_generator/ForAllExpression.h"
 #include "pddl_generator/Helpers.h"
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/LiteralTerm.h"
@@ -40,6 +41,7 @@ int main(int argc, char* argv[])
   auto or_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][1];
   auto when_xml = xml["actions"][0]["effects"]["and"][0];
   auto exists_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][3];
+  auto forall_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][4];
 
   std::cout << "and_xml: " << and_xml << std::endl;
   std::cout << "and_xml type: " << and_xml.getType() << std::endl;
@@ -89,6 +91,13 @@ int main(int argc, char* argv[])
   //  std::cout << "when_expr:" << std::endl << when_expr << std::endl << std::endl;
   std::cout << "exists_expr pddl:" << std::endl << exists_expr.toPddl() << std::endl << std::endl;
   std::cout << "exists_expr pddl:" << std::endl << exists_expr.toPddl(true, -1) << std::endl << std::endl;
+
+  std::cout << std::endl << std::endl;
+  std::cout << "******** FORALL ********" << std::endl;
+  ForAllExpression forall_expr(forall_xml);
+  //  std::cout << "when_expr:" << std::endl << when_expr << std::endl << std::endl;
+  std::cout << "forall_expr pddl:" << std::endl << forall_expr.toPddl() << std::endl << std::endl;
+  std::cout << "forall_expr pddl:" << std::endl << forall_expr.toPddl(true, -1) << std::endl << std::endl;
 
   ros::shutdown();
 }
