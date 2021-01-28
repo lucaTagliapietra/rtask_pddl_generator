@@ -31,7 +31,7 @@ namespace rtask {
         LogicalExpression() = default;
         virtual ~LogicalExpression() {}
 
-        virtual std::string toPddl(const bool t_typing = true) const { return {}; }
+        virtual std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const { return {}; }
 
         inline std::string getExpressionName() const { return expr_name_; }
         inline LogicalExpressionType getExpressionType() const { return expr_type_; }

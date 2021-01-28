@@ -42,12 +42,16 @@ void NotExpression::clear()
   expr_.reset();
 }
 
-std::string NotExpression::toPddl(const bool t_typing) const
+std::string NotExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
-  std::string out{};
-  out += " (" + expr_name_;
-  out += ::helpers::logicalExprToPddl(expr_, t_typing);
-  out += ")";
+  auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
+  const auto& pad_lv = pad_aligners.first;
+  const auto& aligners = pad_aligners.second;
+
+  std::string out = aligners[0] + "(" + expr_name_;
+  out += aligners[1] + ::helpers::logicalExprToPddl(expr_, t_typing, pad_lv);
+  out += aligners[2] + ")";
+
   return out;
 }
 

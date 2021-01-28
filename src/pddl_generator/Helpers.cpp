@@ -241,21 +241,40 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
   }
 }
 
-std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, const bool t_typing)
+std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int t_pad_lv)
 {
   LogicalExpressionType type = t_ptr->getExpressionType();
   switch (type) {
     case LogicalExpressionType::Literal:
-      return std::dynamic_pointer_cast<LiteralExpression>(t_ptr)->toPddl(t_typing);
+      return std::dynamic_pointer_cast<LiteralExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::Not:
-      return std::dynamic_pointer_cast<NotExpression>(t_ptr)->toPddl(t_typing);
+      return std::dynamic_pointer_cast<NotExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::And:
-      return std::dynamic_pointer_cast<AndExpression>(t_ptr)->toPddl(t_typing);
+      return std::dynamic_pointer_cast<AndExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::Or:
-      return std::dynamic_pointer_cast<OrExpression>(t_ptr)->toPddl(t_typing);
+      return std::dynamic_pointer_cast<OrExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::When:
-      return std::dynamic_pointer_cast<WhenExpression>(t_ptr)->toPddl(t_typing);
+      return std::dynamic_pointer_cast<WhenExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     default:
       return {};
+  }
+}
+
+std::string helpers::padding(int t_n_pads)
+{
+  std::string ret_str{};
+  while (--t_n_pads >= 0) {
+    ret_str += PAD;
+  }
+  return ret_str;
+}
+
+std::pair<int, std::vector<std::string>> helpers::getPddlAligners(int t_pad_lv)
+{
+  if (t_pad_lv != -1) {
+    return {t_pad_lv + 1, {padding(t_pad_lv), "\n", "\n" + padding(t_pad_lv)}};
+  }
+  else {
+    return {t_pad_lv, {"", " ", ""}};
   }
 }

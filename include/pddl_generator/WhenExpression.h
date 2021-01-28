@@ -37,7 +37,7 @@ namespace rtask {
         //               const UnordStrToUIntMap& t_belonging_action_args,
         //               const std::string& t_belonging_action_name) const;
 
-        std::string toPddl(const bool t_typing = true) const override;
+        std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
 
         WhenExpression& operator=(const WhenExpression& t_other);
 

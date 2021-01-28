@@ -63,13 +63,17 @@ void WhenExpression::set(LogicalExprPtr t_condition_ptr, LogicalExprPtr t_conseq
   setConsequence(t_consequence_ptr);
 }
 
-std::string WhenExpression::toPddl(const bool t_typing) const
+std::string WhenExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
-  std::string out{};
-  out += " (" + expr_name_;
-  out += ::helpers::logicalExprToPddl(condition_, t_typing);
-  out += ::helpers::logicalExprToPddl(consequence_, t_typing);
-  out += ")";
+  auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
+  const auto& pad_lv = pad_aligners.first;
+  const auto& aligners = pad_aligners.second;
+
+  std::string out = aligners[0] + "(" + expr_name_;
+  out += aligners[1] + ::helpers::logicalExprToPddl(condition_, t_typing, pad_lv);
+  out += aligners[1] + ::helpers::logicalExprToPddl(consequence_, t_typing, pad_lv);
+  out += aligners[2] + ")";
+
   return out;
 }
 

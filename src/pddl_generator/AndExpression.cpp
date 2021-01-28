@@ -81,14 +81,18 @@ bool AndExpression::removeExpression(LogicalExprPtr t_expr)
   return false;
 }
 
-std::string AndExpression::toPddl(const bool t_typing) const
+std::string AndExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
-  std::string out{};
-  out += " (" + expr_name_;
+  auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
+  const auto& pad_lv = pad_aligners.first;
+  const auto& aligners = pad_aligners.second;
+
+  std::string out = aligners[0] + "(" + expr_name_;
   for (const auto& expr : expr_vec_) {
-    out += ::helpers::logicalExprToPddl(expr, t_typing);
+    out += aligners[1] + ::helpers::logicalExprToPddl(expr, t_typing, pad_lv);
   }
-  out += ")";
+  out += aligners[2] + ")";
+
   return out;
 }
 

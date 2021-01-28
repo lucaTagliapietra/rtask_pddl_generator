@@ -36,7 +36,7 @@ namespace rtask {
         bool operator==(const LiteralExpression& t_other) const;
         LiteralExpression& operator=(const LiteralExpression& t_other);
 
-        std::string toPddl(const bool t_typing = true) const override;
+        std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
 
       private:
         //   string expression_name is already protected in parent class

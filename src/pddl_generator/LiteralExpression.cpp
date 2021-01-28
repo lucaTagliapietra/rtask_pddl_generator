@@ -97,18 +97,21 @@ LiteralExpression& LiteralExpression::operator=(const LiteralExpression& t_other
   return *this;
 }
 
-std::string LiteralExpression::toPddl(const bool) const
+std::string LiteralExpression::toPddl(bool, int t_pad_lv) const
 {
   if (expr_name_.empty()) {
     return {};
   };
 
-  std::string out{};
-  out += " (" + expr_name_;
+  auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
+  const auto& aligners = pad_aligners.second;
+
+  std::string out = aligners[0] + "(" + expr_name_;
   for (const auto& a : args_) {
     out += " ?" + a;
   }
   out += ")";
+
   return out;
 }
 
