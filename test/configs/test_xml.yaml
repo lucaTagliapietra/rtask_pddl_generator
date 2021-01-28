@@ -65,7 +65,7 @@ domain:
                     num_op:
                         name: "+"
                         lhs:
-                            num_expr: {name: "battery_level", args: ["x"]}
+                            num_fnc: {name: "battery_level", args: ["x"]}
                         rhs:
                             num_val: 10
                 rhs:

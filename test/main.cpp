@@ -5,6 +5,8 @@
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/LiteralTerm.h"
 #include "pddl_generator/NotExpression.h"
+#include "pddl_generator/NumericalFunction.h"
+#include "pddl_generator/NumericalTerm.h"
 #include "pddl_generator/OrExpression.h"
 #include "pddl_generator/WhenExpression.h"
 
@@ -42,6 +44,8 @@ int main(int argc, char* argv[])
   auto when_xml = xml["actions"][0]["effects"]["and"][0];
   auto exists_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][3];
   auto forall_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][4];
+  auto num_fnc_xml = xml["actions"][0]["preconditions"]["and"][3]["compare"]["lhs"]["num_op"]["lhs"];
+  auto num_val_xml = xml["actions"][0]["preconditions"]["and"][3]["compare"]["lhs"]["num_op"]["rhs"];
 
   std::cout << "and_xml: " << and_xml << std::endl;
   std::cout << "and_xml type: " << and_xml.getType() << std::endl;
@@ -98,6 +102,13 @@ int main(int argc, char* argv[])
   //  std::cout << "when_expr:" << std::endl << when_expr << std::endl << std::endl;
   std::cout << "forall_expr pddl:" << std::endl << forall_expr.toPddl() << std::endl << std::endl;
   std::cout << "forall_expr pddl:" << std::endl << forall_expr.toPddl(true, -1) << std::endl << std::endl;
+
+  std::cout << std::endl << std::endl;
+  std::cout << "******** NUMERICAL_FUNCTION ********" << std::endl;
+  NumericalFunction numerical_fnc(num_fnc_xml);
+  //  std::cout << "when_expr:" << std::endl << when_expr << std::endl << std::endl;
+  std::cout << "numerical_fnc pddl:" << std::endl << numerical_fnc.toPddl() << std::endl << std::endl;
+  std::cout << "numerical_fnc pddl:" << std::endl << numerical_fnc.toPddl(true, -1) << std::endl << std::endl;
 
   ros::shutdown();
 }
