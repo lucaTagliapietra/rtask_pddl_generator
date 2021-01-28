@@ -20,21 +20,25 @@ LiteralExpression::LiteralExpression(const std::string& t_name, const std::vecto
 
 LiteralExpression::LiteralExpression(XmlRpc::XmlRpcValue& t_rpc_val)
 {
+  if (!helpers::checkXmlRpcSanity("expr", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeStruct)) {
+    std::cerr << "Fatal: Invalid LiteralExpression Structure, should be a Struct" << std::endl;
+    exit(EXIT_FAILURE);
+  }
   std::string name{};
   std::vector<std::string> args{};
 
-  if (helpers::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::TypeString, true)) {
-    name = static_cast<std::string>(t_rpc_val["name"]);
+  if (helpers::checkXmlRpcSanity("name", t_rpc_val["expr"], XmlRpc::XmlRpcValue::TypeString, true)) {
+    name = static_cast<std::string>(t_rpc_val["expr"]["name"]);
   }
 
-  if (helpers::checkXmlRpcSanity("args", t_rpc_val, XmlRpc::XmlRpcValue::TypeArray)) {
-    if (t_rpc_val["args"].size() == 0) {
+  if (helpers::checkXmlRpcSanity("args", t_rpc_val["expr"], XmlRpc::XmlRpcValue::TypeArray)) {
+    if (t_rpc_val["expr"]["args"].size() == 0) {
       std::cout << "Empty args vector for LiteralLogicalExpression " << name << std::endl;
     }
     else {
-      for (int i = 0; i < t_rpc_val["args"].size(); ++i) {
-        if (t_rpc_val["args"][i].getType() == XmlRpc::XmlRpcValue::TypeString) {
-          args.emplace_back(static_cast<std::string>(t_rpc_val["args"][i]));
+      for (int i = 0; i < t_rpc_val["expr"]["args"].size(); ++i) {
+        if (t_rpc_val["expr"]["args"][i].getType() == XmlRpc::XmlRpcValue::TypeString) {
+          args.emplace_back(static_cast<std::string>(t_rpc_val["expr"]["args"][i]));
         }
       }
     }

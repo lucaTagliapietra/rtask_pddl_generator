@@ -37,6 +37,13 @@ domain:
                         - expr: { name: "clear", args: ["x"] }
                         - not:
                             expr: {name: "test", args: ["a", "b"] }
+                - or:
+                    - not:
+                        not:
+                            expr: { name: "clear", args: ["x", "y", "z"] }
+                    - expr: { name: "clear", args: ["x"] }
+                    - not:
+                        expr: {name: "test", args: ["a", "b"] }
                 - bool_expr: { name: "ontable", args: ["x"] }
                 - exists:
                     args: ["x", "y"]

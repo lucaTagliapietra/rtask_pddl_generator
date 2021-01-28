@@ -48,16 +48,16 @@ LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue&
 LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
   if (t_rpc_val.hasMember("not")) {
-    return std::make_shared<NotExpression>(t_rpc_val["not"]);
+    return std::make_shared<NotExpression>(t_rpc_val);
   }
   else if (t_rpc_val.hasMember("expr")) {
-    return std::make_shared<LiteralExpression>(t_rpc_val["expr"]);
+    return std::make_shared<LiteralExpression>(t_rpc_val);
   }
   else if (t_rpc_val.hasMember("and")) {
-    return std::make_shared<AndExpression>(t_rpc_val["and"]);
+    return std::make_shared<AndExpression>(t_rpc_val);
   }
   else if (t_rpc_val.hasMember("or")) {
-    return std::make_shared<OrExpression>(t_rpc_val["or"]);
+    return std::make_shared<OrExpression>(t_rpc_val);
   }
   else if (t_rpc_val.hasMember("when")) {
     return std::make_shared<WhenExpression>(t_rpc_val);

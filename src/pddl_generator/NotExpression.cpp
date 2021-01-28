@@ -27,7 +27,12 @@ NotExpression::NotExpression(LogicalExprPtr t_expr_ptr)
 
 NotExpression::NotExpression(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  expr_ = helpers::getLogicalExprFromXmlRpc(t_rpc_val);
+  if (!helpers::checkXmlRpcSanity("not", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeStruct)) {
+    std::cerr << "Fatal: Invalid NotExpression Structure, should be a Struct" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  expr_ = helpers::getLogicalExprFromXmlRpc(t_rpc_val["not"]);
 
   if (!expr_) {
     std::cerr << "Fatal: Invalid Boolean Expression as argument of current NotExpression" << std::endl;
