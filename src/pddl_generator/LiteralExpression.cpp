@@ -1,6 +1,8 @@
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/Helpers.h"
 
+#include <algorithm>
+
 using namespace rtask::commons::pddl_generator;
 
 // ------------
@@ -76,19 +78,27 @@ bool LiteralExpression::setExpressionArgs(const std::vector<std::string>& t_args
   return true;
 }
 
-bool LiteralExpression::operator==(const LiteralExpression& t_other) const
+bool rtask::commons::pddl_generator::operator==(const LiteralExpression& t_first, const LiteralExpression& t_second)
 {
-  if (expr_name_ != t_other.getExpressionName()) {
+  if (t_first.getExpressionName() != t_second.getExpressionName()) {
     return false;
   }
 
-  const auto& other_args = t_other.getExpressionArgs();
+  const auto& f_args = t_first.getExpressionArgs();
+  const auto& s_args = t_second.getExpressionArgs();
 
-  if (args_.size() != other_args.size()) {
+  if (f_args.size() != s_args.size()) {
     return false;
   }
-  for (unsigned int i = 0; i < args_.size(); ++i) {
-    if (args_.at(i) != other_args.at(i)) {
+  for (const auto& fs : f_args) {
+    const auto& it = std::find_if(s_args.begin(), s_args.end(), [fs](const auto& ss) { return ss == fs; });
+    if (it == s_args.end()) {
+      return false;
+    }
+  }
+  for (const auto& ss : s_args) {
+    const auto& it = std::find_if(f_args.begin(), f_args.end(), [ss](const auto& fs) { return ss == fs; });
+    if (it == f_args.end()) {
       return false;
     }
   }

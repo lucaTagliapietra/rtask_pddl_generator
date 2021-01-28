@@ -39,7 +39,7 @@ namespace rtask {
         bool operator==(const LiteralTerm& t_other) const;
         LiteralTerm& operator=(const LiteralTerm& t_other);
 
-        std::string toPddl(const bool t_typing = true) const override;
+        std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
 
       private:
         std::string name_{};

@@ -25,7 +25,7 @@ namespace rtask {
         bool operator==(const NumericalTerm& t_other) const;
         NumericalTerm& operator=(const NumericalTerm& t_other);
 
-        std::string toPddl(const bool t_typing = true) const override;
+        std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
 
       private:
         double value_{};

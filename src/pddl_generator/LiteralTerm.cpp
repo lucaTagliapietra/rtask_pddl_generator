@@ -33,7 +33,7 @@ LiteralTerm::LiteralTerm(XmlRpc::XmlRpcValue& t_rpc_val)
   obj_type_ = TermType::LiteralTerm;
 }
 
-std::string LiteralTerm::toPddl(const bool t_typing) const
+std::string LiteralTerm::toPddl(const bool t_typing, int) const
 {
   if (name_.empty()) {
     return {};

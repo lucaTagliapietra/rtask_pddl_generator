@@ -33,7 +33,6 @@ namespace rtask {
                       const UnordStrToUIntMap& t_belonging_action_args,
                       const std::string& t_belonging_action_name) const;
 
-        bool operator==(const LiteralExpression& t_other) const;
         LiteralExpression& operator=(const LiteralExpression& t_other);
 
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
@@ -42,6 +41,8 @@ namespace rtask {
         //   string expression_name is already protected in parent class
         std::vector<std::string> args_{};
       };
+
+      bool operator==(const LiteralExpression& t_first, const LiteralExpression& t_second);
 
       static std::ostream& operator<<(std::ostream& t_out, const LiteralExpression& t_expr)
       {

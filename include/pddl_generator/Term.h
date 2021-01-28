@@ -25,7 +25,7 @@ namespace rtask {
         Term() = default;
         virtual ~Term() = default;
 
-        virtual std::string toPddl(const bool t_typing = true) const { return {}; }
+        virtual std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const { return {}; }
 
         inline TermType getObjectType() const { return obj_type_; }
 

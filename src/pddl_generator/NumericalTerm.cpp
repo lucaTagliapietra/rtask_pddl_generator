@@ -38,7 +38,7 @@ NumericalTerm& NumericalTerm::operator=(const NumericalTerm& t_other)
   return *this;
 }
 
-std::string NumericalTerm::toPddl(const bool) const
+std::string NumericalTerm::toPddl(bool, int) const
 {
   return std::to_string(value_);
 }
