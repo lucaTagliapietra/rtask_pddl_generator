@@ -86,6 +86,12 @@ domain:
             - not:
                 {name: "handempty"}
             - expr: {name: "holding", args: ["x"] }
+            - modify:
+                operation: "decrease"
+                lhs:
+                    num_fnc: {name: "battery_level", args: ["x"]}
+                rhs:
+                    num_term: 10.4
 
     - name: "put-down"
       params:

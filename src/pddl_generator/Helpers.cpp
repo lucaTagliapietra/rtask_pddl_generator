@@ -4,6 +4,7 @@
 #include "pddl_generator/NumericalTerm.h"
 
 #include "pddl_generator/AndExpression.h"
+#include "pddl_generator/ArithmeticExpression.h"
 #include "pddl_generator/CompareExpression.h"
 #include "pddl_generator/ExistsExpression.h"
 #include "pddl_generator/ForAllExpression.h"
@@ -53,33 +54,27 @@ LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue&
 
 LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  if (t_rpc_val.hasMember("not")) {
-    return std::make_shared<NotExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("expr")) {
-    return std::make_shared<LiteralExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("and")) {
-    return std::make_shared<AndExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("or")) {
-    return std::make_shared<OrExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("when")) {
-    return std::make_shared<WhenExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("exists")) {
-    return std::make_shared<ExistsExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("forall")) {
-    return std::make_shared<ForAllExpression>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("compare")) {
-    return std::make_shared<CompareExpression>(t_rpc_val);
-  }
-
-  else {
-    return nullptr;
+  switch (getLogicalExprTypeFromXmlRpc(t_rpc_val)) {
+    case LogicalExpressionType::Literal:
+      return std::make_shared<LiteralExpression>(t_rpc_val);
+    case LogicalExpressionType::Not:
+      return std::make_shared<NotExpression>(t_rpc_val);
+    case LogicalExpressionType::And:
+      return std::make_shared<AndExpression>(t_rpc_val);
+    case LogicalExpressionType::Or:
+      return std::make_shared<OrExpression>(t_rpc_val);
+    case LogicalExpressionType::When:
+      return std::make_shared<WhenExpression>(t_rpc_val);
+    case LogicalExpressionType::Exists:
+      return std::make_shared<ExistsExpression>(t_rpc_val);
+    case LogicalExpressionType::ForAll:
+      return std::make_shared<ForAllExpression>(t_rpc_val);
+    case LogicalExpressionType::Compare:
+      return std::make_shared<CompareExpression>(t_rpc_val);
+    case LogicalExpressionType::Arithmetic:
+      return std::make_shared<ArithmeticExpression>(t_rpc_val);
+    default:
+      return nullptr;
   }
 }
 
@@ -101,17 +96,15 @@ NumericalExpressionType helpers::getNumericalExprTypeFromXmlRpc(XmlRpc::XmlRpcVa
 
 NumericalExprPtr helpers::getNumericalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  if (t_rpc_val.hasMember("num_fnc")) {
-    return std::make_shared<NumericalFunction>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("num_op")) {
-    return std::make_shared<NumericalOperator>(t_rpc_val);
-  }
-  else if (t_rpc_val.hasMember("num_term")) {
-    return std::make_shared<NumericalTerm>(t_rpc_val);
-  }
-  else {
-    return nullptr;
+  switch (getNumericalExprTypeFromXmlRpc(t_rpc_val)) {
+    case NumericalExpressionType::Function:
+      return std::make_shared<NumericalFunction>(t_rpc_val);
+    case NumericalExpressionType::Operator:
+      return std::make_shared<NumericalOperator>(t_rpc_val);
+    case NumericalExpressionType::Term:
+      return std::make_shared<NumericalTerm>(t_rpc_val);
+    default:
+      return {};
   }
 }
 
@@ -196,6 +189,8 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
       return dynamic_cast<ForAllExpression&>(t_parent);
     case LogicalExpressionType::Compare:
       return dynamic_cast<CompareExpression&>(t_parent);
+    case LogicalExpressionType::Arithmetic:
+      return dynamic_cast<ArithmeticExpression&>(t_parent);
     default:
       return {};
   }
@@ -220,6 +215,8 @@ std::any helpers::getAsChild(LogicalExprPtr t_parent)
       return std::dynamic_pointer_cast<ForAllExpression>(t_parent);
     case LogicalExpressionType::Compare:
       return std::dynamic_pointer_cast<CompareExpression>(t_parent);
+    case LogicalExpressionType::Arithmetic:
+      return std::dynamic_pointer_cast<ArithmeticExpression>(t_parent);
     default:
       return {};
   }
@@ -280,6 +277,9 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, Lo
     case LogicalExpressionType::Compare:
       t_out << *std::dynamic_pointer_cast<CompareExpression>(t_expr);
       break;
+    case LogicalExpressionType::Arithmetic:
+      t_out << *std::dynamic_pointer_cast<ArithmeticExpression>(t_expr);
+      break;
     default:
       break;
   }
@@ -331,6 +331,9 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
     case LogicalExpressionType::Compare:
       return operator==(dynamic_cast<const CompareExpression&>(t_first),
                         dynamic_cast<const CompareExpression&>(t_second));
+    case LogicalExpressionType::Arithmetic:
+      return operator==(dynamic_cast<const ArithmeticExpression&>(t_first),
+                        dynamic_cast<const ArithmeticExpression&>(t_second));
     default:
       return false;
   }
@@ -375,6 +378,8 @@ std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int 
       return std::dynamic_pointer_cast<ForAllExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::Compare:
       return std::dynamic_pointer_cast<CompareExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    case LogicalExpressionType::Arithmetic:
+      return std::dynamic_pointer_cast<ArithmeticExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     default:
       return {};
   }

@@ -50,6 +50,7 @@ add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/ExistsExpression.cpp
                                                src/pddl_generator/ForAllExpression.cpp
                                                src/pddl_generator/CompareExpression.cpp
+                                               src/pddl_generator/ArithmeticExpression.cpp
                                                )
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp
