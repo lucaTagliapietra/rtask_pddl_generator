@@ -66,7 +66,7 @@ bool NumericalOperator::setOperatorName(const std::string& t_op_name)
 {
   if (t_op_name.empty() || (t_op_name != "+" && t_op_name != "-" && t_op_name != "*" && t_op_name != "/")) {
     std::cerr << "Empty or invalid NumericalOperator name : " << t_op_name << std::endl;
-    return false;
+    exit(EXIT_FAILURE);
   }
   operator_name_ = std::move(t_op_name);
   return true;
