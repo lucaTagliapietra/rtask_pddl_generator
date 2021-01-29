@@ -22,7 +22,9 @@ namespace rtask {
         When,
         Exists,
         ForAll,
-        Arithmetic
+        Arithmetic,
+        Imply,
+        Equals
       };
 
       class LogicalExpression

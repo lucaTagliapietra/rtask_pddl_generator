@@ -4,6 +4,7 @@
 #include "pddl_generator/ExistsExpression.h"
 #include "pddl_generator/ForAllExpression.h"
 #include "pddl_generator/Helpers.h"
+#include "pddl_generator/ImplyExpression.h"
 #include "pddl_generator/LiteralExpression.h"
 #include "pddl_generator/LiteralTerm.h"
 #include "pddl_generator/NotExpression.h"
@@ -51,6 +52,7 @@ int main(int argc, char* argv[])
   auto num_op_xml = xml["actions"][0]["preconditions"]["and"][3]["compare"]["lhs"];
   auto compare_xml = xml["actions"][0]["preconditions"]["and"][3];
   auto arithmetic_xml = xml["actions"][0]["effects"]["and"][5];
+  auto imply_xml = xml["actions"][0]["preconditions"]["and"][2];
 
   std::cout << "and_xml: " << and_xml << std::endl;
   std::cout << "and_xml type: " << and_xml.getType() << std::endl;
@@ -135,6 +137,13 @@ int main(int argc, char* argv[])
   //  std::cout << "arithmetic_expr:" << std::endl << arithmetic_expr << std::endl << std::endl;
   std::cout << "arithmetic_expr pddl:" << std::endl << arithmetic_expr.toPddl() << std::endl << std::endl;
   std::cout << "arithmetic_expr pddl:" << std::endl << arithmetic_expr.toPddl(true, -1) << std::endl << std::endl;
+
+  std::cout << std::endl << std::endl;
+  std::cout << "******** IMPLY EXPRESSION ********" << std::endl;
+  ImplyExpression imply_expr(imply_xml);
+  //  std::cout << "arithmetic_expr:" << std::endl << arithmetic_expr << std::endl << std::endl;
+  std::cout << "imply_expr pddl:" << std::endl << imply_expr.toPddl() << std::endl << std::endl;
+  std::cout << "imply_expr pddl:" << std::endl << imply_expr.toPddl(true, -1) << std::endl << std::endl;
 
   ros::shutdown();
 }
