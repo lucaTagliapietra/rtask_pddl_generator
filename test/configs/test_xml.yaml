@@ -63,13 +63,13 @@ domain:
                 operator: "<="
                 lhs:
                     num_op:
-                        name: "+"
+                        operator: "+"
                         lhs:
                             num_fnc: {name: "battery_level", args: ["x"]}
                         rhs:
-                            num_val: 10
+                            num_term: 10
                 rhs:
-                    num_val: 5
+                    num_term: 5
       effects:
         and:
             - when:
