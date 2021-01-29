@@ -28,14 +28,15 @@ NumericalTerm::NumericalTerm(const int& t_value)
 
 NumericalTerm::NumericalTerm(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  if (helpers::checkXmlRpcSanity("num_term", t_rpc_val, XmlRpc::XmlRpcValue::TypeInt, true)) {
+  const auto tag_type = helpers::getTagValueType("num_term", t_rpc_val);
+  if (tag_type == XmlRpc::XmlRpcValue::TypeInt) {
     val_ = static_cast<int>(t_rpc_val["num_term"]);
   }
-  else if (helpers::checkXmlRpcSanity("num_term", t_rpc_val, XmlRpc::XmlRpcValue::TypeDouble, true)) {
+  else if (tag_type == XmlRpc::XmlRpcValue::TypeDouble) {
     val_ = static_cast<double>(t_rpc_val["num_term"]);
   }
   else {
-    std::cerr << "Fatal: Invalid Numerical Value, should be a Double or Int" << std::endl;
+    std::cerr << "Fatal: Invalid Numerical Value, should be Int or Double" << std::endl;
     exit(EXIT_FAILURE);
   }
   obj_type_ = TermType::NumericalTerm;
