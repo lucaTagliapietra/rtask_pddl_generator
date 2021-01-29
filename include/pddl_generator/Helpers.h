@@ -32,24 +32,30 @@ namespace rtask {
         LogicalExpressionType getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val);
         NumericalExpressionType getNumericalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val);
 
-        std::shared_ptr<LogicalExpression> getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val);
-        // std::shared_ptr < NumericalExpression> getNumericalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val);
+        LogicalExprPtr getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val);
+        NumericalExprPtr getNumericalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val);
 
         std::string logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing = true, int t_pad_lv = 0);
+        std::string numericalExprToPddl(NumericalExprPtr t_ptr, bool t_typing = true, int t_pad_lv = 0);
 
         std::any getAsChild(Term& t_parent);
         std::any getAsChild(std::shared_ptr<Term> t_parent_ptr);
 
         std::any getAsChild(LogicalExpression& t_parent);
-        std::any getAsChild(std::shared_ptr<LogicalExpression> t_parent_ptr);
+        std::any getAsChild(LogicalExprPtr t_parent_ptr);
+
+        std::any getAsChild(NumericalExpression& t_parent);
+        std::any getAsChild(NumericalExprPtr t_parent_ptr);
 
         bool operator==(const LogicalExpression& t_first, const LogicalExpression& t_second);
+        bool operator==(const NumericalExpression& t_first, const NumericalExpression& t_second);
 
         std::string padding(int t_n_pads);
         std::pair<int, std::vector<std::string>> getPddlAligners(int t_pad_lv);
 
       } // namespace helpers
-      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<LogicalExpression> t_expr);
+      std::ostream& operator<<(std::ostream& t_out, LogicalExprPtr t_expr);
+      std::ostream& operator<<(std::ostream& t_out, NumericalExprPtr t_expr);
 
     } // namespace pddl_generator
   } // namespace commons

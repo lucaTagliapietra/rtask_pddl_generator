@@ -11,6 +11,9 @@
 #include "pddl_generator/OrExpression.h"
 #include "pddl_generator/WhenExpression.h"
 
+#include "pddl_generator/NumericalFunction.h"
+#include "pddl_generator/NumericalOperator.h"
+
 using namespace rtask::commons::pddl_generator;
 
 LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
@@ -81,7 +84,7 @@ LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 
 NumericalExpressionType helpers::getNumericalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
 {
-  if (t_rpc_val.hasMember("num_fcn")) {
+  if (t_rpc_val.hasMember("num_fnc")) {
     return NumericalExpressionType::Function;
   }
   else if (t_rpc_val.hasMember("num_op")) {
@@ -92,6 +95,22 @@ NumericalExpressionType helpers::getNumericalExprTypeFromXmlRpc(XmlRpc::XmlRpcVa
   }
   else {
     return NumericalExpressionType::Invalid;
+  }
+}
+
+NumericalExprPtr helpers::getNumericalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
+{
+  if (t_rpc_val.hasMember("num_fnc")) {
+    return std::make_shared<NumericalFunction>(t_rpc_val);
+  }
+  else if (t_rpc_val.hasMember("num_op")) {
+    return std::make_shared<NumericalOperator>(t_rpc_val);
+  }
+  else if (t_rpc_val.hasMember("num_term")) {
+    return std::make_shared<NumericalTerm>(t_rpc_val);
+  }
+  else {
+    return nullptr;
   }
 }
 
@@ -135,8 +154,7 @@ XmlRpc::XmlRpcValue::Type helpers::getTagValueType(const std::string& t_tag, Xml
 
 std::any helpers::getAsChild(Term& t_parent)
 {
-  TermType type = t_parent.getObjectType();
-  switch (type) {
+  switch (t_parent.getObjectType()) {
     case TermType::LiteralTerm:
       return dynamic_cast<LiteralTerm&>(t_parent);
     case TermType::NumericalTerm:
@@ -148,8 +166,7 @@ std::any helpers::getAsChild(Term& t_parent)
 
 std::any helpers::getAsChild(std::shared_ptr<Term> t_parent)
 {
-  TermType type = t_parent->getObjectType();
-  switch (type) {
+  switch (t_parent->getObjectType()) {
     case TermType::LiteralTerm:
       return std::dynamic_pointer_cast<LiteralTerm>(t_parent);
     case TermType::NumericalTerm:
@@ -161,8 +178,7 @@ std::any helpers::getAsChild(std::shared_ptr<Term> t_parent)
 
 std::any helpers::getAsChild(LogicalExpression& t_parent)
 {
-  LogicalExpressionType type = t_parent.getExpressionType();
-  switch (type) {
+  switch (t_parent.getExpressionType()) {
     case LogicalExpressionType::Literal:
       return dynamic_cast<LiteralExpression&>(t_parent);
     case LogicalExpressionType::Not:
@@ -184,8 +200,7 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
 
 std::any helpers::getAsChild(LogicalExprPtr t_parent)
 {
-  LogicalExpressionType type = t_parent->getExpressionType();
-  switch (type) {
+  switch (t_parent->getExpressionType()) {
     case LogicalExpressionType::Literal:
       return std::dynamic_pointer_cast<LiteralExpression>(t_parent);
     case LogicalExpressionType::Not:
@@ -200,6 +215,34 @@ std::any helpers::getAsChild(LogicalExprPtr t_parent)
       return std::dynamic_pointer_cast<ExistsExpression>(t_parent);
     case LogicalExpressionType::ForAll:
       return std::dynamic_pointer_cast<ForAllExpression>(t_parent);
+    default:
+      return {};
+  }
+}
+
+std::any helpers::getAsChild(NumericalExpression& t_parent)
+{
+  switch (t_parent.getExpressionType()) {
+    case NumericalExpressionType::Function:
+      return dynamic_cast<NumericalFunction&>(t_parent);
+    case NumericalExpressionType::Operator:
+      return dynamic_cast<NumericalOperator&>(t_parent);
+    case NumericalExpressionType::Term:
+      return dynamic_cast<NumericalTerm&>(t_parent);
+    default:
+      return {};
+  }
+}
+
+std::any helpers::getAsChild(NumericalExprPtr t_parent)
+{
+  switch (t_parent->getExpressionType()) {
+    case NumericalExpressionType::Function:
+      return std::dynamic_pointer_cast<NumericalFunction>(t_parent);
+    case NumericalExpressionType::Operator:
+      return std::dynamic_pointer_cast<NumericalOperator>(t_parent);
+    case NumericalExpressionType::Term:
+      return std::dynamic_pointer_cast<NumericalTerm>(t_parent);
     default:
       return {};
   }
@@ -235,14 +278,31 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, Lo
   return t_out;
 }
 
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, NumericalExprPtr t_expr)
+{
+  switch (t_expr->getExpressionType()) {
+    case NumericalExpressionType::Function:
+      t_out << *std::dynamic_pointer_cast<NumericalFunction>(t_expr);
+      break;
+    case NumericalExpressionType::Operator:
+      t_out << *std::dynamic_pointer_cast<NumericalOperator>(t_expr);
+      break;
+    case NumericalExpressionType::Term:
+      t_out << *std::dynamic_pointer_cast<NumericalTerm>(t_expr);
+      break;
+    default:
+      break;
+  }
+  return t_out;
+}
+
 bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpression& t_second)
 {
   if (t_first.getExpressionType() != t_second.getExpressionType()
       || t_first.getExpressionName() != t_second.getExpressionName()) {
     return false;
   }
-  LogicalExpressionType type = t_first.getExpressionType();
-  switch (type) {
+  switch (t_first.getExpressionType()) {
     case LogicalExpressionType::Literal:
       return operator==(dynamic_cast<const LiteralExpression&>(t_first),
                         dynamic_cast<const LiteralExpression&>(t_second));
@@ -260,6 +320,25 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
     case LogicalExpressionType::ForAll:
       return operator==(dynamic_cast<const ForAllExpression&>(t_first),
                         dynamic_cast<const ForAllExpression&>(t_second));
+    default:
+      return false;
+  }
+}
+
+bool helpers::operator==(const NumericalExpression& t_first, const NumericalExpression& t_second)
+{
+  if (t_first.getExpressionType() != t_second.getExpressionType()) {
+    return false;
+  }
+  switch (t_first.getExpressionType()) {
+    case NumericalExpressionType::Function:
+      return operator==(dynamic_cast<const NumericalFunction&>(t_first),
+                        dynamic_cast<const NumericalFunction&>(t_second));
+    case NumericalExpressionType::Operator:
+      return operator==(dynamic_cast<const NumericalOperator&>(t_first),
+                        dynamic_cast<const NumericalOperator&>(t_second));
+    case NumericalExpressionType::Term:
+      return operator==(dynamic_cast<const NumericalTerm&>(t_first), dynamic_cast<const NumericalTerm&>(t_second));
     default:
       return false;
   }
@@ -283,6 +362,20 @@ std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int 
       return std::dynamic_pointer_cast<ExistsExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::ForAll:
       return std::dynamic_pointer_cast<ForAllExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    default:
+      return {};
+  }
+}
+
+std::string helpers::numericalExprToPddl(NumericalExprPtr t_ptr, bool t_typing, int t_pad_lv)
+{
+  switch (t_ptr->getExpressionType()) {
+    case NumericalExpressionType::Function:
+      return std::dynamic_pointer_cast<NumericalFunction>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    case NumericalExpressionType::Operator:
+      return std::dynamic_pointer_cast<NumericalOperator>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    case NumericalExpressionType::Term:
+      return std::dynamic_pointer_cast<NumericalTerm>(t_ptr)->toPddl(t_typing, t_pad_lv);
     default:
       return {};
   }

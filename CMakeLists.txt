@@ -48,6 +48,7 @@ add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/ExistsExpression.cpp
                                                src/pddl_generator/ForAllExpression.cpp
                                                src/pddl_generator/NumericalFunction.cpp
+                                               src/pddl_generator/NumericalOperator.cpp
                                                )
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp
