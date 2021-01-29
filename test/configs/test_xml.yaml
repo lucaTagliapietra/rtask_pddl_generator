@@ -70,6 +70,9 @@ domain:
                             num_term: 10
                 rhs:
                     num_term: 5
+            - equals:
+                lhs: "a"
+                rhs: "b"
       effects:
         and:
             - when:

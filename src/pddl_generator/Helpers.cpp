@@ -6,6 +6,7 @@
 #include "pddl_generator/AndExpression.h"
 #include "pddl_generator/ArithmeticExpression.h"
 #include "pddl_generator/CompareExpression.h"
+#include "pddl_generator/EqualsExpression.h"
 #include "pddl_generator/ExistsExpression.h"
 #include "pddl_generator/ForAllExpression.h"
 #include "pddl_generator/ImplyExpression.h"
@@ -51,6 +52,9 @@ LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue&
   else if (t_rpc_val.hasMember("imply")) {
     return LogicalExpressionType::Imply;
   }
+  else if (t_rpc_val.hasMember("equals")) {
+    return LogicalExpressionType::Equals;
+  }
   else {
     return LogicalExpressionType::Invalid;
   }
@@ -79,6 +83,8 @@ LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
       return std::make_shared<ArithmeticExpression>(t_rpc_val);
     case LogicalExpressionType::Imply:
       return std::make_shared<ImplyExpression>(t_rpc_val);
+    case LogicalExpressionType::Equals:
+      return std::make_shared<EqualsExpression>(t_rpc_val);
     default:
       return nullptr;
   }
@@ -199,6 +205,8 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
       return dynamic_cast<ArithmeticExpression&>(t_parent);
     case LogicalExpressionType::Imply:
       return dynamic_cast<ImplyExpression&>(t_parent);
+    case LogicalExpressionType::Equals:
+      return dynamic_cast<EqualsExpression&>(t_parent);
     default:
       return {};
   }
@@ -227,6 +235,8 @@ std::any helpers::getAsChild(LogicalExprPtr t_parent)
       return std::dynamic_pointer_cast<ArithmeticExpression>(t_parent);
     case LogicalExpressionType::Imply:
       return std::dynamic_pointer_cast<ImplyExpression>(t_parent);
+    case LogicalExpressionType::Equals:
+      return std::dynamic_pointer_cast<EqualsExpression>(t_parent);
     default:
       return {};
   }
@@ -293,6 +303,9 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, Lo
     case LogicalExpressionType::Imply:
       t_out << *std::dynamic_pointer_cast<ImplyExpression>(t_expr);
       break;
+    case LogicalExpressionType::Equals:
+      t_out << *std::dynamic_pointer_cast<EqualsExpression>(t_expr);
+      break;
     default:
       break;
   }
@@ -349,6 +362,10 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
                         dynamic_cast<const ArithmeticExpression&>(t_second));
     case LogicalExpressionType::Imply:
       return operator==(dynamic_cast<const ImplyExpression&>(t_first), dynamic_cast<const ImplyExpression&>(t_second));
+    case LogicalExpressionType::Equals:
+      return operator==(dynamic_cast<const EqualsExpression&>(t_first),
+                        dynamic_cast<const EqualsExpression&>(t_second));
+
     default:
       return false;
   }
@@ -397,6 +414,8 @@ std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int 
       return std::dynamic_pointer_cast<ArithmeticExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::Imply:
       return std::dynamic_pointer_cast<ImplyExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    case LogicalExpressionType::Equals:
+      return std::dynamic_pointer_cast<EqualsExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     default:
       return {};
   }
