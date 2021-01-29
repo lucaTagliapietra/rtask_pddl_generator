@@ -7,10 +7,13 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
+#include <variant>
 
 namespace rtask {
   namespace commons {
     namespace pddl_generator {
+
+      using IntDoubleVar = std::variant<int, double>;
 
       class NumericalTerm
         : public Term
@@ -21,25 +24,24 @@ namespace rtask {
         ~NumericalTerm() override = default;
 
         NumericalTerm(const double& t_value);
+        NumericalTerm(const int& t_value);
         NumericalTerm(XmlRpc::XmlRpcValue& t_rpc_val);
 
-        inline void set(const double& t_value) { value_ = std::move(t_value); }
-        inline double getValue() const { return value_; }
+        void set(const double& t_value);
+        void set(const int& t_value);
 
-        bool operator==(const NumericalTerm& t_other) const;
-        NumericalTerm& operator=(const NumericalTerm& t_other);
+        inline IntDoubleVar getValue() const { return val_; }
 
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
 
+        NumericalTerm& operator=(const NumericalTerm& t_other);
+
       private:
-        double value_{};
+        IntDoubleVar val_;
       };
 
-      //      std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt)
-      //      {
-      //        t_out << "value: " << t_nt.getValue();
-      //        return t_out;
-      //      }
+      std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt);
+      bool operator==(const NumericalTerm& t_first, const NumericalTerm& t_second);
 
     } // namespace pddl_generator
   } // namespace commons
