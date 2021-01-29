@@ -4,6 +4,7 @@
 #include "pddl_generator/NumericalTerm.h"
 
 #include "pddl_generator/AndExpression.h"
+#include "pddl_generator/CompareExpression.h"
 #include "pddl_generator/ExistsExpression.h"
 #include "pddl_generator/ForAllExpression.h"
 #include "pddl_generator/LiteralExpression.h"
@@ -73,9 +74,9 @@ LogicalExprPtr helpers::getLogicalExprFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
   else if (t_rpc_val.hasMember("forall")) {
     return std::make_shared<ForAllExpression>(t_rpc_val);
   }
-  //  else if (t_rpc_val.hasMember("compare")) {
-  //    return std::make_shared<CompareExpression>(t_rpc_val);
-  //  }
+  else if (t_rpc_val.hasMember("compare")) {
+    return std::make_shared<CompareExpression>(t_rpc_val);
+  }
 
   else {
     return nullptr;
@@ -193,6 +194,8 @@ std::any helpers::getAsChild(LogicalExpression& t_parent)
       return dynamic_cast<ExistsExpression&>(t_parent);
     case LogicalExpressionType::ForAll:
       return dynamic_cast<ForAllExpression&>(t_parent);
+    case LogicalExpressionType::Compare:
+      return dynamic_cast<CompareExpression&>(t_parent);
     default:
       return {};
   }
@@ -215,6 +218,8 @@ std::any helpers::getAsChild(LogicalExprPtr t_parent)
       return std::dynamic_pointer_cast<ExistsExpression>(t_parent);
     case LogicalExpressionType::ForAll:
       return std::dynamic_pointer_cast<ForAllExpression>(t_parent);
+    case LogicalExpressionType::Compare:
+      return std::dynamic_pointer_cast<CompareExpression>(t_parent);
     default:
       return {};
   }
@@ -272,6 +277,9 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, Lo
     case LogicalExpressionType::ForAll:
       t_out << *std::dynamic_pointer_cast<ForAllExpression>(t_expr);
       break;
+    case LogicalExpressionType::Compare:
+      t_out << *std::dynamic_pointer_cast<CompareExpression>(t_expr);
+      break;
     default:
       break;
   }
@@ -320,6 +328,9 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
     case LogicalExpressionType::ForAll:
       return operator==(dynamic_cast<const ForAllExpression&>(t_first),
                         dynamic_cast<const ForAllExpression&>(t_second));
+    case LogicalExpressionType::Compare:
+      return operator==(dynamic_cast<const CompareExpression&>(t_first),
+                        dynamic_cast<const CompareExpression&>(t_second));
     default:
       return false;
   }
@@ -362,6 +373,8 @@ std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int 
       return std::dynamic_pointer_cast<ExistsExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     case LogicalExpressionType::ForAll:
       return std::dynamic_pointer_cast<ForAllExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
+    case LogicalExpressionType::Compare:
+      return std::dynamic_pointer_cast<CompareExpression>(t_ptr)->toPddl(t_typing, t_pad_lv);
     default:
       return {};
   }
