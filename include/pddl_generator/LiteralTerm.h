@@ -17,6 +17,8 @@ namespace rtask {
 
       using UnordStrToLitTermMap = std::unordered_map<std::string, LiteralTerm>;
       using LiteralTermPtr = std::shared_ptr<LiteralTerm>;
+      using ConstLiteralTermPtr = std::shared_ptr<const LiteralTerm>;
+      using LiteralTermVector = std::vector<LiteralTerm>;
 
       class LiteralTerm : public Term
       {

@@ -53,6 +53,7 @@ add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/ArithmeticExpression.cpp
                                                src/pddl_generator/ImplyExpression.cpp
                                                src/pddl_generator/EqualsExpression.cpp
+                                               src/pddl_generator/Predicate.cpp
                                                )
 
 add_library(${PROJECT_NAME}_lib src/utils.cpp

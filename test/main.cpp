@@ -15,6 +15,8 @@
 #include "pddl_generator/OrExpression.h"
 #include "pddl_generator/WhenExpression.h"
 
+#include "pddl_generator/Predicate.h"
+
 #include <ros/ros.h>
 
 using namespace rtask::commons::pddl_generator;
@@ -55,6 +57,7 @@ int main(int argc, char* argv[])
   auto arithmetic_xml = xml["actions"][0]["effects"]["and"][5];
   auto imply_xml = xml["actions"][0]["preconditions"]["and"][2];
   auto equals_xml = xml["actions"][0]["preconditions"]["and"][4];
+  auto predicate_xml = xml["predicates"][0];
 
   std::cout << "and_xml: " << and_xml << std::endl;
   std::cout << "and_xml type: " << and_xml.getType() << std::endl;
@@ -153,6 +156,13 @@ int main(int argc, char* argv[])
   //  std::cout << "equals_expr:" << std::endl << equals_expr << std::endl << std::endl;
   std::cout << "equals_expr pddl:" << std::endl << equals_expr.toPddl() << std::endl << std::endl;
   std::cout << "equals_expr pddl:" << std::endl << equals_expr.toPddl(true, -1) << std::endl << std::endl;
+
+  std::cout << std::endl << std::endl;
+  std::cout << "******** PREDICATE ********" << std::endl;
+  Predicate predicate(predicate_xml);
+  //  std::cout << "equals_expr:" << std::endl << equals_expr << std::endl << std::endl;
+  std::cout << "predicate pddl:" << std::endl << predicate.toPddl() << std::endl << std::endl;
+  std::cout << "predicate pddl:" << std::endl << predicate.toPddl(true, -1) << std::endl << std::endl;
 
   ros::shutdown();
 }
