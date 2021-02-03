@@ -34,6 +34,7 @@ namespace rtask {
         inline void setLhsExpression(NumericalExprPtr t_lhs);
         inline void setRhsExpression(NumericalExprPtr t_rhs);
 
+        inline std::string getExpressionName() const = delete;
         inline std::string getComparisonOperator() const { return expr_name_; }
         inline NumericalExprPtr getLhsExpression() const { return lhs_expr_; }
         inline NumericalExprPtr getRhsExpression() const { return rhs_expr_; }
