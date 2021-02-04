@@ -16,7 +16,6 @@ namespace rtask {
       class OrExpression : public LogicalExpression
       {
       public:
-        OrExpression();
         ~OrExpression() override = default;
 
         OrExpression(const LogicalExprPtrVector& t_expr_vec = {});
@@ -47,19 +46,8 @@ namespace rtask {
       };
 
       bool operator==(const OrExpression& t_first, const OrExpression& t_second);
-
-      static std::ostream& operator<<(std::ostream& t_out, const OrExpression& t_expr)
-      {
-        t_out << "OrExpression name: " << t_expr.getExpressionName() << std::endl;
-        unsigned int i = 0;
-        for (const auto& expr : t_expr.getExpressions()) {
-          (i != 0) ? t_out << std::endl : t_out << "";
-          t_out << "\t"
-                << " - expr[" << i << "]: " << expr;
-          ++i;
-        }
-        return t_out;
-      }
+      std::ostream& operator<<(std::ostream& t_out, const OrExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<OrExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

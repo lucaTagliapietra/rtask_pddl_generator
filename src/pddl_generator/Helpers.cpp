@@ -272,60 +272,64 @@ std::any helpers::getAsChild(NumericalExprPtr t_parent)
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, LogicalExprPtr t_expr)
 {
-  switch (t_expr->getExpressionType()) {
-    case LogicalExpressionType::Literal:
-      t_out << *std::dynamic_pointer_cast<LiteralExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Not:
-      t_out << *std::dynamic_pointer_cast<NotExpression>(t_expr);
-      break;
-    case LogicalExpressionType::And:
-      t_out << *std::dynamic_pointer_cast<AndExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Or:
-      t_out << *std::dynamic_pointer_cast<OrExpression>(t_expr);
-      break;
-    case LogicalExpressionType::When:
-      t_out << *std::dynamic_pointer_cast<WhenExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Exists:
-      t_out << *std::dynamic_pointer_cast<ExistsExpression>(t_expr);
-      break;
-    case LogicalExpressionType::ForAll:
-      t_out << *std::dynamic_pointer_cast<ForAllExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Compare:
-      t_out << *std::dynamic_pointer_cast<CompareExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Arithmetic:
-      t_out << *std::dynamic_pointer_cast<ArithmeticExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Imply:
-      t_out << *std::dynamic_pointer_cast<ImplyExpression>(t_expr);
-      break;
-    case LogicalExpressionType::Equals:
-      t_out << *std::dynamic_pointer_cast<EqualsExpression>(t_expr);
-      break;
-    default:
-      break;
+  if (t_expr) {
+    switch (t_expr->getExpressionType()) {
+      case LogicalExpressionType::Literal:
+        t_out << *std::dynamic_pointer_cast<LiteralExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Not:
+        t_out << *std::dynamic_pointer_cast<NotExpression>(t_expr);
+        break;
+      case LogicalExpressionType::And:
+        t_out << *std::dynamic_pointer_cast<AndExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Or:
+        t_out << *std::dynamic_pointer_cast<OrExpression>(t_expr);
+        break;
+      case LogicalExpressionType::When:
+        t_out << *std::dynamic_pointer_cast<WhenExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Exists:
+        t_out << *std::dynamic_pointer_cast<ExistsExpression>(t_expr);
+        break;
+      case LogicalExpressionType::ForAll:
+        t_out << *std::dynamic_pointer_cast<ForAllExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Compare:
+        t_out << *std::dynamic_pointer_cast<CompareExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Arithmetic:
+        t_out << *std::dynamic_pointer_cast<ArithmeticExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Imply:
+        t_out << *std::dynamic_pointer_cast<ImplyExpression>(t_expr);
+        break;
+      case LogicalExpressionType::Equals:
+        t_out << *std::dynamic_pointer_cast<EqualsExpression>(t_expr);
+        break;
+      default:
+        break;
+    }
   }
   return t_out;
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, NumericalExprPtr t_expr)
 {
-  switch (t_expr->getExpressionType()) {
-    case NumericalExpressionType::Function:
-      t_out << *std::dynamic_pointer_cast<NumericalFunction>(t_expr);
-      break;
-    case NumericalExpressionType::Operator:
-      t_out << *std::dynamic_pointer_cast<NumericalOperator>(t_expr);
-      break;
-    case NumericalExpressionType::Term:
-      t_out << *std::dynamic_pointer_cast<NumericalTerm>(t_expr);
-      break;
-    default:
-      break;
+  if (t_expr) {
+    switch (t_expr->getExpressionType()) {
+      case NumericalExpressionType::Function:
+        t_out << *std::dynamic_pointer_cast<NumericalFunction>(t_expr);
+        break;
+      case NumericalExpressionType::Operator:
+        t_out << *std::dynamic_pointer_cast<NumericalOperator>(t_expr);
+        break;
+      case NumericalExpressionType::Term:
+        t_out << *std::dynamic_pointer_cast<NumericalTerm>(t_expr);
+        break;
+      default:
+        break;
+    }
   }
   return t_out;
 }

@@ -49,14 +49,8 @@ namespace rtask {
       };
 
       bool operator==(const ForAllExpression& t_first, const ForAllExpression& t_second);
-
-      static std::ostream& operator<<(std::ostream& t_out, const ForAllExpression& t_expr)
-      {
-        t_out << "ForAllExpression name: " << t_expr.getExpressionName() << std::endl;
-        t_out << "\t - what: " << t_expr.getWhat() << std::endl;
-        t_out << "\t - condition: " << t_expr.getCondition();
-        return t_out;
-      }
+      std::ostream& operator<<(std::ostream& t_out, const ForAllExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<ForAllExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

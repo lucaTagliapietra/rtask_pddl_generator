@@ -38,7 +38,6 @@ namespace rtask {
 
         bool validate(const UnordStrToLitTermMap& t_types) const;
 
-        bool operator==(const LiteralTerm& t_other) const;
         LiteralTerm& operator=(const LiteralTerm& t_other);
 
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
@@ -48,11 +47,9 @@ namespace rtask {
         std::string type_{};
       };
 
-      static std::ostream& operator<<(std::ostream& t_out, const LiteralTerm& t_tn)
-      {
-        t_out << "name: " << t_tn.getName() << std::endl << "type: " << t_tn.getType();
-        return t_out;
-      }
+      bool operator==(const LiteralTerm& t_first, const LiteralTerm& t_second);
+      std::ostream& operator<<(std::ostream& t_out, const LiteralTerm& t_lt);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<LiteralTerm> t_lt_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

@@ -172,3 +172,9 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, co
   }
   return t_out;
 }
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<Predicate> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : Predicate());
+  return t_out;
+}

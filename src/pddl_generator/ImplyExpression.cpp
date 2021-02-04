@@ -90,6 +90,21 @@ bool rtask::commons::pddl_generator::operator==(const ImplyExpression& t_first, 
          && helpers::operator==(*t_first.getConsequence(), *t_second.getConsequence());
 };
 
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ImplyExpression& t_expr)
+{
+  t_out << "ImplyExpression: name: " << t_expr.getExpressionName() << std::endl;
+  t_out << " - condition: " << t_expr.getCondition() << std::endl;
+  t_out << " - consequence: " << t_expr.getConsequence();
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         std::shared_ptr<ImplyExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : ImplyExpression());
+  return t_out;
+}
+
 ////// TODO: This strongly depends on the implementation of the action class, check it
 //// bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,
 ////                                        const UnordStrToUIntMap& t_belonging_action_args,
@@ -110,11 +125,3 @@ bool rtask::commons::pddl_generator::operator==(const ImplyExpression& t_first, 
 ////  }
 ////  return true;
 ////}
-
-std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ImplyExpression& t_expr)
-{
-  t_out << "ImplyExpression name: " << t_expr.getExpressionName() << std::endl;
-  t_out << "\t - condition: " << t_expr.getCondition() << std::endl;
-  t_out << "\t - consequence: " << t_expr.getConsequence();
-  return t_out;
-}

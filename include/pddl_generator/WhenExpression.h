@@ -48,14 +48,8 @@ namespace rtask {
       };
 
       bool operator==(const WhenExpression& t_first, const WhenExpression& t_second);
-
-      static std::ostream& operator<<(std::ostream& t_out, const WhenExpression& t_expr)
-      {
-        t_out << "WhenExpression name: " << t_expr.getExpressionName() << std::endl;
-        t_out << "\t - condition: " << t_expr.getCondition() << std::endl;
-        t_out << "\t - consequence: " << t_expr.getConsequence();
-        return t_out;
-      }
+      std::ostream& operator<<(std::ostream& t_out, const WhenExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<WhenExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

@@ -110,8 +110,15 @@ bool rtask::commons::pddl_generator::operator==(const EqualsExpression& t_first,
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const EqualsExpression& t_expr)
 {
-  t_out << "EqualsExpression name: " << t_expr.getExpressionName() << std::endl;
-  t_out << "\t - lhs: " << t_expr.getLhsTerm() << std::endl;
-  t_out << "\t - rhs: " << t_expr.getRhsTerm();
+  t_out << "EqualsExpression: name: " << t_expr.getExpressionName() << std::endl;
+  t_out << " - lhs: " << t_expr.getLhsTerm() << std::endl;
+  t_out << " - rhs: " << t_expr.getRhsTerm();
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         std::shared_ptr<EqualsExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : EqualsExpression());
   return t_out;
 }

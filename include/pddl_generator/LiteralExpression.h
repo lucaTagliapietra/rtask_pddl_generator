@@ -6,6 +6,7 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
+#include <memory>
 
 namespace rtask {
   namespace commons {
@@ -43,19 +44,8 @@ namespace rtask {
       };
 
       bool operator==(const LiteralExpression& t_first, const LiteralExpression& t_second);
-
-      static std::ostream& operator<<(std::ostream& t_out, const LiteralExpression& t_expr)
-      {
-        t_out << "LiteralExpression name: " << t_expr.getExpressionName() << std::endl;
-        unsigned int i = 0;
-        for (const auto& a : t_expr.getExpressionArgs()) {
-          (i != 0) ? t_out << std::endl : t_out << "";
-          t_out << "\t"
-                << " - args[" << i << "]: " << a;
-          ++i;
-        }
-        return t_out;
-      }
+      std::ostream& operator<<(std::ostream& t_out, const LiteralExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<LiteralExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

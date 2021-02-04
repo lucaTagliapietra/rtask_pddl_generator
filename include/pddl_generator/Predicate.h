@@ -56,6 +56,7 @@ namespace rtask {
 
       bool operator==(const Predicate& t_first, const Predicate& t_second);
       std::ostream& operator<<(std::ostream& t_out, const Predicate& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<Predicate> t_expr_ptr);
 
     }; // namespace pddl_generator
   } // namespace commons

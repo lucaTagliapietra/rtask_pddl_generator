@@ -5,12 +5,6 @@ using namespace rtask::commons::pddl_generator;
 // ------------
 // CONSTRUCTORS
 // ------------
-OrExpression::OrExpression()
-{
-  expr_type_ = LogicalExpressionType::Or;
-  expr_name_ = "or";
-}
-
 OrExpression::OrExpression(const LogicalExprPtrVector& t_expr_vec)
 {
   expr_type_ = LogicalExpressionType::Or;
@@ -128,6 +122,23 @@ bool rtask::commons::pddl_generator::operator==(const OrExpression& t_first, con
 
   return true;
 };
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const OrExpression& t_expr)
+{
+  t_out << "OrExpression: name: " << t_expr.getExpressionName() << std::endl;
+  unsigned int i = 0;
+  for (const auto& expr : t_expr.getExpressions()) {
+    (i != 0) ? t_out << std::endl : t_out << "";
+    t_out << " - expr[" << i << "]: " << expr;
+    ++i;
+  }
+  return t_out;
+}
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<OrExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : OrExpression());
+  return t_out;
+}
 
 //// TODO: This strongly depends on the implementation of the action class, check it
 // bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,

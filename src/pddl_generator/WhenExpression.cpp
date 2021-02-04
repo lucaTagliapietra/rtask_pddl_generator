@@ -90,6 +90,22 @@ bool rtask::commons::pddl_generator::operator==(const WhenExpression& t_first, c
          && helpers::operator==(*t_first.getConsequence(), *t_second.getConsequence());
 };
 
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const WhenExpression& t_expr)
+
+{
+  t_out << "WhenExpression: name: " << t_expr.getExpressionName() << std::endl;
+  t_out << " - condition: " << t_expr.getCondition() << std::endl;
+  t_out << " - consequence: " << t_expr.getConsequence();
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         std::shared_ptr<WhenExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : WhenExpression());
+  return t_out;
+}
+
 ////// TODO: This strongly depends on the implementation of the action class, check it
 //// bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,
 ////                                        const UnordStrToUIntMap& t_belonging_action_args,

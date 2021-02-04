@@ -71,6 +71,19 @@ bool rtask::commons::pddl_generator::operator==(const NotExpression& t_first, co
   return helpers::operator==(*t_first.getExpression(), *t_second.getExpression());
 };
 
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NotExpression& t_expr)
+{
+  t_out << "NotExpression: name: " << t_expr.getExpressionName() << std::endl;
+  t_out << t_expr.getExpression();
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<NotExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : NotExpression());
+  return t_out;
+}
+
 //// TODO: This strongly depends on the implementation of the action class, check it
 // bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,
 //                                        const UnordStrToUIntMap& t_belonging_action_args,

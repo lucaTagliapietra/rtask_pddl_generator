@@ -7,6 +7,8 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
+#include <limits>
+#include <memory>
 #include <variant>
 
 namespace rtask {
@@ -41,6 +43,7 @@ namespace rtask {
       };
 
       std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<NumericalTerm> t_nt_ptr);
       bool operator==(const NumericalTerm& t_first, const NumericalTerm& t_second);
 
     } // namespace pddl_generator

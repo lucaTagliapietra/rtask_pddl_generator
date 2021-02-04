@@ -1,6 +1,8 @@
 #include "pddl_generator/NumericalTerm.h"
 #include "pddl_generator/Helpers.h"
 
+#include <math.h>
+
 using namespace rtask::commons::pddl_generator;
 
 // ------------
@@ -65,15 +67,22 @@ std::string NumericalTerm::toPddl(bool, int t_pad_lv) const
   return pad_aligners.second.at(0) + w;
 }
 
+bool rtask::commons::pddl_generator::operator==(const NumericalTerm& t_first, const NumericalTerm& t_second)
+{
+  return t_first.getValue() == t_second.getValue();
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalTerm& t_nt)
 {
   auto t = t_nt.getValue();
   std::string w = std::visit([](auto&& arg) -> std::string { return std::to_string(arg); }, t);
-  t_out << "num_term: " << w;
+  t_out << "NumericalTerm: " << w;
   return t_out;
 }
 
-bool rtask::commons::pddl_generator::operator==(const NumericalTerm& t_first, const NumericalTerm& t_second)
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<NumericalTerm> t_nt_ptr)
 {
-  return t_first.getValue() == t_second.getValue();
+  t_nt_ptr = nullptr;
+  t_out << (t_nt_ptr ? *t_nt_ptr : NumericalTerm());
+  return t_out;
 }

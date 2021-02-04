@@ -149,8 +149,14 @@ bool rtask::commons::pddl_generator::operator==(const CompareExpression& t_first
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const CompareExpression& t_expr)
 {
-  t_out << "CompareExpression \n\t - operator: " << t_expr.getComparisonOperator() << std::endl;
-  t_out << "\t - lhs: " << t_expr.getLhsExpression() << std::endl;
-  t_out << "\t - rhs: " << t_expr.getRhsExpression();
+  t_out << "CompareExpression: operator: " << t_expr.getComparisonOperator() << std::endl;
+  t_out << " - lhs: " << t_expr.getLhsExpression() << std::endl;
+  t_out << " - rhs: " << t_expr.getRhsExpression();
+  return t_out;
+}
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         std::shared_ptr<CompareExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : CompareExpression());
   return t_out;
 }

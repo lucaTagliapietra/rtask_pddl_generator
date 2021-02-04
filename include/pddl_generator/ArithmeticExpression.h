@@ -55,6 +55,7 @@ namespace rtask {
 
       bool operator==(const ArithmeticExpression& t_first, const ArithmeticExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const ArithmeticExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<ArithmeticExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

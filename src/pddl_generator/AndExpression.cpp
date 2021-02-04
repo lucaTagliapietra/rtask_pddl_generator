@@ -5,12 +5,6 @@ using namespace rtask::commons::pddl_generator;
 // ------------
 // CONSTRUCTORS
 // ------------
-AndExpression::AndExpression()
-{
-  expr_type_ = LogicalExpressionType::And;
-  expr_name_ = "and";
-}
-
 AndExpression::AndExpression(const LogicalExprPtrVector& t_expr_vec)
 {
   expr_type_ = LogicalExpressionType::And;
@@ -128,6 +122,24 @@ bool rtask::commons::pddl_generator::operator==(const AndExpression& t_first, co
 
   return true;
 };
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const AndExpression& t_expr)
+{
+  t_out << "AndExpression name: " << t_expr.getExpressionName() << std::endl;
+  unsigned int i = 0;
+  for (const auto& expr : t_expr.getExpressions()) {
+    (i != 0) ? t_out << std::endl : t_out << "";
+    t_out << " - expr[" << i << "]: " << expr;
+    ++i;
+  }
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<AndExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : AndExpression());
+  return t_out;
+}
 
 //// TODO: This strongly depends on the implementation of the action class, check it
 // bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,

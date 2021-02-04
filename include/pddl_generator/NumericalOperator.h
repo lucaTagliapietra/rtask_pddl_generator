@@ -6,6 +6,7 @@
 #include "xmlrpcpp/XmlRpc.h"
 
 #include <iostream>
+#include <memory>
 
 namespace rtask {
   namespace commons {
@@ -50,6 +51,8 @@ namespace rtask {
 
       bool operator==(const NumericalOperator& t_first, const NumericalOperator& t_second);
       std::ostream& operator<<(std::ostream& t_out, const NumericalOperator& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<NumericalOperator> t_expr_ptr);
+
     } // namespace pddl_generator
   } // namespace commons
 } // namespace rtask

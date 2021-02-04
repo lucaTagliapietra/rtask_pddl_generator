@@ -89,6 +89,21 @@ bool rtask::commons::pddl_generator::operator==(const ExistsExpression& t_first,
          && helpers::operator==(*t_first.getCondition(), *t_second.getCondition());
 };
 
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ExistsExpression& t_expr)
+{
+  t_out << "ExistsExpression: name: " << t_expr.getExpressionName() << std::endl;
+  t_out << " - what: " << t_expr.getWhat() << std::endl;
+  t_out << " - condition: " << t_expr.getCondition();
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         std::shared_ptr<ExistsExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : ExistsExpression());
+  return t_out;
+}
+
 ////// TODO: This strongly depends on the implementation of the action class, check it
 //// bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,
 ////                                        const UnordStrToUIntMap& t_belonging_action_args,

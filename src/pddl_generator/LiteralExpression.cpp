@@ -78,33 +78,6 @@ bool LiteralExpression::setExpressionArgs(const std::vector<std::string>& t_args
   return true;
 }
 
-bool rtask::commons::pddl_generator::operator==(const LiteralExpression& t_first, const LiteralExpression& t_second)
-{
-  if (t_first.getExpressionName() != t_second.getExpressionName()) {
-    return false;
-  }
-
-  const auto& f_args = t_first.getExpressionArgs();
-  const auto& s_args = t_second.getExpressionArgs();
-
-  if (f_args.size() != s_args.size()) {
-    return false;
-  }
-  for (const auto& fs : f_args) {
-    const auto& it = std::find_if(s_args.begin(), s_args.end(), [fs](const auto& ss) { return ss == fs; });
-    if (it == s_args.end()) {
-      return false;
-    }
-  }
-  for (const auto& ss : s_args) {
-    const auto& it = std::find_if(f_args.begin(), f_args.end(), [ss](const auto& fs) { return ss == fs; });
-    if (it == f_args.end()) {
-      return false;
-    }
-  }
-  return true;
-}
-
 LiteralExpression& LiteralExpression::operator=(const LiteralExpression& t_other)
 {
   set(t_other.getExpressionName(), t_other.getExpressionArgs());
@@ -148,4 +121,50 @@ bool LiteralExpression::validate(const UnordStrToLitTermMap& t_known_constants,
     }
   }
   return true;
+}
+
+bool rtask::commons::pddl_generator::operator==(const LiteralExpression& t_first, const LiteralExpression& t_second)
+{
+  if (t_first.getExpressionName() != t_second.getExpressionName()) {
+    return false;
+  }
+
+  const auto& f_args = t_first.getExpressionArgs();
+  const auto& s_args = t_second.getExpressionArgs();
+
+  if (f_args.size() != s_args.size()) {
+    return false;
+  }
+  for (const auto& fs : f_args) {
+    const auto& it = std::find_if(s_args.begin(), s_args.end(), [fs](const auto& ss) { return ss == fs; });
+    if (it == s_args.end()) {
+      return false;
+    }
+  }
+  for (const auto& ss : s_args) {
+    const auto& it = std::find_if(f_args.begin(), f_args.end(), [ss](const auto& fs) { return ss == fs; });
+    if (it == f_args.end()) {
+      return false;
+    }
+  }
+  return true;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const LiteralExpression& t_expr)
+{
+  t_out << "LiteralExpression: name: " << t_expr.getExpressionName() << std::endl;
+  unsigned int i = 0;
+  for (const auto& a : t_expr.getExpressionArgs()) {
+    (i != 0) ? t_out << std::endl : t_out << "";
+    t_out << " - args[" << i << "]: " << a;
+    ++i;
+  }
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         std::shared_ptr<LiteralExpression> t_expr_ptr)
+{
+  t_out << (t_expr_ptr ? *t_expr_ptr : LiteralExpression());
+  return t_out;
 }

@@ -49,14 +49,8 @@ namespace rtask {
       };
 
       bool operator==(const ExistsExpression& t_first, const ExistsExpression& t_second);
-
-      static std::ostream& operator<<(std::ostream& t_out, const ExistsExpression& t_expr)
-      {
-        t_out << "ExistsExpression name: " << t_expr.getExpressionName() << std::endl;
-        t_out << "\t - what: " << t_expr.getWhat() << std::endl;
-        t_out << "\t - condition: " << t_expr.getCondition();
-        return t_out;
-      }
+      std::ostream& operator<<(std::ostream& t_out, const ExistsExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<ExistsExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

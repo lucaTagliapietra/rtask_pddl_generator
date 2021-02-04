@@ -58,6 +58,7 @@ namespace rtask {
 
       bool operator==(const CompareExpression& t_first, const CompareExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const CompareExpression& t_expr);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<CompareExpression> t_expr_ptr);
 
     } // namespace pddl_generator
   } // namespace commons

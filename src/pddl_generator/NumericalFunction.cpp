@@ -75,6 +75,30 @@ bool NumericalFunction::setFunctionArgs(const std::vector<std::string>& t_args)
   return true;
 }
 
+NumericalFunction& NumericalFunction::operator=(const NumericalFunction& t_other)
+{
+  set(t_other.getFunctionName(), t_other.getFunctionArgs());
+  return *this;
+}
+
+std::string NumericalFunction::toPddl(bool, int t_pad_lv) const
+{
+  if (function_name_.empty()) {
+    return {};
+  };
+
+  auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
+  const auto& aligners = pad_aligners.second;
+
+  std::string out = aligners[0] + "(" + function_name_;
+  for (const auto& a : args_) {
+    out += " ?" + a;
+  }
+  out += ")";
+
+  return out;
+}
+
 bool rtask::commons::pddl_generator::operator==(const NumericalFunction& t_first, const NumericalFunction& t_second)
 {
   if (t_first.getFunctionName() != t_second.getFunctionName()) {
@@ -102,28 +126,23 @@ bool rtask::commons::pddl_generator::operator==(const NumericalFunction& t_first
   return true;
 }
 
-NumericalFunction& NumericalFunction::operator=(const NumericalFunction& t_other)
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalFunction& t_expr)
 {
-  set(t_other.getFunctionName(), t_other.getFunctionArgs());
-  return *this;
+  t_out << "NumericalFunction: name: " << t_expr.getFunctionName() << std::endl;
+  unsigned int i = 0;
+  for (const auto& a : t_expr.getFunctionArgs()) {
+    (i != 0) ? t_out << std::endl : t_out << "";
+    t_out << " - args[" << i << "]: " << a;
+    ++i;
+  }
+  return t_out;
 }
 
-std::string NumericalFunction::toPddl(bool, int t_pad_lv) const
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
+                                                         const std::shared_ptr<NumericalFunction> t_expr_ptr)
 {
-  if (function_name_.empty()) {
-    return {};
-  };
-
-  auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
-  const auto& aligners = pad_aligners.second;
-
-  std::string out = aligners[0] + "(" + function_name_;
-  for (const auto& a : args_) {
-    out += " ?" + a;
-  }
-  out += ")";
-
-  return out;
+  t_out << (t_expr_ptr ? *t_expr_ptr : NumericalFunction());
+  return t_out;
 }
 
 //// TODO: This strongly depends on the implementation of the action class, check it
