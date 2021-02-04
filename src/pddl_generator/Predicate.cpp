@@ -63,7 +63,7 @@ int Predicate::getParameterIndex(const std::string& t_name) const
 {
   auto it = std::find_if(params_.begin(), params_.end(), [t_name](const auto& p) { return p.getName() == t_name; });
   if (it != params_.end()) {
-    return static_cast<int>(params_.begin() - it);
+    return static_cast<int>(it - params_.begin());
   }
   else {
     return -1;
@@ -74,7 +74,7 @@ int Predicate::getParameterIndex(const LiteralTerm& t_param) const
 {
   auto it = std::find_if(params_.begin(), params_.end(), [t_param](const auto& p) { return p == t_param; });
   if (it != params_.end()) {
-    return static_cast<int>(params_.begin() - it);
+    return static_cast<int>(it - params_.begin());
   }
   else {
     return -1;
