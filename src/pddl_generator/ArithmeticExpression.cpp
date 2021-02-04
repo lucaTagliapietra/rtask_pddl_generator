@@ -113,27 +113,6 @@ bool rtask::commons::pddl_generator::operator==(const ArithmeticExpression& t_fi
           && helpers::operator==(*t_first.getRhsExpression(), *t_second.getRhsExpression()));
 };
 
-////// TODO: This strongly depends on the implementation of the action class, check it
-//// bool LiteralLogicalExpression::validate(const UnordStrToLitTermMap& t_known_constants,
-////                                        const UnordStrToUIntMap& t_belonging_action_args,
-////                                        const std::string& t_belonging_action_name) const
-////{
-////  if (expr_name_.empty()) {
-////    std::cerr << "VALIDATION ERROR: Empty LiteralLogicalExpression name" << std::endl;
-////    return false;
-////  }
-
-////  for (const auto& arg : args_) {
-////    if (!t_belonging_action_args.count(arg) && !t_known_constants.count(arg)) {
-////      std::cerr << "VALIDATION ERROR: Unknown Arg **" << arg << "**" << std::endl;
-////      std::cerr << "\t(In LiteralLogicalExpression **" << expr_name_ << "** of Action **"
-////                << t_belonging_action_name << "**)" << std::endl;
-////      return false;
-////    }
-////  }
-////  return true;
-////}
-
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ArithmeticExpression& t_expr)
 {
   t_out << "ArithmeticExpression: operation: " << t_expr.getArithmeticOperation() << std::endl;

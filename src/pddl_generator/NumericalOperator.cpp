@@ -65,7 +65,7 @@ bool NumericalOperator::set(const std::string& t_op_name, NumericalExprPtr t_lhs
 bool NumericalOperator::setOperatorName(const std::string& t_op_name)
 {
   if (t_op_name.empty() || (t_op_name != "+" && t_op_name != "-" && t_op_name != "*" && t_op_name != "/")) {
-    std::cerr << "Empty or invalid NumericalOperator name : " << t_op_name << std::endl;
+    std::cerr << "Empty or invalid NumericalOperator name: " << t_op_name << std::endl;
     exit(EXIT_FAILURE);
   }
   operator_name_ = std::move(t_op_name);
@@ -119,20 +119,3 @@ std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
   t_out << (t_expr_ptr ? *t_expr_ptr : NumericalOperator());
   return t_out;
 }
-
-////// TODO: This strongly depends on the implementation of the action class, check it
-//// bool LiteralExpression::validate(const UnordStrToLitTermMap& t_known_constants,
-////                                 const UnordStrToUIntMap& t_belonging_action_args,
-////                                 const std::string& t_belonging_action_name) const
-////{
-////  if (expr_name_.empty()) {
-////    std::cerr << "VALIDATION ERROR: Empty LiteralExpression name" << std::endl;
-////    return false;
-////  }
-
-////  for (const auto& arg : args_) {
-////    if (!t_belonging_action_args.count(arg) && !t_known_constants.count(arg)) {
-////      std::cerr << "VALIDATION ERROR: Unknown Arg **" << arg << "**" << std::endl;
-////      std::cerr << "\t(In LiteralExpression **" << expr_name_ << "** of Action **" << t_belonging_action_name <<
-///"**)" /                << std::endl; /      return false; /    } /  } /  return true;
-////}
