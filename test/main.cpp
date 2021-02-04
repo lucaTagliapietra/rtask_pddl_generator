@@ -15,6 +15,7 @@
 #include "pddl_generator/OrExpression.h"
 #include "pddl_generator/WhenExpression.h"
 
+#include "pddl_generator/Action.h"
 #include "pddl_generator/Predicate.h"
 
 #include <ros/ros.h>
@@ -44,20 +45,21 @@ int main(int argc, char* argv[])
   //  std::cout << test.type().name() << std::endl;
   //  std::cout << *std::any_cast<std::shared_ptr<LiteralTerm>>(test).get() << std::endl;
 
-  auto and_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][0]["not"];
+  auto and_xml = xml["actions"][0]["precondition"]["and"][0]["or"][0]["not"];
   auto lt_xml = xml["actions"][0]["params"][0];
   auto not_xml = and_xml["and"][0];
-  auto or_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][1];
-  auto when_xml = xml["actions"][0]["effects"]["and"][0];
-  auto exists_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][3];
-  auto forall_xml = xml["actions"][0]["preconditions"]["and"][0]["or"][4];
-  auto num_fnc_xml = xml["actions"][0]["preconditions"]["and"][3]["compare"]["lhs"]["num_op"]["lhs"];
-  auto num_op_xml = xml["actions"][0]["preconditions"]["and"][3]["compare"]["lhs"];
-  auto compare_xml = xml["actions"][0]["preconditions"]["and"][3];
-  auto arithmetic_xml = xml["actions"][0]["effects"]["and"][5];
-  auto imply_xml = xml["actions"][0]["preconditions"]["and"][2];
-  auto equals_xml = xml["actions"][0]["preconditions"]["and"][4];
+  auto or_xml = xml["actions"][0]["precondition"]["and"][0]["or"][1];
+  auto when_xml = xml["actions"][0]["effect"]["and"][0];
+  auto exists_xml = xml["actions"][0]["precondition"]["and"][0]["or"][3];
+  auto forall_xml = xml["actions"][0]["precondition"]["and"][0]["or"][4];
+  auto num_fnc_xml = xml["actions"][0]["precondition"]["and"][3]["compare"]["lhs"]["num_op"]["lhs"];
+  auto num_op_xml = xml["actions"][0]["precondition"]["and"][3]["compare"]["lhs"];
+  auto compare_xml = xml["actions"][0]["precondition"]["and"][3];
+  auto arithmetic_xml = xml["actions"][0]["effect"]["and"][5];
+  auto imply_xml = xml["actions"][0]["precondition"]["and"][2];
+  auto equals_xml = xml["actions"][0]["precondition"]["and"][4];
   auto predicate_xml = xml["predicates"][0];
+  auto action_xml = xml["actions"][0];
 
   std::cout << "and_xml: " << and_xml << std::endl;
   std::cout << "and_xml type: " << and_xml.getType() << std::endl;

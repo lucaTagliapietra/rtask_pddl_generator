@@ -25,7 +25,7 @@ domain:
     - name: "pick-up"
       params:
         - { name: "x", type: "block" }
-      preconditions:
+      precondition:
         and:
             - or:
                 - not:
@@ -73,7 +73,7 @@ domain:
             - equals:
                 lhs: "a"
                 rhs: "b"
-      effects:
+      effect:
         and:
             - when:
                 condition:
@@ -85,9 +85,9 @@ domain:
             - not:
                 expr: {name: "ontable", args: ["x"]}
             - not:
-                {name: "clear", args: ["x"]}
+                expr: {name: "clear", args: ["x"]}
             - not:
-                {name: "handempty"}
+                expr: {name: "handempty"}
             - expr: {name: "holding", args: ["x"] }
             - modify:
                 operation: "decrease"
@@ -95,41 +95,3 @@ domain:
                     num_fnc: {name: "battery_level", args: ["x"]}
                 rhs:
                     num_term: 10.4
-
-    - name: "put-down"
-      params:
-        - { name: "x", type: "block" }
-      preconditions:
-        - { name: "holding", args: ["x"] }
-      effects:
-        - { name: "holding", args: ["x"], not: true }
-        - { name: "clear", args: ["x"] }
-        - { name: "handempty" }
-        - { name: "ontable", args: ["x"] }
-    - name: "stack"
-      params:
-        - { name: "x", type: "block" }
-        - { name: "y", type: "block" }
-      preconditions:
-        - { name: "holding", args: ["x"] }
-        - { name: "clear", args: ["y"] }
-      effects:
-        - { name: "holding", args: ["x"], not: true }
-        - { name: "clear", args: ["y"], not: true }
-        - { name: "clear", args: ["x"] }
-        - { name: "handempty" }
-        - { name: "on", args: ["x", "y"] }
-    - name: "unstack"
-      params:
-        - { name: "x", type: "block" }
-        - { name: "y", type: "block" }
-      preconditions:
-        - { name: "on", args: ["x", "y"] }
-        - { name: "clear", args: ["x"] }
-        - { name: "handempty" }
-      effects:
-        - { name: "holding", args: ["x"] }
-        - { name: "clear", args: ["y"] }
-        - { name: "clear", args: ["x"], not: true }
-        - { name: "handempty", not: true }
-        - { name: "on", args: ["x", "y"], not: true }
