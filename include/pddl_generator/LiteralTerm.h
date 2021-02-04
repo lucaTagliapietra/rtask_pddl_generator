@@ -45,7 +45,7 @@ namespace rtask {
 
       private:
         std::string name_{};
-        std::string type_{"object"};
+        std::string type_{};
       };
 
       static std::ostream& operator<<(std::ostream& t_out, const LiteralTerm& t_tn)

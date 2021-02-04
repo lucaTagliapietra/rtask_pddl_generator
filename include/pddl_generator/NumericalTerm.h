@@ -37,7 +37,7 @@ namespace rtask {
         NumericalTerm& operator=(const NumericalTerm& t_other);
 
       private:
-        IntDoubleVar val_;
+        IntDoubleVar val_ = std::numeric_limits<double>::quiet_NaN();
       };
 
       std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt);
