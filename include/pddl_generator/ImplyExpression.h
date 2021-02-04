@@ -48,6 +48,7 @@ namespace rtask {
       };
 
       bool operator==(const ImplyExpression& t_first, const ImplyExpression& t_second);
+      bool operator!=(const ImplyExpression& t_first, const ImplyExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const ImplyExpression& t_expr);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<ImplyExpression> t_expr_ptr);
 

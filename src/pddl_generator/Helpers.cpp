@@ -394,6 +394,16 @@ bool helpers::operator==(const NumericalExpression& t_first, const NumericalExpr
   }
 }
 
+bool helpers::operator!=(const LogicalExpression& t_first, const LogicalExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
+bool helpers::operator!=(const NumericalExpression& t_first, const NumericalExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int t_pad_lv)
 {
   LogicalExpressionType type = t_ptr->getExpressionType();

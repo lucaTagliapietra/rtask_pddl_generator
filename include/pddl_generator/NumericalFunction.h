@@ -43,6 +43,7 @@ namespace rtask {
       };
 
       bool operator==(const NumericalFunction& t_first, const NumericalFunction& t_second);
+      bool operator!=(const NumericalFunction& t_first, const NumericalFunction& t_second);
       std::ostream& operator<<(std::ostream& t_out, const NumericalFunction& t_expr);
       std::ostream& operator<<(std::ostream& t_out, const std::shared_ptr<NumericalFunction> t_expr_ptr);
 

@@ -113,6 +113,12 @@ bool rtask::commons::pddl_generator::operator==(const ArithmeticExpression& t_fi
           && helpers::operator==(*t_first.getRhsExpression(), *t_second.getRhsExpression()));
 };
 
+bool rtask::commons::pddl_generator::operator!=(const ArithmeticExpression& t_first,
+                                                const ArithmeticExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ArithmeticExpression& t_expr)
 {
   t_out << "ArithmeticExpression: operation: " << t_expr.getArithmeticOperation() << std::endl;

@@ -89,6 +89,11 @@ bool rtask::commons::pddl_generator::operator==(const ExistsExpression& t_first,
          && helpers::operator==(*t_first.getCondition(), *t_second.getCondition());
 };
 
+bool rtask::commons::pddl_generator::operator!=(const ExistsExpression& t_first, const ExistsExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ExistsExpression& t_expr)
 {
   t_out << "ExistsExpression: name: " << t_expr.getExpressionName() << std::endl;

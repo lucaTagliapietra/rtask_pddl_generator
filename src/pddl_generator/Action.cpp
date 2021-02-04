@@ -135,6 +135,11 @@ bool rtask::commons::pddl_generator::operator==(const Action& t_first, const Act
   return true;
 }
 
+bool rtask::commons::pddl_generator::operator!=(const Action& t_first, const Action& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const Action& t_act)
 {
   t_out << "Action: " << t_act.getName() << std::endl;

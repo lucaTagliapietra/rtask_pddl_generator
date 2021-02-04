@@ -90,6 +90,11 @@ bool rtask::commons::pddl_generator::operator==(const ImplyExpression& t_first, 
          && helpers::operator==(*t_first.getConsequence(), *t_second.getConsequence());
 };
 
+bool rtask::commons::pddl_generator::operator!=(const ImplyExpression& t_first, const ImplyExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ImplyExpression& t_expr)
 {
   t_out << "ImplyExpression: name: " << t_expr.getExpressionName() << std::endl;

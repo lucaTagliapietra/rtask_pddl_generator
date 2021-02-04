@@ -87,6 +87,11 @@ bool rtask::commons::pddl_generator::operator==(const EqualsExpression& t_first,
           || (t_first.getLhsTerm() == t_second.getRhsTerm() && t_first.getRhsTerm() == t_second.getLhsTerm()));
 };
 
+bool rtask::commons::pddl_generator::operator!=(const EqualsExpression& t_first, const EqualsExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const EqualsExpression& t_expr)
 {
   t_out << "EqualsExpression: name: " << t_expr.getExpressionName() << std::endl;

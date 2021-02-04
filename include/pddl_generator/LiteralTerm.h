@@ -48,6 +48,7 @@ namespace rtask {
       };
 
       bool operator==(const LiteralTerm& t_first, const LiteralTerm& t_second);
+      bool operator!=(const LiteralTerm& t_first, const LiteralTerm& t_second);
       std::ostream& operator<<(std::ostream& t_out, const LiteralTerm& t_lt);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<LiteralTerm> t_lt_ptr);
 

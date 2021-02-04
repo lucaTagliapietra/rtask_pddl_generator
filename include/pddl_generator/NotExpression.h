@@ -45,6 +45,7 @@ namespace rtask {
       };
 
       bool operator==(const NotExpression& t_first, const NotExpression& t_second);
+      bool operator!=(const NotExpression& t_first, const NotExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const NotExpression& t_expr);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<NotExpression> t_expr_ptr);
 

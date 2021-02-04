@@ -47,6 +47,7 @@ namespace rtask {
       };
 
       bool operator==(const EqualsExpression& t_first, const EqualsExpression& t_second);
+      bool operator!=(const EqualsExpression& t_first, const EqualsExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const EqualsExpression& t_expr);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<EqualsExpression> t_expr_ptr);
 

@@ -49,6 +49,8 @@ namespace rtask {
 
         bool operator==(const LogicalExpression& t_first, const LogicalExpression& t_second);
         bool operator==(const NumericalExpression& t_first, const NumericalExpression& t_second);
+        bool operator!=(const LogicalExpression& t_first, const LogicalExpression& t_second);
+        bool operator!=(const NumericalExpression& t_first, const NumericalExpression& t_second);
 
         std::string padding(int t_n_pads);
         std::pair<int, std::vector<std::string>> getPddlAligners(int t_pad_lv);

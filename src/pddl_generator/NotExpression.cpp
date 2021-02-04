@@ -71,6 +71,11 @@ bool rtask::commons::pddl_generator::operator==(const NotExpression& t_first, co
   return helpers::operator==(*t_first.getExpression(), *t_second.getExpression());
 };
 
+bool rtask::commons::pddl_generator::operator!=(const NotExpression& t_first, const NotExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NotExpression& t_expr)
 {
   t_out << "NotExpression: name: " << t_expr.getExpressionName() << std::endl;

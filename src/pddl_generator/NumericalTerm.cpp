@@ -72,6 +72,11 @@ bool rtask::commons::pddl_generator::operator==(const NumericalTerm& t_first, co
   return t_first.getValue() == t_second.getValue();
 }
 
+bool rtask::commons::pddl_generator::operator!=(const NumericalTerm& t_first, const NumericalTerm& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalTerm& t_nt)
 {
   auto t = t_nt.getValue();

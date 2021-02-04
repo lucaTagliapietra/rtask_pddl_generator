@@ -136,6 +136,11 @@ bool rtask::commons::pddl_generator::operator==(const OrExpression& t_first, con
   return true;
 };
 
+bool rtask::commons::pddl_generator::operator!=(const OrExpression& t_first, const OrExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const OrExpression& t_expr)
 {
   t_out << "OrExpression: name: " << t_expr.getExpressionName() << std::endl;

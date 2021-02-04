@@ -49,6 +49,7 @@ namespace rtask {
       };
 
       bool operator==(const ExistsExpression& t_first, const ExistsExpression& t_second);
+      bool operator!=(const ExistsExpression& t_first, const ExistsExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const ExistsExpression& t_expr);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<ExistsExpression> t_expr_ptr);
 

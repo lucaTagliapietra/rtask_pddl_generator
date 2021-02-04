@@ -88,6 +88,11 @@ bool rtask::commons::pddl_generator::operator==(const LiteralTerm& t_first, cons
   return t_first.getName() == t_second.getName() && t_first.getType() == t_second.getType();
 }
 
+bool rtask::commons::pddl_generator::operator!=(const LiteralTerm& t_first, const LiteralTerm& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const LiteralTerm& t_lt)
 {
   return t_out << "LiteralTerm: name: " << t_lt.getName() << " type: " << t_lt.getType();

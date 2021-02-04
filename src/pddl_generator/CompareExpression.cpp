@@ -126,6 +126,11 @@ bool rtask::commons::pddl_generator::operator==(const CompareExpression& t_first
   return t_first.equals(t_second) || t_first.equals(t_second.mirror());
 };
 
+bool rtask::commons::pddl_generator::operator!=(const CompareExpression& t_first, const CompareExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const CompareExpression& t_expr)
 {
   t_out << "CompareExpression: operator: " << t_expr.getComparisonOperator() << std::endl;

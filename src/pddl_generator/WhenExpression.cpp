@@ -90,6 +90,11 @@ bool rtask::commons::pddl_generator::operator==(const WhenExpression& t_first, c
          && helpers::operator==(*t_first.getConsequence(), *t_second.getConsequence());
 };
 
+bool rtask::commons::pddl_generator::operator!=(const WhenExpression& t_first, const WhenExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const WhenExpression& t_expr)
 
 {

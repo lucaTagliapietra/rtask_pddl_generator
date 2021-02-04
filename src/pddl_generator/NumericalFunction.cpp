@@ -126,6 +126,11 @@ bool rtask::commons::pddl_generator::operator==(const NumericalFunction& t_first
   return true;
 }
 
+bool rtask::commons::pddl_generator::operator!=(const NumericalFunction& t_first, const NumericalFunction& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalFunction& t_expr)
 {
   t_out << "NumericalFunction: name: " << t_expr.getFunctionName() << std::endl;

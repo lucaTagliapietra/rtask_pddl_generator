@@ -49,6 +49,7 @@ namespace rtask {
       };
 
       bool operator==(const ForAllExpression& t_first, const ForAllExpression& t_second);
+      bool operator!=(const ForAllExpression& t_first, const ForAllExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const ForAllExpression& t_expr);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<ForAllExpression> t_expr_ptr);
 

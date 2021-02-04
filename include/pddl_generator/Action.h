@@ -52,6 +52,7 @@ namespace rtask {
       };
 
       bool operator==(const Action& t_first, const Action& t_second);
+      bool operator!=(const Action& t_first, const Action& t_second);
       std::ostream& operator<<(std::ostream& t_out, const Action& t_act);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<Action> t_expr_ptr);
 

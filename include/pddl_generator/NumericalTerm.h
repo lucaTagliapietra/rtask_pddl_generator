@@ -42,9 +42,10 @@ namespace rtask {
         IntDoubleVar val_ = std::numeric_limits<double>::quiet_NaN();
       };
 
+      bool operator==(const NumericalTerm& t_first, const NumericalTerm& t_second);
+      bool operator!=(const NumericalTerm& t_first, const NumericalTerm& t_second);
       std::ostream& operator<<(std::ostream& t_out, const NumericalTerm& t_nt);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<NumericalTerm> t_nt_ptr);
-      bool operator==(const NumericalTerm& t_first, const NumericalTerm& t_second);
 
     } // namespace pddl_generator
   } // namespace commons

@@ -136,6 +136,11 @@ bool rtask::commons::pddl_generator::operator==(const AndExpression& t_first, co
   return true;
 };
 
+bool rtask::commons::pddl_generator::operator!=(const AndExpression& t_first, const AndExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const AndExpression& t_expr)
 {
   t_out << "AndExpression name: " << t_expr.getExpressionName() << std::endl;

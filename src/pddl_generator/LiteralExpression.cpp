@@ -150,6 +150,11 @@ bool rtask::commons::pddl_generator::operator==(const LiteralExpression& t_first
   return true;
 }
 
+bool rtask::commons::pddl_generator::operator!=(const LiteralExpression& t_first, const LiteralExpression& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const LiteralExpression& t_expr)
 {
   t_out << "LiteralExpression: name: " << t_expr.getExpressionName() << std::endl;

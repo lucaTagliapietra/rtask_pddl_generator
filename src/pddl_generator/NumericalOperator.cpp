@@ -118,6 +118,11 @@ bool rtask::commons::pddl_generator::operator==(const NumericalOperator& t_first
   return (t_first.equals(t_second) || t_first.equals(t_second.mirror()));
 }
 
+bool rtask::commons::pddl_generator::operator!=(const NumericalOperator& t_first, const NumericalOperator& t_second)
+{
+  return !(t_first == t_second);
+}
+
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalOperator& t_expr)
 {
   t_out << "NumericalOperator: name: " << t_expr.getOperatorName() << std::endl;

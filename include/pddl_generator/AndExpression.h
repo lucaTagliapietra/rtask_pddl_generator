@@ -48,6 +48,7 @@ namespace rtask {
       };
 
       bool operator==(const AndExpression& t_first, const AndExpression& t_second);
+      bool operator!=(const AndExpression& t_first, const AndExpression& t_second);
       std::ostream& operator<<(std::ostream& t_out, const AndExpression& t_expr);
       std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<AndExpression> t_expr_ptr);
 
