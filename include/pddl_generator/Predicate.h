@@ -39,7 +39,7 @@ namespace rtask {
         std::string getParameterType(int t_idx) const;
 
         inline std::string getName() const { return name_; }
-        inline int getNumParameters() const { return params_.size(); }
+        inline int getNumParameters() const { return static_cast<int>(params_.size()); }
         std::shared_ptr<const LiteralTermVector> getParameters() const;
 
         //        bool validate(const UnordStrToLitTermMap& t_known_constants,
