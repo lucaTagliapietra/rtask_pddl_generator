@@ -25,10 +25,12 @@ namespace rtask {
 
         inline void set(const LogicalExprPtrVector& t_expr_vec = {}) { expr_vec_ = t_expr_vec; }
 
+        LogicalExprPtr getExpression(int t_idx) const;
         int findExpression(LogicalExprPtr t_expr) const;
         bool hasExpression(LogicalExprPtr t_expr) const;
         bool addExpression(LogicalExprPtr t_expr);
         bool removeExpression(LogicalExprPtr t_expr);
+        bool removeExpression(int t_idx);
 
         inline std::string getExpressionName() const { return expr_name_; }
         inline LogicalExprPtrVector getExpressions() const { return expr_vec_; }

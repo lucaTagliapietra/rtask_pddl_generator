@@ -37,6 +37,14 @@ void OrExpression::clear()
   expr_vec_.clear();
 }
 
+LogicalExprPtr OrExpression::getExpression(int t_idx) const
+{
+  if (t_idx != -1 && static_cast<unsigned int>(t_idx) < expr_vec_.size()) {
+    return expr_vec_[static_cast<unsigned int>(t_idx)];
+  }
+  return nullptr;
+}
+
 int OrExpression::findExpression(LogicalExprPtr t_expr) const
 {
   for (unsigned int i = 0; i < expr_vec_.size(); ++i) {
@@ -64,12 +72,17 @@ bool OrExpression::addExpression(LogicalExprPtr t_expr)
   expr_vec_.push_back(t_expr);
   return true;
 }
+
 bool OrExpression::removeExpression(LogicalExprPtr t_expr)
 {
-  int pos = findExpression(t_expr);
-  if (pos != -1) {
-    expr_vec_[static_cast<unsigned int>(pos)].reset();
-    expr_vec_.erase(expr_vec_.begin() + pos);
+  return removeExpression(findExpression(t_expr));
+}
+
+bool OrExpression::removeExpression(int t_idx)
+{
+  if (t_idx != -1 && static_cast<unsigned int>(t_idx) < expr_vec_.size()) {
+    expr_vec_[static_cast<unsigned int>(t_idx)].reset();
+    expr_vec_.erase(expr_vec_.begin() + t_idx);
     return true;
   }
   return false;
