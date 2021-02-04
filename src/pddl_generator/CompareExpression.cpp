@@ -94,8 +94,8 @@ std::string CompareExpression::toPddl(bool t_typing, int t_pad_lv) const
 CompareExpression& CompareExpression::operator=(const CompareExpression& t_other)
 {
   expr_name_ = t_other.getComparisonOperator();
-  lhs_expr_.reset(t_other.getLhsExpression().get());
-  rhs_expr_.reset(t_other.getRhsExpression().get());
+  lhs_expr_ = t_other.getLhsExpression();
+  rhs_expr_ = t_other.getRhsExpression();
   return *this;
 }
 

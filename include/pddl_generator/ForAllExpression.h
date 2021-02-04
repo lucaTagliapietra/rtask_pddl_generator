@@ -27,8 +27,8 @@ namespace rtask {
         void clear();
 
         void set(LiteralTermPtr t_what_ptr, LogicalExprPtr t_condition_ptr);
-        inline void setWhat(LiteralTermPtr t_what_ptr) { what_.reset(t_what_ptr.get()); }
-        inline void setCondition(LogicalExprPtr t_expr) { condition_.reset(t_expr.get()); }
+        inline void setWhat(LiteralTermPtr t_what_ptr) { what_ = t_what_ptr; }
+        inline void setCondition(LogicalExprPtr t_expr_ptr) { condition_ = t_expr_ptr; }
 
         inline std::string getExpressionName() const { return expr_name_; }
         inline LiteralTermPtr getWhat() const { return what_; }
@@ -44,7 +44,7 @@ namespace rtask {
 
       private:
         // string expression_name is already protected in parent class
-        std::shared_ptr<LiteralTerm> what_{};
+        LiteralTermPtr what_ = nullptr;
         LogicalExprPtr condition_ = nullptr;
       };
 

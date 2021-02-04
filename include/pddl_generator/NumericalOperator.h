@@ -27,8 +27,8 @@ namespace rtask {
         bool set(const std::string& t_op_name, NumericalExprPtr t_lhs_ptr, NumericalExprPtr t_rhs);
 
         bool setOperatorName(const std::string& t_op_name);
-        void setLhsExpression(NumericalExprPtr t_lhs_ptr) { lhs_expr_.reset(t_lhs_ptr.get()); }
-        void setRhsExpression(NumericalExprPtr t_rhs_ptr) { rhs_expr_.reset(t_rhs_ptr.get()); }
+        inline void setLhsExpression(NumericalExprPtr t_lhs_ptr) { lhs_expr_ = t_lhs_ptr; }
+        inline void setRhsExpression(NumericalExprPtr t_rhs_ptr) { rhs_expr_ = t_rhs_ptr; }
 
         inline std::string getOperatorName() const { return operator_name_; }
         inline NumericalExprPtr getLhsExpression() const { return lhs_expr_; }

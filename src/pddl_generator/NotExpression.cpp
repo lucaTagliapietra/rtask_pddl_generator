@@ -62,7 +62,7 @@ std::string NotExpression::toPddl(bool t_typing, int t_pad_lv) const
 
 NotExpression& NotExpression::operator=(const NotExpression& t_other)
 {
-  expr_.reset(t_other.getExpression().get());
+  expr_ = t_other.getExpression();
   return *this;
 }
 

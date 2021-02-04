@@ -26,8 +26,8 @@ namespace rtask {
         void clear();
 
         void set(LogicalExprPtr t_condition_ptr, LogicalExprPtr t_consequence_ptr);
-        inline void setCondition(LogicalExprPtr t_expr) { condition_.reset(t_expr.get()); }
-        inline void setConsequence(LogicalExprPtr t_expr) { consequence_.reset(t_expr.get()); }
+        inline void setCondition(LogicalExprPtr t_expr_ptr) { condition_ = t_expr_ptr; }
+        inline void setConsequence(LogicalExprPtr t_expr_ptr) { consequence_ = t_expr_ptr; }
 
         inline std::string getExpressionName() const { return expr_name_; }
         inline LogicalExprPtr getCondition() const { return condition_; }

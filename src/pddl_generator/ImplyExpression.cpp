@@ -79,8 +79,8 @@ std::string ImplyExpression::toPddl(bool t_typing, int t_pad_lv) const
 
 ImplyExpression& ImplyExpression::operator=(const ImplyExpression& t_other)
 {
-  condition_.reset(t_other.getCondition().get());
-  consequence_.reset(t_other.getConsequence().get());
+  condition_ = t_other.getCondition();
+  consequence_ = t_other.getConsequence();
   return *this;
 }
 

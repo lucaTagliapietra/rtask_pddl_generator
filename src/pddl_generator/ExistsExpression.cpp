@@ -78,8 +78,8 @@ std::string ExistsExpression::toPddl(bool t_typing, int t_pad_lv) const
 
 ExistsExpression& ExistsExpression::operator=(const ExistsExpression& t_other)
 {
-  what_.reset(t_other.getWhat().get());
-  condition_.reset(t_other.getCondition().get());
+  what_ = t_other.getWhat();
+  condition_ = t_other.getCondition();
   return *this;
 }
 

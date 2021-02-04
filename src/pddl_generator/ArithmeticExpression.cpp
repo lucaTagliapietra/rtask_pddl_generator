@@ -100,8 +100,8 @@ std::string ArithmeticExpression::toPddl(bool t_typing, int t_pad_lv) const
 ArithmeticExpression& ArithmeticExpression::operator=(const ArithmeticExpression& t_other)
 {
   expr_name_ = t_other.getArithmeticOperation();
-  lhs_expr_.reset(t_other.getLhsExpression().get());
-  rhs_expr_.reset(t_other.getRhsExpression().get());
+  lhs_expr_ = t_other.getLhsExpression();
+  rhs_expr_ = t_other.getRhsExpression();
   return *this;
 }
 
