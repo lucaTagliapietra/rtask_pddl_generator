@@ -35,6 +35,9 @@ namespace rtask {
         inline NumericalExprPtr getLhsExpression() const { return lhs_expr_; }
         inline NumericalExprPtr getRhsExpression() const { return rhs_expr_; }
 
+        NumericalOperator mirror() const;
+        bool equals(const NumericalOperator& t_other) const;
+
         //        bool validate(const UnordStrToLitTermMap& t_known_constants,
         //                      const UnordStrToUIntMap& t_belonging_action_args,
         //                      const std::string& t_belonging_action_name) const;

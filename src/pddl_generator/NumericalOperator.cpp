@@ -72,6 +72,23 @@ bool NumericalOperator::setOperatorName(const std::string& t_op_name)
   return true;
 }
 
+NumericalOperator NumericalOperator::mirror() const
+{
+  switch (operator_name_.front()) {
+    case '+':
+    case '*':
+      return {operator_name_, *rhs_expr_, *lhs_expr_};
+    default:
+      return *this;
+  }
+}
+
+bool NumericalOperator::equals(const NumericalOperator& t_other) const
+{
+  return (operator_name_ == t_other.operator_name_ && helpers::operator==(*lhs_expr_, *t_other.lhs_expr_)
+          && helpers::operator==(*rhs_expr_, *t_other.rhs_expr_));
+}
+
 NumericalOperator& NumericalOperator::operator=(const NumericalOperator& t_other)
 {
   set(t_other.getOperatorName(), t_other.getLhsExpression(), t_other.getRhsExpression());
@@ -98,11 +115,7 @@ std::string NumericalOperator::toPddl(bool t_typing, int t_pad_lv) const
 
 bool rtask::commons::pddl_generator::operator==(const NumericalOperator& t_first, const NumericalOperator& t_second)
 {
-  if (t_first.getOperatorName() != t_second.getOperatorName()) {
-    return false;
-  }
-  return helpers::operator==(*t_first.getLhsExpression().get(), *t_second.getLhsExpression().get())
-         && helpers::operator==(*t_first.getRhsExpression().get(), *t_second.getRhsExpression().get());
+  return (t_first.equals(t_second) || t_first.equals(t_second.mirror()));
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalOperator& t_expr)
