@@ -31,8 +31,8 @@ namespace rtask {
         bool set(const std::string& t_op_name, NumericalExprPtr t_lhs, NumericalExprPtr t_rhs);
 
         bool setArithmeticOperation(const std::string& t_op_name);
-        inline void setLhsExpression(NumericalExprPtr t_lhs);
-        inline void setRhsExpression(NumericalExprPtr t_rhs);
+        inline void setLhsExpression(NumericalExprPtr t_lhs) { lhs_expr_ = t_lhs; };
+        inline void setRhsExpression(NumericalExprPtr t_rhs) { rhs_expr_ = t_rhs; }
 
         inline std::string getExpressionName() const = delete;
         inline std::string getArithmeticOperation() const { return expr_name_; }

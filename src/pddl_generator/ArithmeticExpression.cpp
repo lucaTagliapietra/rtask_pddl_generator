@@ -64,8 +64,8 @@ void ArithmeticExpression::clear()
 
 bool ArithmeticExpression::set(const std::string& t_op_name, NumericalExprPtr t_lhs, NumericalExprPtr t_rhs)
 {
-  lhs_expr_ = t_lhs;
-  rhs_expr_ = t_rhs;
+  setLhsExpression(t_lhs);
+  setRhsExpression(t_rhs);
   return setArithmeticOperation(t_op_name);
 }
 
