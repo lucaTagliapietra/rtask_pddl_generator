@@ -83,7 +83,8 @@ EqualsExpression& EqualsExpression::operator=(const EqualsExpression& t_other)
 
 bool rtask::commons::pddl_generator::operator==(const EqualsExpression& t_first, const EqualsExpression& t_second)
 {
-  return t_first.getLhsTerm() == t_second.getLhsTerm() && t_first.getRhsTerm() == t_second.getRhsTerm();
+  return ((t_first.getLhsTerm() == t_second.getLhsTerm() && t_first.getRhsTerm() == t_second.getRhsTerm())
+          || (t_first.getLhsTerm() == t_second.getRhsTerm() && t_first.getRhsTerm() == t_second.getLhsTerm()));
 };
 
 ////// TODO: This strongly depends on the implementation of the action class, check it

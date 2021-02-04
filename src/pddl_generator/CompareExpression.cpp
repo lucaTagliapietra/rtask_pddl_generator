@@ -77,6 +77,28 @@ bool CompareExpression::setComparisonOperator(const std::string& t_op_name)
   return true;
 }
 
+CompareExpression CompareExpression::mirror() const
+{
+  std::string mirrored_expr_name = expr_name_;
+  switch (mirrored_expr_name.front()) {
+    case '>':
+      mirrored_expr_name.front() = '<';
+      break;
+    case '<':
+      mirrored_expr_name.front() = '>';
+      break;
+    default:
+      break;
+  }
+  return {mirrored_expr_name, rhs_expr_, lhs_expr_};
+}
+
+bool CompareExpression::equals(const CompareExpression& t_other) const
+{
+  return (expr_name_ == t_other.getComparisonOperator() && helpers::operator==(*lhs_expr_, *t_other.lhs_expr_)
+          && helpers::operator==(*rhs_expr_, *t_other.rhs_expr_));
+}
+
 std::string CompareExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
   auto pad_aligners = helpers::getPddlAligners(t_pad_lv);
@@ -101,9 +123,7 @@ CompareExpression& CompareExpression::operator=(const CompareExpression& t_other
 
 bool rtask::commons::pddl_generator::operator==(const CompareExpression& t_first, const CompareExpression& t_second)
 {
-  return (t_first.getComparisonOperator() == t_second.getComparisonOperator()
-          && helpers::operator==(*t_first.getLhsExpression(), *t_second.getLhsExpression())
-          && helpers::operator==(*t_first.getRhsExpression(), *t_second.getRhsExpression()));
+  return t_first.equals(t_second) || t_first.equals(t_second.mirror());
 };
 
 ////// TODO: This strongly depends on the implementation of the action class, check it
