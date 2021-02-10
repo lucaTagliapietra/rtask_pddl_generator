@@ -46,18 +46,14 @@ std::string LiteralTerm::toPddl(const bool t_typing, int) const
   return out;
 }
 
-bool LiteralTerm::validate(const UnordStrToLitTermMap& t_known_types) const
+bool LiteralTerm::isValid(const UmapStrStr& t_known_types) const
 {
-  if (name_.empty()) {
-    std::cerr << "VALIDATION ERROR: Empty LiteralTerm name" << std::endl;
-    return false;
-  }
+  return (!name_.empty() && !t_known_types.empty() && t_known_types.count(type_) != 0);
+}
 
-  if (!t_known_types.count(type_)) {
-    std::cerr << "VALIDATION ERROR: Unknown Type **" << type_ << "**" << std::endl;
-    return false;
-  }
-  return true;
+bool LiteralTerm::isEquivalentTo(const LiteralTerm& t_other) const
+{
+  return type_ == t_other.getType();
 }
 
 LiteralTerm& LiteralTerm::operator=(const LiteralTerm& t_other)

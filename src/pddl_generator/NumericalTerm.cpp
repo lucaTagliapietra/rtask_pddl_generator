@@ -54,6 +54,14 @@ void NumericalTerm::set(const int& t_value)
   val_ = std::move(t_value);
 }
 
+bool NumericalTerm::isValid() const
+{
+  if (val_.index() == 1) {
+    return std::get<double>(val_) != std::numeric_limits<double>::quiet_NaN();
+  }
+  return true;
+}
+
 NumericalTerm& NumericalTerm::operator=(const NumericalTerm& t_other)
 {
   val_ = t_other.getValue();

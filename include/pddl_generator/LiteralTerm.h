@@ -15,7 +15,7 @@ namespace rtask {
 
       class LiteralTerm;
 
-      using UnordStrToLitTermMap = std::unordered_map<std::string, LiteralTerm>;
+      using UmapStrStr = std::unordered_map<std::string, std::string>;
       using LiteralTermPtr = std::shared_ptr<LiteralTerm>;
       using ConstLiteralTermPtr = std::shared_ptr<const LiteralTerm>;
       using LiteralTermVector = std::vector<LiteralTerm>;
@@ -36,7 +36,8 @@ namespace rtask {
         inline std::string getName() const { return name_; }
         inline std::string getType() const { return type_; }
 
-        bool validate(const UnordStrToLitTermMap& t_types) const;
+        bool isValid(const UmapStrStr& t_known_types) const;
+        bool isEquivalentTo(const LiteralTerm& t_other) const;
 
         LiteralTerm& operator=(const LiteralTerm& t_other);
 
