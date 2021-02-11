@@ -42,9 +42,8 @@ namespace rtask {
         inline int getNumParameters() const { return static_cast<int>(params_.size()); }
         std::shared_ptr<const LiteralTermVector> getParameters() const;
 
-        //        bool validate(const UnordStrToLitTermMap& t_known_constants,
-        //                      const UnordStrToUIntMap& t_belonging_action_args,
-        //                      const std::string& t_belonging_action_name) const;
+        bool isValid(const UmapStrStr& t_known_types) const;
+        bool isEquivalentTo(const Predicate& t_other, const UmapStrStr& t_known_types) const;
 
         Predicate& operator=(const Predicate& t_other);
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const;

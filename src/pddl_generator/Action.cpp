@@ -1,6 +1,8 @@
 #include "pddl_generator/Action.h"
 #include "pddl_generator/Helpers.h"
 
+#include <algorithm>
+
 using namespace rtask::commons::pddl_generator;
 
 Action::Action(const std::string& t_name,
@@ -19,39 +21,47 @@ Action::Action(XmlRpc::XmlRpcValue& t_rpc_val)
         && helpers::checkXmlRpcSanity("precondition", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeStruct)
         && helpers::checkXmlRpcSanity("effect", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeStruct))) {
     std::cerr
-      << "Fatal: Invalid Action Structure, should be a Struct with name, params, precondition, and effect fields"
+      << "Fatal: Invalid ACTION Structure, should be a Struct with name, params, precondition, and effect fields"
       << std::endl;
     exit(EXIT_FAILURE);
   }
 
-  name_ = static_cast<std::string>(t_rpc_val["name"]);
+  if (!setName(static_cast<std::string>(t_rpc_val["name"]))) {
+    std::cerr << "Fatal: Invalid NAME of current ACTION" << name_ << std::endl;
+    exit(EXIT_FAILURE);
+  }
 
+  std::vector<LiteralTerm> p;
   if (t_rpc_val["params"].size() == 0) {
-    std::cout << "Empty params vector for Action " << name_ << std::endl;
+    std::cout << "W: Empty PARAMS vector for ACTION " << name_ << std::endl;
   }
   else {
     for (int i = 0; i < t_rpc_val["params"].size(); ++i) {
-      params_.emplace_back(t_rpc_val["params"][i]);
+      p.emplace_back(t_rpc_val["params"][i]);
     }
   }
+  setParameters(p);
 
-  precondition_ = helpers::getLogicalExprFromXmlRpc(t_rpc_val["precondition"]);
-  if (!precondition_) {
-    std::cerr << "Fatal: Invalid Precondition of current Action: " << name_ << std::endl;
+  const auto& pre = helpers::getLogicalExprFromXmlRpc(t_rpc_val["precondition"]);
+  if (!pre) {
+    std::cerr << "Fatal: Invalid PRECONDITION of current ACTION: " << name_ << std::endl;
     exit(EXIT_FAILURE);
   }
+  setPrecondition(pre);
 
-  effect_ = helpers::getLogicalExprFromXmlRpc(t_rpc_val["effect"]);
-  if (!effect_) {
-    std::cerr << "Fatal: Invalid Effect of current Action: " << name_ << std::endl;
+  const auto& eff = helpers::getLogicalExprFromXmlRpc(t_rpc_val["effect"]);
+  if (!eff) {
+    std::cerr << "Fatal: Invalid EFFECT of current ACTION: " << name_ << std::endl;
     exit(EXIT_FAILURE);
   }
+  setEffect(eff);
 }
 
 void Action::clear()
 {
   name_.clear();
   params_.clear();
+  params_map_.clear();
   precondition_.reset();
   effect_.reset();
 }
@@ -72,10 +82,62 @@ bool Action::setName(const std::string& t_name)
 {
 
   if (t_name.empty()) {
-    std::cerr << "Fatal: Empty name for current Action: " << t_name << std::endl;
+    std::cerr << "Fatal: Empty NAME for current ACTION" << std::endl;
     return false;
   }
   name_ = t_name;
+  return true;
+}
+
+void Action::setParameters(const LiteralTermVector& t_params)
+{
+  params_ = std::move(t_params);
+  for (const auto& par : t_params) {
+    if (params_map_.count(par.getName()) != 0) {
+      std::cerr << "Fatal: Duplicate PARAM in current ACTION " << name_ << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    params_map_.emplace(par.getName(), par.getType());
+    params_.push_back(par);
+  }
+}
+
+bool Action::isValid(const UmapStrStr& t_known_types,
+                     const std::vector<LiteralTerm>& t_known_constants,
+                     const std::vector<Predicate>& t_known_predicates,
+                     const std::vector<LiteralExpression>& t_known_timeless) const
+{
+  if (name_.empty()) {
+    std::cout << "Validation Error: Empty NAME for current ACTION" << std::endl;
+    return false;
+  }
+
+  for (const auto& par : params_) {
+    if (!par.isValid(t_known_types)) {
+      std::cout << "Validation Error: Invalid PAR " << par << " in current ACTION: " << name_ << std::endl;
+      return false;
+    }
+
+    const auto& it = std::find(t_known_constants.begin(), t_known_constants.end(), par);
+    if (it != t_known_constants.end()) {
+      std::cerr << "Validation Error: invalid PAR " << par << " in current ACTION: " << name_ << ", constant used"
+                << std::endl;
+      return false;
+    }
+  }
+
+  if (!helpers::isValid(
+        precondition_, params_map_, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false)) {
+    std::cerr << "Validation Error: invalid PRECONDITION " << precondition_ << " of current ACTION: " << name_
+              << std::endl;
+    return false;
+  };
+
+  if (!helpers::isValid(
+        effect_, params_map_, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false)) {
+    std::cerr << "Validation Error: invalid EFFECT " << precondition_ << " of current ACTION: " << name_ << std::endl;
+    return false;
+  };
   return true;
 }
 

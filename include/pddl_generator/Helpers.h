@@ -14,7 +14,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <tuple>
 
 namespace rtask {
   namespace commons {

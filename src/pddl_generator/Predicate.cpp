@@ -126,6 +126,63 @@ std::shared_ptr<const LiteralTermVector> Predicate::getParameters() const
   return std::make_shared<const LiteralTermVector>(params_);
 }
 
+bool Predicate::isValid(const UmapStrStr& t_known_types) const
+{
+  if (name_.empty()) {
+    std::cout << "Validation Error: empty NAME in current PREDICATE" << std::endl;
+    return false;
+  }
+
+  for (const auto& t : t_known_types) {
+    std::cout << "T: " << t.first << " : " << t.second << std::endl;
+  }
+
+  for (const auto& arg : params_) {
+    if (arg.getType().empty() || t_known_types.count(arg.getType()) == 0) {
+      std::cout << "Validation Error: empty/unknown TYPE for ARG " << arg.getName() << " of current PREDICATE"
+                << std::endl;
+      return false;
+    }
+  };
+  return true;
+}
+
+bool Predicate::isEquivalentTo(const Predicate& t_other, const UmapStrStr& t_known_types) const
+{
+  if (name_ != t_other.getName() || params_.size() != static_cast<size_t>(t_other.getNumParameters())) {
+    return false;
+  }
+
+  auto th = helpers::buildTypesHierarchy(t_known_types);
+
+  const auto& other_params = t_other.getParameters();
+
+  for (size_t p_ix = 0; p_ix < params_.size(); p_ix++) {
+    const auto ft = params_.at(p_ix).getType();
+    const auto st = other_params->at(p_ix).getType();
+    if (ft != st) {
+      if (th.count(ft) != 0) {
+        const auto& it = std::find(th.at(ft).begin(), th.at(ft).end(), st);
+        if (it == th.at(ft).end()) {
+          return false;
+        }
+        std::cout << "Parent-child types relation found" << std::endl;
+      }
+      else if (th.count(st) != 0) {
+        const auto& it = std::find(th.at(st).begin(), th.at(st).end(), ft);
+        if (it == th.at(st).end()) {
+          return false;
+        }
+        std::cout << "Child-Parent types relation found" << std::endl;
+      }
+      else {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 Predicate& Predicate::operator=(const Predicate& t_other)
 {
   name_ = t_other.getName();
