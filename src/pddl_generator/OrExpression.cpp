@@ -95,14 +95,19 @@ bool OrExpression::isValid(UmapStrStr t_action_params,
                            const std::vector<LiteralExpression>& t_known_timeless,
                            const bool t_is_an_effect) const
 {
-  bool valid = true;
   for (const auto& expr : expr_vec_) {
-    valid &= helpers::isValid(
-      expr, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false);
+    if (!helpers::isValid(expr,
+                          t_action_params,
+                          t_known_types,
+                          t_known_constants,
+                          t_known_predicates,
+                          t_known_timeless,
+                          t_is_an_effect)) {
+      return false;
+    }
   }
-  return valid;
+  return true;
 }
-
 std::string OrExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
   auto pad_aligners = helpers::getPddlAligners(t_pad_lv);

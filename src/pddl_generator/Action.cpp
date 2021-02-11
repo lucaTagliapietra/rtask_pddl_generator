@@ -91,7 +91,6 @@ bool Action::setName(const std::string& t_name)
 
 void Action::setParameters(const LiteralTermVector& t_params)
 {
-  params_ = std::move(t_params);
   for (const auto& par : t_params) {
     if (params_map_.count(par.getName()) != 0) {
       std::cerr << "Fatal: Duplicate PARAM in current ACTION " << name_ << std::endl;

@@ -83,8 +83,7 @@ bool ExistsExpression::isValid(UmapStrStr t_action_params,
     return false;
   }
 
-  const auto& it = std::find(t_known_constants.begin(), t_known_constants.end(), *this->what_);
-  if (it != t_known_constants.end()) {
+  if (std::find(t_known_constants.begin(), t_known_constants.end(), *this->what_) != t_known_constants.end()) {
     std::cerr << "Validation Error: invalid WHAT of current ExistsExpression, constant used" << std::endl;
     return false;
   }

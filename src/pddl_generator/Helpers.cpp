@@ -289,9 +289,9 @@ bool helpers::isValid(LogicalExprPtr t_expr_ptr,
                       bool t_is_an_effect)
 {
   if (t_expr_ptr) {
-    if (SupportedRequirements.count(t_expr_ptr->getExpressionType()) == 0
-        || (t_is_an_effect && !SupportedRequirements.at(t_expr_ptr->getExpressionType()).second)
-        || (!t_is_an_effect && !SupportedRequirements.at(t_expr_ptr->getExpressionType()).first)) {
+    if (LogicalExprSupportedAs.count(t_expr_ptr->getExpressionType()) == 0
+        || (t_is_an_effect && !LogicalExprSupportedAs.at(t_expr_ptr->getExpressionType()).second)
+        || (!t_is_an_effect && !LogicalExprSupportedAs.at(t_expr_ptr->getExpressionType()).first)) {
       return false;
     }
     switch (t_expr_ptr->getExpressionType()) {

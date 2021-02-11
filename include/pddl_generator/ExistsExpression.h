@@ -47,7 +47,7 @@ namespace rtask {
 
       private:
         // string expression_name is already protected in parent class
-        std::shared_ptr<LiteralTerm> what_ = nullptr;
+        LiteralTermPtr what_ = nullptr;
         LogicalExprPtr condition_ = nullptr;
       };
 

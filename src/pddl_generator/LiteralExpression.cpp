@@ -113,8 +113,8 @@ bool LiteralExpression::isValid(UmapStrStr t_action_params,
     return false;
   }
 
-  for (const auto& c : t_known_constants) {
-    t_action_params.insert({c.getName(), c.getType()});
+  for (const auto& kc : t_known_constants) {
+    t_action_params.insert({kc.getName(), kc.getType()});
   }
 
   LiteralTermVector args;

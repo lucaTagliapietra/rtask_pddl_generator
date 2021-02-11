@@ -48,7 +48,7 @@ std::string LiteralTerm::toPddl(const bool t_typing, int) const
 
 bool LiteralTerm::isValid(const UmapStrStr& t_known_types) const
 {
-  return (!name_.empty() && !t_known_types.empty() && t_known_types.count(type_) != 0);
+  return (!name_.empty() && !type_.empty() && t_known_types.count(type_) != 0);
 }
 
 bool LiteralTerm::isEquivalentTo(const LiteralTerm& t_other) const

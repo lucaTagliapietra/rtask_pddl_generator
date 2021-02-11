@@ -350,9 +350,11 @@ std::string Domain::toPddl(bool t_typing, int t_pad_lv) const
     out += pad_aligners_domain.second[0] + "(:constants" + pad_aligners_domain.second[1];
     auto pad_aligners_const = helpers::getPddlAligners(pad_aligners_domain.first);
     for (const auto& c : constants_) {
-      out += pad_aligners_const.second[0] + c.toPddl(t_typing, pad_aligners_const.first);
+      auto cs = c.toPddl(t_typing, pad_aligners_const.first);
+      cs.erase(0, 1);
+      out += pad_aligners_const.second[0] + cs;
     }
-    out += ")\n";
+    out += pad_aligners_domain.second[2] + ")\n";
   }
 
   if (!predicates_.empty()) {
@@ -362,7 +364,7 @@ std::string Domain::toPddl(bool t_typing, int t_pad_lv) const
       out += pred.toPddl(t_typing, pad_aligners_domain.first) + "\n";
     }
     out.pop_back();
-    out += ")\n";
+    out += pad_aligners_domain.second[2] + ")\n";
   }
 
   if (!timeless_.empty()) {

@@ -7,7 +7,7 @@ domain:
   types:
     - { type_names: ["room, ball, gripper"] }
   constants:
-    - { type_names: ["ball, gripper"], parent_type:"gripper" }
+    - { type_names: ["left, right"], parent_type:"gripper" }
   predicates:
     - name: "at-robby"
       params:

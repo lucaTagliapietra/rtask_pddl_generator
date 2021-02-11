@@ -77,7 +77,8 @@ namespace rtask {
       std::ostream& operator<<(std::ostream& t_out, LogicalExprPtr t_expr);
       std::ostream& operator<<(std::ostream& t_out, NumericalExprPtr t_expr);
 
-      const static inline std::map<LogicalExpressionType, std::pair<bool, bool>> SupportedRequirements = {
+      // <LEType, supportedAsCondition, supportedAsEffect>
+      const static inline std::map<LogicalExpressionType, std::pair<bool, bool>> LogicalExprSupportedAs = {
         {LogicalExpressionType::Literal, {true, true}},
         {LogicalExpressionType::And, {true, true}},
         {LogicalExpressionType::Or, {true, false}},
