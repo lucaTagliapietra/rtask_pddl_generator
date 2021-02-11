@@ -45,6 +45,7 @@ namespace rtask {
       private:
         //   string expression_name is already protected in parent class
         std::vector<std::string> args_{};
+        std::unordered_map<std::string, bool> arg_is_const_{};
       };
 
       bool operator==(const LiteralExpression& t_first, const LiteralExpression& t_second);

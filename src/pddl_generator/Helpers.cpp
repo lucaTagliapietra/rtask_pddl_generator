@@ -18,6 +18,8 @@
 #include "pddl_generator/NumericalFunction.h"
 #include "pddl_generator/NumericalOperator.h"
 
+#include <algorithm>
+
 using namespace rtask::commons::pddl_generator;
 
 LogicalExpressionType helpers::getLogicalExprTypeFromXmlRpc(XmlRpc::XmlRpcValue& t_rpc_val)
@@ -541,6 +543,19 @@ std::pair<int, std::vector<std::string>> helpers::getPddlAligners(int t_pad_lv)
   }
   else {
     return {t_pad_lv, {"", " ", ""}};
+  }
+}
+
+void helpers::fixTypesHierarchy(UmapStrStr& t_known_types)
+{
+  auto th = buildTypesHierarchy(t_known_types);
+  if (th.count("object") != 0) {
+    return;
+  }
+  const auto& it = std::max_element(
+    th.begin(), th.end(), [](const auto& l, const auto& r) { return l.second.size() < r.second.size(); });
+  if (it->first != "object") {
+    t_known_types[it->first] = "object";
   }
 }
 

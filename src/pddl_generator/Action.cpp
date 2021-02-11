@@ -111,13 +111,13 @@ bool Action::isValid(const UmapStrStr& t_known_types,
     return false;
   }
 
-  for (const auto& par : params_) {
+  for (auto& par : params_) {
     if (!par.isValid(t_known_types)) {
       std::cout << "Validation Error: Invalid PAR " << par << " in current ACTION: " << name_ << std::endl;
       return false;
     }
 
-    const auto& it = std::find(t_known_constants.begin(), t_known_constants.end(), par);
+    auto it = std::find(t_known_constants.begin(), t_known_constants.end(), par);
     if (it != t_known_constants.end()) {
       std::cerr << "Validation Error: invalid PAR " << par << " in current ACTION: " << name_ << ", constant used"
                 << std::endl;
@@ -170,8 +170,6 @@ std::string Action::toPddl(bool t_typing, int t_pad_lv) const
 
   out += aligners_n[1] + aligners_n[0] + ":effect" + aligners[1];
   out += effect_->toPddl(t_typing, pad_lv_n);
-  out += aligners_n[2] + ")";
-
   out += aligners[2] + ")";
   return out;
 }

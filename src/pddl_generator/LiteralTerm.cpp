@@ -11,9 +11,9 @@ LiteralTerm::LiteralTerm()
   obj_type_ = TermType::LiteralTerm;
 }
 
-LiteralTerm::LiteralTerm(const std::string& t_name, const std::string& t_type)
+LiteralTerm::LiteralTerm(const std::string& t_name, const std::string& t_type, const bool t_is_a_const_term)
 {
-  set(t_name, t_type);
+  set(t_name, t_type, t_is_a_const_term);
   obj_type_ = TermType::LiteralTerm;
 }
 
@@ -39,7 +39,8 @@ std::string LiteralTerm::toPddl(const bool t_typing, int) const
     return {};
   };
 
-  std::string out = "?" + name_;
+  std::string out = is_a_constant_term_ ? "" : "?";
+  out += name_;
   if (t_typing) {
     out += " - " + type_;
   }
@@ -62,7 +63,7 @@ LiteralTerm& LiteralTerm::operator=(const LiteralTerm& t_other)
   return *this;
 }
 
-void LiteralTerm::set(const std::string& t_name, const std::string& t_type)
+void LiteralTerm::set(const std::string& t_name, const std::string& t_type, const bool t_is_a_const_term)
 {
   if (t_name.empty()) {
     std::cerr << "Empty LiteralTerm object name" << std::endl;
@@ -77,6 +78,7 @@ void LiteralTerm::set(const std::string& t_name, const std::string& t_type)
 
   name_ = std::move(t_name);
   type_ = std::move(type);
+  is_a_constant_term_ = t_is_a_const_term;
 }
 
 bool rtask::commons::pddl_generator::operator==(const LiteralTerm& t_first, const LiteralTerm& t_second)

@@ -26,15 +26,19 @@ namespace rtask {
         LiteralTerm();
         ~LiteralTerm() override = default;
 
-        LiteralTerm(const std::string& t_name, const std::string& t_type = {"object"});
+        LiteralTerm(const std::string& t_name,
+                    const std::string& t_type = {"object"},
+                    const bool t_is_a_const_term = false);
         LiteralTerm(XmlRpc::XmlRpcValue& t_rpc_val);
 
-        void set(const std::string& t_name, const std::string& t_type);
+        void set(const std::string& t_name, const std::string& t_type, const bool t_is_a_const_term = false);
         inline void setName(const std::string& t_name) { name_ = std::move(t_name); }
         inline void setType(const std::string& t_type) { type_ = std::move(t_type); }
+        inline void setIsAConstantTerm(const bool t_is_a_const_term) { is_a_constant_term_ = t_is_a_const_term; }
 
         inline std::string getName() const { return name_; }
         inline std::string getType() const { return type_; }
+        inline bool isAConstantTerm() const { return is_a_constant_term_; }
 
         bool isValid(const UmapStrStr& t_known_types) const;
         bool isEquivalentTo(const LiteralTerm& t_other) const;
@@ -46,6 +50,7 @@ namespace rtask {
       private:
         std::string name_{};
         std::string type_{};
+        bool is_a_constant_term_{false};
       };
 
       bool operator==(const LiteralTerm& t_first, const LiteralTerm& t_second);

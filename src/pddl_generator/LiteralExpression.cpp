@@ -73,8 +73,16 @@ bool LiteralExpression::setExpressionName(const std::string& t_expr_name)
 
 bool LiteralExpression::setExpressionArgs(const std::vector<std::string>& t_args)
 {
-  // TODO: add policy to handle duplicates
-  args_ = std::move(t_args);
+  args_.clear();
+  arg_is_const_.clear();
+  for (const auto& arg : t_args) {
+    if (arg_is_const_.count(arg) > 0) {
+      std::cerr << "Duplicate ARG in LiteralExpression: " << expr_name_ << std::endl;
+      return false;
+    }
+    arg_is_const_.emplace(arg, false);
+    args_.push_back(arg);
+  }
   return true;
 }
 
@@ -95,7 +103,8 @@ std::string LiteralExpression::toPddl(bool, int t_pad_lv) const
 
   std::string out = aligners[0] + "(" + expr_name_;
   for (const auto& a : args_) {
-    out += " ?" + a;
+    out += (!arg_is_const_.empty() && arg_is_const_.at(a)) ? " " : " ?";
+    out += a;
   }
   out += ")";
 
@@ -109,23 +118,29 @@ bool LiteralExpression::isValid(UmapStrStr t_action_params,
                                 const std::vector<LiteralExpression>& t_known_timeless) const
 {
   if (expr_name_.empty()) {
-    std::cerr << "VALIDATION ERROR: Empty LiteralExpression name" << std::endl;
+    std::cerr << "Validation Error: Empty LiteralExpression name" << std::endl;
     return false;
   }
 
+  UmapStrStr known_consts;
   for (const auto& kc : t_known_constants) {
-    t_action_params.insert({kc.getName(), kc.getType()});
+    known_consts.emplace(kc.getName(), kc.getType());
   }
 
   LiteralTermVector args;
-
   for (const auto& arg : args_) {
     if (t_action_params.count(arg) == 0) {
-      std::cerr << "VALIDATION ERROR: Unknown arg " << arg << " for current LiteralExpression: " << expr_name_
-                << std::endl;
-      return false;
+      if (known_consts.count(arg) == 0) {
+        std::cerr << "Validation Error: Unknown ARG " << arg << " for current LiteralExpression: " << expr_name_
+                  << std::endl;
+        return false;
+      }
+      const_cast<std::unordered_map<std::string, bool>&>(arg_is_const_)[arg] = true;
+      args.emplace_back(arg, known_consts.at(arg), true);
     }
-    args.emplace_back(arg, t_action_params.at(arg));
+    else {
+      args.emplace_back(arg, t_action_params.at(arg));
+    }
   }
 
   Predicate pred{expr_name_, args};
@@ -138,8 +153,7 @@ bool LiteralExpression::isValid(UmapStrStr t_action_params,
     const auto& it2 =
       std::find_if(t_known_timeless.begin(), t_known_timeless.end(), [*this](const auto& le) { return le == *this; });
     if (it2 == t_known_timeless.end()) {
-      std::cerr << "VALIDATION ERROR: Unknown predicate/timeless matching LiteralExpression: " << expr_name_
-                << std::endl;
+      std::cerr << "Validation Error: No PREDICATE/TIMELESS matching LiteralExpression: " << expr_name_ << std::endl;
       return false;
     }
   }

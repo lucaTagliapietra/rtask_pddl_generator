@@ -69,6 +69,7 @@ namespace rtask {
         std::string padding(int t_n_pads);
         std::pair<int, std::vector<std::string>> getPddlAligners(int t_pad_lv);
 
+        void fixTypesHierarchy(UmapStrStr& t_known_types);
         UmapStrVecStr buildTypesHierarchy(const UmapStrStr& t_known_types);
         UmapStrVecStr aggregateByParentType(const UmapStrStr& t_known_types);
 

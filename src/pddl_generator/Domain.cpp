@@ -200,8 +200,8 @@ bool Domain::setRequirements(const std::vector<std::string>& t_requirements)
 
 bool Domain::setTypes(const UmapStrStr& t_types)
 {
-  types_["object"] = "object";
   types_ = std::move(t_types);
+  helpers::fixTypesHierarchy(types_);
   return true;
 }
 
@@ -210,7 +210,7 @@ bool Domain::setConstants(const std::vector<LiteralTerm>& t_constants)
   bool error_free = true;
   constants_.clear();
 
-  for (const auto& cons : t_constants) {
+  for (auto& cons : t_constants) {
     if (!cons.isValid(types_)) {
       std::cerr << "Validation Error: invalid CONST: " << cons.getName() << " in current Domain: " << name_
                 << std::endl;
@@ -227,6 +227,7 @@ bool Domain::setConstants(const std::vector<LiteralTerm>& t_constants)
       continue;
     }
     constants_.push_back(cons);
+    constants_.back().setIsAConstantTerm(true);
   }
   return error_free;
 }
@@ -259,7 +260,7 @@ bool Domain::setTimeless(const std::vector<LiteralExpression>& t_timeless)
 {
   bool error_free = true;
   for (const auto& tim : t_timeless) {
-    if (!helpers::isValid(std::make_shared<LiteralExpression>(tim), {}, types_, constants_, predicates_, {}, false)) {
+    if (!tim.isValid({}, types_, constants_, predicates_, {})) {
       std::cerr << "Fatal: Invalid TIMELESS " << name_ << " in current domain" << std::endl;
       error_free = false;
       continue;
@@ -351,7 +352,6 @@ std::string Domain::toPddl(bool t_typing, int t_pad_lv) const
     auto pad_aligners_const = helpers::getPddlAligners(pad_aligners_domain.first);
     for (const auto& c : constants_) {
       auto cs = c.toPddl(t_typing, pad_aligners_const.first);
-      cs.erase(0, 1);
       out += pad_aligners_const.second[0] + cs;
     }
     out += pad_aligners_domain.second[2] + ")\n";
@@ -379,9 +379,11 @@ std::string Domain::toPddl(bool t_typing, int t_pad_lv) const
 
   if (!actions_.empty()) {
     for (const auto& act : actions_) {
-      out += act.toPddl(t_typing, pad_aligners_define.first);
+      out += act.toPddl(t_typing, pad_aligners_define.first) + "\n";
     }
   }
+  out.pop_back();
+  out += pad_aligners_define.second[2] + ")";
   return out;
 }
 
