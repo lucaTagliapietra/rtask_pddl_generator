@@ -65,6 +65,30 @@ void EqualsExpression::setRhsTerm(const std::string& t_rhs)
   rhs_term_name_ = std::move(t_rhs);
 }
 
+bool EqualsExpression::isValid(UmapStrStr t_action_params,
+                               const UmapStrStr& t_known_types,
+                               const std::vector<LiteralTerm>& t_known_constants,
+                               const std::vector<Predicate>& t_known_predicates,
+                               const std::vector<LiteralExpression>& t_known_timeless,
+                               const bool t_is_an_effect) const
+{
+  for (const auto& kc : t_known_constants) {
+    t_action_params.emplace(kc.getName(), kc.getType());
+  }
+
+  if (t_action_params.count(lhs_term_name_) == 0) {
+    std::cerr << "Validation Error: unknown LHS Term of current EqualsExpression" << std::endl;
+    return false;
+  }
+
+  if (t_action_params.count(rhs_term_name_) == 0) {
+    std::cerr << "Validation Error: unknown RHS Term of current EqualsExpression" << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 std::string EqualsExpression::toPddl(bool, int t_pad_lv) const
 {
   auto pad_aligners = helpers::getPddlAligners(t_pad_lv);

@@ -102,20 +102,43 @@ std::string LiteralExpression::toPddl(bool, int t_pad_lv) const
   return out;
 }
 
-// TODO: This strongly depends on the implementation of the action class, check it
-bool LiteralExpression::validate(const UnordStrToLitTermMap& t_known_constants,
-                                 const UnordStrToUIntMap& t_belonging_action_args,
-                                 const std::string& t_belonging_action_name) const
+bool LiteralExpression::isValid(UmapStrStr t_action_params,
+                                const UmapStrStr& t_known_types,
+                                const std::vector<LiteralTerm>& t_known_constants,
+                                const std::vector<Predicate>& t_known_predicates,
+                                const std::vector<LiteralExpression>& t_known_timeless) const
 {
   if (expr_name_.empty()) {
     std::cerr << "VALIDATION ERROR: Empty LiteralExpression name" << std::endl;
     return false;
   }
 
+  for (const auto& c : t_known_constants) {
+    t_action_params.insert({c.getName(), c.getType()});
+  }
+
+  LiteralTermVector args;
+
   for (const auto& arg : args_) {
-    if (!t_belonging_action_args.count(arg) && !t_known_constants.count(arg)) {
-      std::cerr << "VALIDATION ERROR: Unknown Arg **" << arg << "**" << std::endl;
-      std::cerr << "\t(In LiteralExpression **" << expr_name_ << "** of Action **" << t_belonging_action_name << "**)"
+    if (t_action_params.count(arg) == 0) {
+      std::cerr << "VALIDATION ERROR: Unknown arg " << arg << " for current LiteralExpression: " << expr_name_
+                << std::endl;
+      return false;
+    }
+    args.emplace_back(arg, t_action_params.at(arg));
+  }
+
+  Predicate pred{expr_name_, args};
+
+  const auto& it =
+    std::find_if(t_known_predicates.begin(), t_known_predicates.end(), [pred, t_known_types](const auto& kp) {
+      return pred.isEquivalentTo(kp, t_known_types);
+    });
+  if (it == t_known_predicates.end()) {
+    const auto& it2 =
+      std::find_if(t_known_timeless.begin(), t_known_timeless.end(), [*this](const auto& le) { return le == *this; });
+    if (it2 == t_known_timeless.end()) {
+      std::cerr << "VALIDATION ERROR: Unknown predicate/timeless matching LiteralExpression: " << expr_name_
                 << std::endl;
       return false;
     }

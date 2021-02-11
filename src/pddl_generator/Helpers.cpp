@@ -149,6 +149,16 @@ bool helpers::checkXmlRpcSanity(const std::string& t_tag,
   return true;
 }
 
+bool helpers::hasValidXmlRpcTag(const std::string& t_tag,
+                                XmlRpc::XmlRpcValue& t_node,
+                                const XmlRpc::XmlRpcValue::Type t_type)
+{
+  if (!t_node.hasMember(t_tag) || t_node[t_tag].getType() != t_type || !t_node[t_tag].valid()) {
+    return false;
+  }
+  return true;
+}
+
 XmlRpc::XmlRpcValue::Type helpers::getTagValueType(const std::string& t_tag, XmlRpc::XmlRpcValue& t_node)
 {
   if (!t_node.hasMember(t_tag)) {
@@ -267,6 +277,72 @@ std::any helpers::getAsChild(NumericalExprPtr t_parent)
       return std::dynamic_pointer_cast<NumericalTerm>(t_parent);
     default:
       return {};
+  }
+}
+
+bool helpers::isValid(LogicalExprPtr t_expr_ptr,
+                      const UmapStrStr& t_action_params,
+                      const UmapStrStr& t_known_types,
+                      const std::vector<LiteralTerm>& t_known_constants,
+                      const std::vector<Predicate>& t_known_predicates,
+                      const std::vector<LiteralExpression>& t_known_timeless,
+                      bool t_is_an_effect)
+{
+  if (t_expr_ptr) {
+    if (SupportedRequirements.count(t_expr_ptr->getExpressionType()) == 0
+        || (t_is_an_effect && !SupportedRequirements.at(t_expr_ptr->getExpressionType()).second)
+        || (!t_is_an_effect && !SupportedRequirements.at(t_expr_ptr->getExpressionType()).first)) {
+      return false;
+    }
+    switch (t_expr_ptr->getExpressionType()) {
+      case LogicalExpressionType::Literal:
+        return std::dynamic_pointer_cast<LiteralExpression>(t_expr_ptr)
+          ->isValid(t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless);
+      case LogicalExpressionType::Not:
+        return std::dynamic_pointer_cast<NotExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::And:
+        return std::dynamic_pointer_cast<AndExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::Or:
+        return std::dynamic_pointer_cast<OrExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::When:
+        return std::dynamic_pointer_cast<WhenExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::Exists:
+        return std::dynamic_pointer_cast<ExistsExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::ForAll:
+        return std::dynamic_pointer_cast<ForAllExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::Compare:
+        // To be implemented
+        return true;
+        //        return std::dynamic_pointer_cast<CompareExpression>(t_expr_ptr)
+        //          ->isValid(t_action_params, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::Arithmetic:
+        // To be implemented
+        return true;
+        //        return std::dynamic_pointer_cast<ArithmeticExpression>(t_expr_ptr)
+        //          ->isValid(t_action_params, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::Imply:
+        return std::dynamic_pointer_cast<ImplyExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      case LogicalExpressionType::Equals:
+        return std::dynamic_pointer_cast<EqualsExpression>(t_expr_ptr)
+          ->isValid(
+            t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+      default:
+        return false;
+    }
   }
 }
 
@@ -466,4 +542,27 @@ std::pair<int, std::vector<std::string>> helpers::getPddlAligners(int t_pad_lv)
   else {
     return {t_pad_lv, {"", " ", ""}};
   }
+}
+
+UmapStrVecStr helpers::buildTypesHierarchy(const UmapStrStr& t_known_types)
+{
+  auto out = aggregateByParentType(t_known_types);
+  for (auto& t : out) {
+    for (size_t i = 0; i < t.second.size(); ++i) {
+      if (out.count(t.second.at(i)) != 0) {
+        for (const auto& j : out.at(t.second.at(i)))
+          t.second.push_back(j);
+      }
+    }
+  }
+  return out;
+}
+
+UmapStrVecStr helpers::aggregateByParentType(const UmapStrStr& t_known_types)
+{
+  UmapStrVecStr out;
+  for (auto const& [key, val] : t_known_types) {
+    out[val].push_back(key);
+  }
+  return out;
 }

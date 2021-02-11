@@ -1,4 +1,7 @@
 #include "pddl_generator/ForAllExpression.h"
+
+#include <algorithm>
+
 using namespace rtask::commons::pddl_generator;
 
 // ------------
@@ -60,6 +63,34 @@ void ForAllExpression::set(LiteralTermPtr t_what_ptr, LogicalExprPtr t_condition
 {
   setWhat(t_what_ptr);
   setCondition(t_condition_ptr);
+}
+
+bool ForAllExpression::isValid(UmapStrStr t_action_params,
+                               const UmapStrStr& t_known_types,
+                               const std::vector<LiteralTerm>& t_known_constants,
+                               const std::vector<Predicate>& t_known_predicates,
+                               const std::vector<LiteralExpression>& t_known_timeless,
+                               const bool t_is_an_effect) const
+{
+
+  if (!what_->isValid(t_known_types)) {
+    std::cerr << "Validation Error: invalid WHAT of current ForAllExpression" << std::endl;
+    return false;
+  }
+
+  if (t_action_params.count(what_->getName()) != 0) {
+    std::cerr << "Validation Error: invalid WHAT of current ForAllExpression, expression arg used" << std::endl;
+    return false;
+  }
+
+  const auto& it = std::find(t_known_constants.begin(), t_known_constants.end(), *this->what_);
+  if (it != t_known_constants.end()) {
+    std::cerr << "Validation Error: invalid WHAT of current ForAllExpression, constant used" << std::endl;
+    return false;
+  }
+
+  return helpers::isValid(
+    condition_, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false);
 }
 
 std::string ForAllExpression::toPddl(bool t_typing, int t_pad_lv) const

@@ -3,8 +3,10 @@
 
 #include "xmlrpcpp/XmlRpc.h"
 
+#include "LiteralExpression.h"
 #include "LogicalExpression.h"
 #include "NumericalExpression.h"
+#include "Predicate.h"
 
 #include "Term.h"
 
@@ -12,11 +14,13 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <tuple>
 
 namespace rtask {
   namespace commons {
     namespace pddl_generator {
+
+      using UmapStrVecStr = std::unordered_map<std::string, std::vector<std::string>>;
 
       namespace helpers {
 
@@ -26,6 +30,9 @@ namespace rtask {
                                XmlRpc::XmlRpcValue& t_node,
                                const XmlRpc::XmlRpcValue::Type t_type,
                                bool allow_empty_string = false);
+        bool hasValidXmlRpcTag(const std::string& t_tag,
+                               XmlRpc::XmlRpcValue& t_node,
+                               const XmlRpc::XmlRpcValue::Type t_type = XmlRpc::XmlRpcValue::Type::TypeInvalid);
 
         XmlRpc::XmlRpcValue::Type getTagValueType(const std::string& t_tag, XmlRpc::XmlRpcValue& t_node);
 
@@ -47,6 +54,14 @@ namespace rtask {
         std::any getAsChild(NumericalExpression& t_parent);
         std::any getAsChild(NumericalExprPtr t_parent_ptr);
 
+        bool isValid(LogicalExprPtr t_expr_ptr,
+                     const UmapStrStr& t_action_params,
+                     const UmapStrStr& t_known_types,
+                     const std::vector<LiteralTerm>& t_known_constants,
+                     const std::vector<Predicate>& t_known_predicates,
+                     const std::vector<LiteralExpression>& t_known_timeless,
+                     bool t_is_an_effect = false);
+
         bool operator==(const LogicalExpression& t_first, const LogicalExpression& t_second);
         bool operator==(const NumericalExpression& t_first, const NumericalExpression& t_second);
         bool operator!=(const LogicalExpression& t_first, const LogicalExpression& t_second);
@@ -55,9 +70,26 @@ namespace rtask {
         std::string padding(int t_n_pads);
         std::pair<int, std::vector<std::string>> getPddlAligners(int t_pad_lv);
 
+        UmapStrVecStr buildTypesHierarchy(const UmapStrStr& t_known_types);
+        UmapStrVecStr aggregateByParentType(const UmapStrStr& t_known_types);
+
       } // namespace helpers
+
       std::ostream& operator<<(std::ostream& t_out, LogicalExprPtr t_expr);
       std::ostream& operator<<(std::ostream& t_out, NumericalExprPtr t_expr);
+
+      const static inline std::map<LogicalExpressionType, std::pair<bool, bool>> SupportedRequirements = {
+        {LogicalExpressionType::Literal, {true, true}},
+        {LogicalExpressionType::And, {true, true}},
+        {LogicalExpressionType::Or, {true, false}},
+        {LogicalExpressionType::Not, {true, true}},
+        {LogicalExpressionType::When, {true, true}},
+        {LogicalExpressionType::Exists, {true, false}},
+        {LogicalExpressionType::ForAll, {true, false}},
+        {LogicalExpressionType::Compare, {true, false}},
+        {LogicalExpressionType::Arithmetic, {false, true}},
+        {LogicalExpressionType::Imply, {true, false}},
+        {LogicalExpressionType::Equals, {true, false}}};
 
     } // namespace pddl_generator
   } // namespace commons

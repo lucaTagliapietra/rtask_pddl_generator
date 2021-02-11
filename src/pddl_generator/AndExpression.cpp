@@ -88,6 +88,21 @@ bool AndExpression::removeExpression(int t_idx)
   return false;
 }
 
+bool AndExpression::isValid(UmapStrStr t_action_params,
+                            const UmapStrStr& t_known_types,
+                            const std::vector<LiteralTerm>& t_known_constants,
+                            const std::vector<Predicate>& t_known_predicates,
+                            const std::vector<LiteralExpression>& t_known_timeless,
+                            const bool t_is_an_effect) const
+{
+  bool valid = true;
+  for (const auto& expr : expr_vec_) {
+    valid &= helpers::isValid(
+      expr, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
+  }
+  return valid;
+}
+
 std::string AndExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
   auto pad_aligners = helpers::getPddlAligners(t_pad_lv);

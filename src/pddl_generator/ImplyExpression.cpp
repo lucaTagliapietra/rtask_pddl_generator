@@ -63,6 +63,26 @@ void ImplyExpression::set(LogicalExprPtr t_condition_ptr, LogicalExprPtr t_conse
   setConsequence(t_consequence_ptr);
 }
 
+bool ImplyExpression::isValid(UmapStrStr t_action_params,
+                              const UmapStrStr& t_known_types,
+                              const std::vector<LiteralTerm>& t_known_constants,
+                              const std::vector<Predicate>& t_known_predicates,
+                              const std::vector<LiteralExpression>& t_known_timeless,
+                              const bool t_is_an_effect) const
+{
+  if (!helpers::isValid(
+        condition_, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false)) {
+    std::cerr << "Validation Error: Invalid LogicalExpression as CONDITION of current ImplyExpression" << std::endl;
+    return false;
+  }
+  if (!helpers::isValid(
+        consequence_, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, true)) {
+    std::cerr << "Validation Error: Invalid LogicalExpression as CONSEQUENCE of current ImplyExpression" << std::endl;
+    return false;
+  }
+  return true;
+}
+
 std::string ImplyExpression::toPddl(bool t_typing, int t_pad_lv) const
 {
   auto pad_aligners = helpers::getPddlAligners(t_pad_lv);

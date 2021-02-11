@@ -33,9 +33,12 @@ namespace rtask {
         inline LogicalExprPtr getCondition() const { return condition_; }
         inline LogicalExprPtr getConsequence() const { return consequence_; }
 
-        // bool validate(const UnordStrToLitTermMap& t_known_constants,
-        //               const UnordStrToUIntMap& t_belonging_action_args,
-        //               const std::string& t_belonging_action_name) const;
+        bool isValid(UmapStrStr t_action_params,
+                     const UmapStrStr& t_known_types,
+                     const std::vector<LiteralTerm>& t_known_constants,
+                     const std::vector<Predicate>& t_known_predicates,
+                     const std::vector<LiteralExpression>& t_known_timeless,
+                     const bool t_is_an_effect = false) const;
 
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
 

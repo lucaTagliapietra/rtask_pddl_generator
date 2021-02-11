@@ -35,7 +35,7 @@ NotExpression::NotExpression(XmlRpc::XmlRpcValue& t_rpc_val)
   expr_ = helpers::getLogicalExprFromXmlRpc(t_rpc_val["not"]);
 
   if (!expr_) {
-    std::cerr << "Fatal: Invalid Boolean Expression as argument of current NotExpression" << std::endl;
+    std::cerr << "Fatal: Invalid Logical Expression as argument of current NotExpression" << std::endl;
     exit(EXIT_FAILURE);
   }
   expr_name_ = "not";
@@ -45,6 +45,17 @@ NotExpression::NotExpression(XmlRpc::XmlRpcValue& t_rpc_val)
 void NotExpression::clear()
 {
   expr_.reset();
+}
+
+bool NotExpression::isValid(UmapStrStr t_action_params,
+                            const UmapStrStr& t_known_types,
+                            const std::vector<LiteralTerm>& t_known_constants,
+                            const std::vector<Predicate>& t_known_predicates,
+                            const std::vector<LiteralExpression>& t_known_timeless,
+                            const bool t_is_an_effect) const
+{
+  return helpers::isValid(
+    expr_, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, t_is_an_effect);
 }
 
 std::string NotExpression::toPddl(bool t_typing, int t_pad_lv) const
