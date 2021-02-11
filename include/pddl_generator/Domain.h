@@ -94,10 +94,10 @@ namespace rtask {
                                                                                  {"ucpop", false}};
       };
 
-      bool operator==(const Domain& t_first, const Domain& t_second){};
-      bool operator!=(const Domain& t_first, const Domain& t_second){};
-      std::ostream& operator<<(std::ostream& t_out, const Domain& t_act){};
-      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<Domain> t_expr_ptr){};
+      bool operator==(const Domain& t_first, const Domain& t_second);
+      bool operator!=(const Domain& t_first, const Domain& t_second);
+      std::ostream& operator<<(std::ostream& t_out, const Domain& t_act);
+      std::ostream& operator<<(std::ostream& t_out, std::shared_ptr<Domain> t_expr_ptr);
 
     }; // namespace pddl_generator
   } // namespace commons

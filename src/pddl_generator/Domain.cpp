@@ -382,3 +382,100 @@ std::string Domain::toPddl(bool t_typing, int t_pad_lv) const
   }
   return out;
 }
+
+bool rtask::commons::pddl_generator::operator==(const Domain& t_first, const Domain& t_second)
+{
+
+  if (t_first.getName() != t_second.getName() || t_first.getExtendedDomainName() != t_second.getExtendedDomainName()) {
+    return false;
+  }
+
+  auto f_req = t_first.getRequirements();
+  auto s_req = t_second.getRequirements();
+  if (f_req.size() != s_req.size()) {
+    return false;
+  }
+
+  std::sort(f_req.begin(), f_req.end());
+  std::sort(s_req.begin(), s_req.end());
+  for (size_t i = 0; i < f_req.size(); ++i) {
+    if (f_req.at(i) != s_req.at(i)) {
+      return false;
+    }
+  }
+
+  const auto& f_types = t_first.getTypes();
+  const auto& s_types = t_second.getTypes();
+  if (f_types.size() != s_types.size()) {
+    return false;
+  }
+  for (const auto& [f_key, f_val] : f_types) {
+    if (s_types.count(f_key) == 0 || f_val != s_types.at(f_key)) {
+      return false;
+    }
+  }
+
+  const auto& f_consts = t_first.getConstants();
+  const auto& s_consts = t_second.getConstants();
+  if (f_consts.size() != s_consts.size()) {
+    return false;
+  }
+  for (const auto& f_const : f_consts) {
+    if (std::find(s_consts.begin(), s_consts.end(), f_const) == s_consts.end()) {
+      return false;
+    }
+  }
+
+  const auto& f_preds = t_first.getPredicates();
+  const auto& s_preds = t_second.getPredicates();
+  if (f_preds.size() != s_preds.size()) {
+    return false;
+  }
+  for (const auto& f_pred : f_preds) {
+    if (std::find(s_preds.begin(), s_preds.end(), f_pred) == s_preds.end()) {
+      return false;
+    }
+  }
+
+  const auto& f_tims = t_first.getTimeless();
+  const auto& s_tims = t_second.getTimeless();
+  if (f_tims.size() != s_tims.size()) {
+    return false;
+  }
+  for (const auto& f_tim : f_tims) {
+    if (std::find(s_tims.begin(), s_tims.end(), f_tim) == s_tims.end()) {
+      return false;
+    }
+  }
+
+  const auto& f_acts = t_first.getActions();
+  const auto& s_acts = t_second.getActions();
+  if (f_acts.size() != s_acts.size()) {
+    return false;
+  }
+  for (const auto& f_act : f_acts) {
+    if (std::find(s_acts.begin(), s_acts.end(), f_act) == s_acts.end()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool rtask::commons::pddl_generator::operator!=(const Domain& t_first, const Domain& t_second)
+{
+  return !(t_first == t_second);
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const Domain& t_dom)
+{
+  t_out << " ## DOMAIN ## " << std::endl;
+  std::cout << t_dom.toPddl();
+  return t_out;
+}
+
+std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<Domain> t_ptr)
+{
+  t_out << (t_ptr ? *t_ptr : Domain());
+  return t_out;
+}
