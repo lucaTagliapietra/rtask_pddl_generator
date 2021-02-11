@@ -133,10 +133,6 @@ bool Predicate::isValid(const UmapStrStr& t_known_types) const
     return false;
   }
 
-  for (const auto& t : t_known_types) {
-    std::cout << "T: " << t.first << " : " << t.second << std::endl;
-  }
-
   for (const auto& arg : params_) {
     if (arg.getType().empty() || t_known_types.count(arg.getType()) == 0) {
       std::cout << "Validation Error: empty/unknown TYPE for ARG " << arg.getName() << " of current PREDICATE"
@@ -166,14 +162,14 @@ bool Predicate::isEquivalentTo(const Predicate& t_other, const UmapStrStr& t_kno
         if (it == th.at(ft).end()) {
           return false;
         }
-        std::cout << "Parent-child types relation found" << std::endl;
+        //        std::cout << "Parent-child types relation found" << std::endl;
       }
       else if (th.count(st) != 0) {
         const auto& it = std::find(th.at(st).begin(), th.at(st).end(), ft);
         if (it == th.at(st).end()) {
           return false;
         }
-        std::cout << "Child-Parent types relation found" << std::endl;
+        //        std::cout << "Child-Parent types relation found" << std::endl;
       }
       else {
         return false;
