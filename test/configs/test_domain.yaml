@@ -1,115 +1,52 @@
 domain:
-  name: "BLOCKS"
-  requirements:
-    equality: False
-    strips: False
-    typing: True
+  name: "construction"
+  extends: "building"
+  requirements: ["strips", "typing"]
   types:
-    - { type_names: ["block"] }
+#    - { type_names: ["block"] }
+    - { type_names: ["site", "material"], parent_type: "object" }
+    - { type_names: ["bricks", "cables", "windows"], parent_type: "material" }
+  constants:
+    - {name: "mainsite", type: "site"}
   predicates:
-    - name: "on"
+    - name: "walls-built"
       params:
-        - { name: "x", type: "block" }
-        - { name: "y", type: "block" }
-    - name: "ontable"
+        - { name: "s", type: "site" }
+    - name: "windows-fitted"
       params:
-        - { name: "x", type: "block" }
-    - name: "clear"
+        - { name: "s", type: "site" }
+    - name: "foundations-set"
       params:
-        - { name: "x", type: "block" }
-    - name: "handempty"
-    - name: "holding"
+        - { name: "s", type: "site" }
+    - name: "cables-installed"
       params:
-        - { name: "x", type: "block" }
+        - { name: "s", type: "site" }
+    - name: "site-built"
+      params:
+        - { name: "s", type: "site" }
+    - name: "on-site"
+      params:
+        - { name: "m", type: "material" }
+        - { name: "s", type: "site" }
+    - name: "material-used"
+      params:
+        - { name: "m", type: "material" }
+  timeless:
+    - expr: {name: "foundations-set", args: ["mainsite"]}
   actions:
-    - name: "pick-up"
+    - name: "build-wall"
       params:
-        - { name: "x", type: "block" }
-      preconditions:
+        - { name: "s", type: "site" }
+        - { name: "b", type: "bricks" }
+      precondition:
         and:
-            - or:
-                - not:
-                    and:
-                        - not:
-                            expr: { name: "clear", args: ["x"] }
-                        - expr: { name: "clear", args: ["x"] }
-                - bool_expr: { name: "ontable", args: ["x"] }
-                - exists:
-                    args: ["x", "y"]
-                    condition:
-                        expr: { name: "clear", args: ["x"] }
-                - forall:
-                    args: ["x", "y"]
-                    condition:
-                        expr: { name: "clear", args: ["x"] }
-            - expr: { name: "handempty" }
-            - imply:
-                condition:
-                   expr: { name: "clear", args: ["x"] }
-                consequence:
-                    expr: { name: "clear", args: ["x"] }
-            - compare:
-                operator: "<="
-                lhs:
-                    num_op:
-                        name: "+"
-                        lhs:
-                            num_expr: {name: "battery_level", args: ["x"]}
-                        rhs:
-                            num_val: 10
-                rhs:
-                    num_val: 5
-      effects:
+            - expr: { name: "on-site", args: ["b", "s"] }
+            - expr: { name: "foundations-set", args: ["s"] }
+            - not:
+                expr: { name: "walls-built", args: ["s"] }
+            - not:
+                expr: { name: "material-used", args: ["b"] }
+      effect:
         and:
-            - when:
-                condition:
-                    and:
-                        - expr: {name: "ontable", args: ["x"]}
-                        - expr: {name: "ontable", args: ["x"]}
-                consequence:
-                        expr: {name: "ontable", args: ["x"]}
-            - not:
-                expr: {name: "ontable", args: ["x"]}
-            - not:
-                {name: "clear", args: ["x"]}
-            - not:
-                {name: "handempty"}
-            - expr: {name: "holding", args: ["x"] }
-
-    - name: "put-down"
-      params:
-        - { name: "x", type: "block" }
-      preconditions:
-        - { name: "holding", args: ["x"] }
-      effects:
-        - { name: "holding", args: ["x"], not: true }
-        - { name: "clear", args: ["x"] }
-        - { name: "handempty" }
-        - { name: "ontable", args: ["x"] }
-    - name: "stack"
-      params:
-        - { name: "x", type: "block" }
-        - { name: "y", type: "block" }
-      preconditions:
-        - { name: "holding", args: ["x"] }
-        - { name: "clear", args: ["y"] }
-      effects:
-        - { name: "holding", args: ["x"], not: true }
-        - { name: "clear", args: ["y"], not: true }
-        - { name: "clear", args: ["x"] }
-        - { name: "handempty" }
-        - { name: "on", args: ["x", "y"] }
-    - name: "unstack"
-      params:
-        - { name: "x", type: "block" }
-        - { name: "y", type: "block" }
-      preconditions:
-        - { name: "on", args: ["x", "y"] }
-        - { name: "clear", args: ["x"] }
-        - { name: "handempty" }
-      effects:
-        - { name: "holding", args: ["x"] }
-        - { name: "clear", args: ["y"] }
-        - { name: "clear", args: ["x"], not: true }
-        - { name: "handempty", not: true }
-        - { name: "on", args: ["x", "y"], not: true }
+        - expr: { name: "walls-built", args: ["s"] }
+        - expr: { name: "material-used", args: ["b"] }
