@@ -23,7 +23,7 @@ namespace rtask {
 
       namespace helpers {
 
-        const std::string PAD = std::string("\t");
+        const std::string PAD = std::string("**");
 
         bool checkXmlRpcSanity(const std::string& t_tag,
                                XmlRpc::XmlRpcValue& t_node,
@@ -62,9 +62,14 @@ namespace rtask {
                      bool t_is_an_effect = false);
 
         bool operator==(const LogicalExpression& t_first, const LogicalExpression& t_second);
+        bool operator==(LogicalExprPtr t_first, LogicalExprPtr t_second);
         bool operator==(const NumericalExpression& t_first, const NumericalExpression& t_second);
+        bool operator==(NumericalExprPtr t_first, NumericalExprPtr t_second);
+
         bool operator!=(const LogicalExpression& t_first, const LogicalExpression& t_second);
+        bool operator!=(LogicalExprPtr t_first, LogicalExprPtr t_second);
         bool operator!=(const NumericalExpression& t_first, const NumericalExpression& t_second);
+        bool operator!=(NumericalExprPtr t_first, NumericalExprPtr t_second);
 
         std::string padding(int t_n_pads);
         std::pair<int, std::vector<std::string>> getPddlAligners(int t_pad_lv);

@@ -453,6 +453,11 @@ bool helpers::operator==(const LogicalExpression& t_first, const LogicalExpressi
   }
 }
 
+bool helpers::operator==(LogicalExprPtr t_first, LogicalExprPtr t_second)
+{
+  return *t_first == *t_second;
+}
+
 bool helpers::operator==(const NumericalExpression& t_first, const NumericalExpression& t_second)
 {
   if (t_first.getExpressionType() != t_second.getExpressionType()) {
@@ -472,14 +477,29 @@ bool helpers::operator==(const NumericalExpression& t_first, const NumericalExpr
   }
 }
 
+bool helpers::operator==(NumericalExprPtr t_first, NumericalExprPtr t_second)
+{
+  return *t_first == *t_second;
+}
+
 bool helpers::operator!=(const LogicalExpression& t_first, const LogicalExpression& t_second)
 {
   return !(t_first == t_second);
 }
 
+bool helpers::operator!=(LogicalExprPtr t_first, LogicalExprPtr t_second)
+{
+  return *t_first != *t_second;
+}
+
 bool helpers::operator!=(const NumericalExpression& t_first, const NumericalExpression& t_second)
 {
   return !(t_first == t_second);
+}
+
+bool helpers::operator!=(NumericalExprPtr t_first, NumericalExprPtr t_second)
+{
+  return *t_first != *t_second;
 }
 
 std::string helpers::logicalExprToPddl(LogicalExprPtr t_ptr, bool t_typing, int t_pad_lv)
