@@ -160,6 +160,13 @@ bool LiteralExpression::isValid(UmapStrStr t_action_params,
   return true;
 }
 
+void LiteralExpression::setAsState()
+{
+  for (const auto& a : args_) {
+    arg_is_const_[a] = true;
+  }
+}
+
 bool rtask::commons::pddl_generator::operator==(const LiteralExpression& t_first, const LiteralExpression& t_second)
 {
   if (t_first.getExpressionName() != t_second.getExpressionName()) {

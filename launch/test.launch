@@ -2,7 +2,8 @@
 <launch>
 
   <node pkg="rtask_commons" type="test" name="test" output="screen">
-    <rosparam command="load" file="$(find rtask_commons)/test/configs/test_xml.yaml"/>
-  </node>
+    <rosparam command="load" file="$(find rtask_commons)/test/configs/test_domain.yaml"/>
+    <rosparam command="load" file="$(find rtask_commons)/test/configs/test_problem.yaml"/>
+</node>
 
 </launch>

@@ -1,0 +1,18 @@
+problem:
+  name: "buildingahouse"
+  belonging_domain: "construction"
+  objects:
+    - { name: "s1", type: "site" }
+    - { name: "s2", type: "site" }
+    - { name: "b", type: "bricks" }
+    - { name: "w", type: "windows" }
+    - { name: "c", type: "cables" }
+  init:
+    - expr: {name: "on-site", args: ["b", "s1"]}
+    - expr: {name: "on-site", args: ["c", "s1"]}
+    - expr: {name: "on-site", args: ["w", "s1"]}
+  goal:
+    and:
+    - expr: { name: "walls-built", args: ["s1"] }
+    - expr: { name: "windows-fitted", args: ["s1"] }
+    - expr: { name: "cables-installed", args: ["s1"] }

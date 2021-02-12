@@ -38,6 +38,7 @@ namespace rtask {
                      const std::vector<Predicate>& t_known_predicates,
                      const std::vector<LiteralExpression>& t_known_timeless) const;
 
+        void setAsState();
         LiteralExpression& operator=(const LiteralExpression& t_other);
 
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const override;
