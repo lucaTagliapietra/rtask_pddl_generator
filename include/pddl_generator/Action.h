@@ -48,7 +48,7 @@ namespace rtask {
                      const std::vector<LiteralTerm>& t_known_constants,
                      const std::vector<Predicate>& t_known_predicates,
                      const std::vector<LiteralExpression>& t_known_timeless) const;
-        bool isEquivalentTo(const Predicate& t_other) const;
+        bool isEquivalentTo(const Action& t_other) const;
 
         Action& operator=(const Action& t_other);
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const;

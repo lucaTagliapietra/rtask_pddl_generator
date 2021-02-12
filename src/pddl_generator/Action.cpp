@@ -91,6 +91,8 @@ bool Action::setName(const std::string& t_name)
 
 void Action::setParameters(const LiteralTermVector& t_params)
 {
+  params_map_.clear();
+  params_.clear();
   for (const auto& par : t_params) {
     if (params_map_.count(par.getName()) != 0) {
       std::cerr << "Fatal: Duplicate PARAM in current ACTION " << name_ << std::endl;
@@ -133,8 +135,8 @@ bool Action::isValid(const UmapStrStr& t_known_types,
   };
 
   if (!helpers::isValid(
-        effect_, params_map_, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false)) {
-    std::cerr << "Validation Error: invalid EFFECT " << precondition_ << " of current ACTION: " << name_ << std::endl;
+        effect_, params_map_, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, true)) {
+    std::cerr << "Validation Error: invalid EFFECT " << effect_ << " of current ACTION: " << name_ << std::endl;
     return false;
   };
   return true;
