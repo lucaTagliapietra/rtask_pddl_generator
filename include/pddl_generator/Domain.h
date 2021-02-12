@@ -50,6 +50,27 @@ namespace rtask {
         bool setTimeless(const std::vector<LiteralExpression>& t_timeless);
         bool setActions(const std::vector<Action>& t_actions);
 
+        bool hasRequirement(const std::string& t_requirement) const;
+        bool hasType(const std::pair<std::string, std::string>& t_type) const;
+        bool hasConstant(const LiteralTerm& t_constant) const;
+        bool hasPredicate(const Predicate& t_predicate) const;
+        bool hasTimeless(const LiteralExpression& t_timeless) const;
+        bool hasAction(const Action& t_action) const;
+
+        bool hasValidUniqueRequirements() const;
+        bool hasValidUniqueTypes() const;
+        bool hasValidUniqueConstants() const;
+        bool hasValidUniquePredicates() const;
+        bool hasValidUniqueTimeless() const;
+        bool hasValidUniqueActions() const;
+
+        bool addRequirement(const std::string& t_requirement);
+        bool addType(const std::pair<std::string, std::string> t_type);
+        bool addConstant(const LiteralTerm& t_constant);
+        bool addPredicate(const Predicate& t_predicate);
+        bool addTimeless(const LiteralExpression& t_timeless);
+        bool addAction(const Action& t_action);
+
         inline std::string getName() const { return name_; }
         inline std::string getExtendedDomainName() const { return extends_domain_name_; }
         inline std::vector<std::string> getRequirements() const { return requirements_; }
@@ -58,6 +79,9 @@ namespace rtask {
         inline std::vector<Predicate> getPredicates() const { return predicates_; }
         inline std::vector<LiteralExpression> getTimeless() const { return timeless_; }
         inline std::vector<Action> getActions() const { return actions_; }
+
+        bool isValid() const;
+        bool isEquivalentTo(const Domain& t_other) const;
 
         Domain& operator=(const Domain& t_other);
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const;
@@ -92,6 +116,27 @@ namespace rtask {
                                                                                  {"true-negation", false},
                                                                                  {"adl", true},
                                                                                  {"ucpop", false}};
+
+        bool checkNameValidity(const std::string& t_name) const;
+        bool checkExtendedDomainNameValidity(const std::string& t_name) const;
+
+        bool isRequirementValid(const std::string& t_requirement) const;
+        bool hasValidUniqueRequirements(const std::vector<std::string>& t_requirements) const;
+
+        bool isTypeValid(const std::pair<std::string, std::string>& t_type) const;
+        bool hasValidUniqueTypes(const UmapStrStr& t_types) const;
+
+        bool isConstantValid(const LiteralTerm& t_constant) const;
+        bool hasValidUniqueConstants(const std::vector<LiteralTerm>& t_constants) const;
+
+        bool isPredicateValid(const Predicate& t_predicate) const;
+        bool hasValidUniquePredicates(const std::vector<Predicate>& t_predicates) const;
+
+        bool isTimelessValid(const LiteralExpression& t_timeless) const;
+        bool hasValidUniqueTimeless(const std::vector<LiteralExpression>& t_timeless) const;
+
+        bool isActionValid(const Action& t_action) const;
+        bool hasValidUniqueActions(const std::vector<Action>& t_actions) const;
       };
 
       bool operator==(const Domain& t_first, const Domain& t_second);
