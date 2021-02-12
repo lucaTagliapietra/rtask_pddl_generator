@@ -133,14 +133,7 @@ bool rtask::commons::pddl_generator::operator!=(const NumericalFunction& t_first
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalFunction& t_expr)
 {
-  t_out << "NumericalFunction: name: " << t_expr.getFunctionName() << std::endl;
-  unsigned int i = 0;
-  for (const auto& a : t_expr.getFunctionArgs()) {
-    (i != 0) ? t_out << std::endl : t_out << "";
-    t_out << " - args[" << i << "]: " << a;
-    ++i;
-  }
-  return t_out;
+  return t_out << " ## NUMERICAL FUNCTION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,

@@ -117,10 +117,7 @@ bool rtask::commons::pddl_generator::operator!=(const ImplyExpression& t_first, 
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ImplyExpression& t_expr)
 {
-  t_out << "ImplyExpression: name: " << t_expr.getExpressionName() << std::endl;
-  t_out << " - condition: " << t_expr.getCondition() << std::endl;
-  t_out << " - consequence: " << t_expr.getConsequence();
-  return t_out;
+  return t_out << " ## IMPLY EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,

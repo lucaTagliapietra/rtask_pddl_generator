@@ -87,10 +87,7 @@ bool rtask::commons::pddl_generator::operator!=(const NumericalTerm& t_first, co
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalTerm& t_nt)
 {
-  auto t = t_nt.getValue();
-  std::string w = std::visit([](auto&& arg) -> std::string { return std::to_string(arg); }, t);
-  t_out << "NumericalTerm: " << w;
-  return t_out;
+  return t_out << " ## NUMERICAL TERM ## " << std::endl << t_nt.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<NumericalTerm> t_nt_ptr)

@@ -89,9 +89,7 @@ bool rtask::commons::pddl_generator::operator!=(const NotExpression& t_first, co
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NotExpression& t_expr)
 {
-  t_out << "NotExpression: name: " << t_expr.getExpressionName() << std::endl;
-  t_out << t_expr.getExpression();
-  return t_out;
+  return t_out << " ## NOT EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<NotExpression> t_expr_ptr)

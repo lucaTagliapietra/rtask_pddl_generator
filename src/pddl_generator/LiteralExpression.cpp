@@ -194,14 +194,7 @@ bool rtask::commons::pddl_generator::operator!=(const LiteralExpression& t_first
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const LiteralExpression& t_expr)
 {
-  t_out << "LiteralExpression: name: " << t_expr.getExpressionName() << std::endl;
-  unsigned int i = 0;
-  for (const auto& a : t_expr.getExpressionArgs()) {
-    (i != 0) ? t_out << std::endl : t_out << "";
-    t_out << " - args[" << i << "]: " << a;
-    ++i;
-  }
-  return t_out;
+  return t_out << " ## LITERAL EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,

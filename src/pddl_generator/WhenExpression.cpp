@@ -118,10 +118,7 @@ bool rtask::commons::pddl_generator::operator!=(const WhenExpression& t_first, c
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const WhenExpression& t_expr)
 
 {
-  t_out << "WhenExpression: name: " << t_expr.getExpressionName() << std::endl;
-  t_out << " - condition: " << t_expr.getCondition() << std::endl;
-  t_out << " - consequence: " << t_expr.getConsequence();
-  return t_out;
+  return t_out << " ## WHEN EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,

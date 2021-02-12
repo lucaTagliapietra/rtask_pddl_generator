@@ -126,10 +126,7 @@ bool rtask::commons::pddl_generator::operator!=(const ForAllExpression& t_first,
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ForAllExpression& t_expr)
 {
-  t_out << "ForAllExpression: name: " << t_expr.getExpressionName() << std::endl;
-  t_out << " - what: " << t_expr.getWhat() << std::endl;
-  t_out << " - condition: " << t_expr.getCondition();
-  return t_out;
+  return t_out << " ## FOR_ALL EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,

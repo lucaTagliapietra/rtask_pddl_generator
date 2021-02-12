@@ -125,10 +125,7 @@ bool rtask::commons::pddl_generator::operator!=(const NumericalOperator& t_first
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const NumericalOperator& t_expr)
 {
-  t_out << "NumericalOperator: name: " << t_expr.getOperatorName() << std::endl;
-  t_out << " - lhs: " << t_expr.getLhsExpression() << std::endl;
-  t_out << " - rhs: " << t_expr.getRhsExpression();
-  return t_out;
+  return t_out << " ## NUMERICAL OPERATOR ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,

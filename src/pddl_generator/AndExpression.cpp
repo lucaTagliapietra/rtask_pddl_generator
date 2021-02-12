@@ -164,14 +164,7 @@ bool rtask::commons::pddl_generator::operator!=(const AndExpression& t_first, co
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const AndExpression& t_expr)
 {
-  t_out << "AndExpression name: " << t_expr.getExpressionName() << std::endl;
-  unsigned int i = 0;
-  for (const auto& expr : t_expr.getExpressions()) {
-    (i != 0) ? t_out << std::endl : t_out << "";
-    t_out << " - expr[" << i << "]: " << expr;
-    ++i;
-  }
-  return t_out;
+  return t_out << " ## AND EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<AndExpression> t_expr_ptr)

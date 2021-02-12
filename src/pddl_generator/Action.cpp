@@ -203,14 +203,7 @@ bool rtask::commons::pddl_generator::operator!=(const Action& t_first, const Act
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const Action& t_act)
 {
-  t_out << "Action: " << t_act.getName() << std::endl;
-  unsigned int i = 0;
-  for (const auto& param : t_act.getParameters()) {
-    t_out << " - Param[" << i++ << "] : " << param << std::endl;
-  }
-  t_out << " - Precondition" << t_act.getPrecondition() << std::endl;
-  t_out << " - Effect" << t_act.getPrecondition() << std::endl;
-  return t_out;
+  return t_out << " ## ACTION ## " << std::endl << t_act.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<Action> t_expr_ptr)

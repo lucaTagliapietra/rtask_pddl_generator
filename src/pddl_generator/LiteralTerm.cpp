@@ -93,7 +93,7 @@ bool rtask::commons::pddl_generator::operator!=(const LiteralTerm& t_first, cons
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const LiteralTerm& t_lt)
 {
-  return t_out << "LiteralTerm: name: " << t_lt.getName() << " type: " << t_lt.getType();
+  return t_out << " ## LITERAL TERM ## " << std::endl << t_lt.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<LiteralTerm> t_lt_ptr)

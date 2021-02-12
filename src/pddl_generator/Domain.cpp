@@ -473,9 +473,7 @@ bool rtask::commons::pddl_generator::operator!=(const Domain& t_first, const Dom
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const Domain& t_dom)
 {
-  t_out << " ## DOMAIN ## " << std::endl;
-  std::cout << t_dom.toPddl();
-  return t_out;
+  return t_out << " ## DOMAIN ## " << std::endl << t_dom.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<Domain> t_ptr)

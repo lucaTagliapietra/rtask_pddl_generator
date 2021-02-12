@@ -223,12 +223,7 @@ bool rtask::commons::pddl_generator::operator!=(const Predicate& t_first, const 
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const Predicate& t_pred)
 {
-  t_out << "Predicate: " << t_pred.getName() << std::endl;
-  unsigned int i = 0;
-  for (const auto& param : *t_pred.getParameters()) {
-    t_out << " - param[" << i++ << "] : " << param << std::endl;
-  }
-  return t_out;
+  return t_out << " ## PREDICATE ## " << std::endl << t_pred.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<Predicate> t_expr_ptr)

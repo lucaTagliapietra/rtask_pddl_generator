@@ -163,14 +163,7 @@ bool rtask::commons::pddl_generator::operator!=(const OrExpression& t_first, con
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const OrExpression& t_expr)
 {
-  t_out << "OrExpression: name: " << t_expr.getExpressionName() << std::endl;
-  unsigned int i = 0;
-  for (const auto& expr : t_expr.getExpressions()) {
-    (i != 0) ? t_out << std::endl : t_out << "";
-    t_out << " - expr[" << i << "]: " << expr;
-    ++i;
-  }
-  return t_out;
+  return t_out << " ## OR EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, std::shared_ptr<OrExpression> t_expr_ptr)
 {

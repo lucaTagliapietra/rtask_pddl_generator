@@ -121,10 +121,7 @@ bool rtask::commons::pddl_generator::operator!=(const ArithmeticExpression& t_fi
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out, const ArithmeticExpression& t_expr)
 {
-  t_out << "ArithmeticExpression: operation: " << t_expr.getArithmeticOperation() << std::endl;
-  t_out << " - lhs: " << t_expr.getLhsExpression() << std::endl;
-  t_out << " - rhs: " << t_expr.getRhsExpression();
-  return t_out;
+  return t_out << " ## ARITHMETIC EXPRESSION ## " << std::endl << t_expr.toPddl();
 }
 
 std::ostream& rtask::commons::pddl_generator::operator<<(std::ostream& t_out,
