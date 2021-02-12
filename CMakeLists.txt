@@ -55,6 +55,7 @@ add_library(${PROJECT_NAME}_pddl_generator_lib src/pddl_generator/Helpers.cpp
                                                src/pddl_generator/EqualsExpression.cpp
                                                src/pddl_generator/Predicate.cpp
                                                src/pddl_generator/Action.cpp
+                                               src/pddl_generator/Axiom.cpp
                                                src/pddl_generator/Domain.cpp
                                                )
 
