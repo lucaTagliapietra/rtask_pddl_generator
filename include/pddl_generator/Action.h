@@ -45,7 +45,7 @@ namespace rtask {
         inline LogicalExprPtr getEffect() const { return effect_; }
 
         bool isValid(const UmapStrStr& t_known_types,
-                     const std::vector<LiteralTerm>& t_known_constants,
+                     const LiteralTermVector& t_known_constants,
                      const std::vector<Predicate>& t_known_predicates,
                      const std::vector<LiteralExpression>& t_known_timeless) const;
         bool isEquivalentTo(const Action& t_other) const;

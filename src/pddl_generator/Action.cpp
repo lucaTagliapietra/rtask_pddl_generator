@@ -142,6 +142,12 @@ bool Action::isValid(const UmapStrStr& t_known_types,
   return true;
 }
 
+bool Action::isEquivalentTo(const Action& t_other) const
+{
+  // TODO: to be implemented
+  return *this == t_other;
+}
+
 Action& Action::operator=(const Action& t_other)
 {
   set(t_other.getName(), t_other.getParameters(), t_other.getPrecondition(), t_other.getEffect());
@@ -185,15 +191,13 @@ bool rtask::commons::pddl_generator::operator==(const Action& t_first, const Act
   const auto& f_params = t_first.getParameters();
   const auto& s_params = t_second.getParameters();
   for (unsigned int ix = 0; ix < f_params.size(); ++ix) {
-    if (f_params.at(ix).getType() != s_params.at(ix).getType())
+    if (f_params.at(ix).getType() != s_params.at(ix).getType()) {
       return false;
+    }
   }
 
-  if (!(t_first.getPrecondition().get() == t_second.getPrecondition().get()
-        && !(t_first.getEffect().get() == t_second.getEffect().get()))) {
-    return false;
-  }
-  return true;
+  return (helpers::operator==(t_first.getPrecondition(), t_second.getPrecondition())
+          && helpers::operator==(t_first.getEffect(), t_second.getEffect()));
 }
 
 bool rtask::commons::pddl_generator::operator!=(const Action& t_first, const Action& t_second)
