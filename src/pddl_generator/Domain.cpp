@@ -12,9 +12,11 @@ Domain::Domain(const std::string& t_name,
                const std::vector<LiteralTerm>& t_constants,
                const std::vector<Predicate>& t_predicates,
                const std::vector<LiteralExpression>& t_timeless,
-               const std::vector<Action>& t_actions)
+               const std::vector<Action>& t_actions,
+               const std::vector<Axiom>& t_axioms)
 {
-  set(t_name, t_extends_domain_name, t_requirements, t_types, t_constants, t_predicates, t_timeless, t_actions);
+  set(
+    t_name, t_extends_domain_name, t_requirements, t_types, t_constants, t_predicates, t_timeless, t_actions, t_axioms);
 }
 
 Domain::Domain(XmlRpc::XmlRpcValue& t_rpc_val)
@@ -133,7 +135,19 @@ Domain::Domain(XmlRpc::XmlRpcValue& t_rpc_val)
     }
     if (!setActions(actions)) {
       std::cerr << "Errors in ACTIONS of current DOMAIN: " << name_ << std::endl;
-      //      exit(EXIT_FAILURE);
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  if (helpers::hasValidXmlRpcTag("axioms", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeArray)
+      && t_rpc_val["axioms"].size() != 0) {
+    std::vector<Axiom> axioms;
+    for (int i = 0; i < t_rpc_val["axioms"].size(); ++i) {
+      axioms.emplace_back(t_rpc_val["axioms"][i]);
+    }
+    if (!setAxioms(axioms)) {
+      std::cerr << "Errors in AXIOMS of current DOMAIN: " << name_ << std::endl;
+      exit(EXIT_FAILURE);
     }
   }
 }
@@ -157,7 +171,8 @@ bool Domain::set(const std::string& t_name,
                  const std::vector<LiteralTerm>& t_constants,
                  const std::vector<Predicate>& t_predicates,
                  const std::vector<LiteralExpression>& t_timeless,
-                 const std::vector<Action>& t_actions)
+                 const std::vector<Action>& t_actions,
+                 const std::vector<Axiom>& t_axioms)
 {
   bool error_free = setName(t_name);
   error_free &= setExtendedDomainName(t_extends_domain_name);
@@ -167,6 +182,7 @@ bool Domain::set(const std::string& t_name,
   error_free &= setPredicates(t_predicates);
   error_free &= setTimeless(t_timeless);
   error_free &= setActions(t_actions);
+  error_free &= setAxioms(t_axioms);
   return error_free;
 }
 
@@ -325,7 +341,11 @@ bool Domain::hasConstant(const LiteralTerm& t_constant) const
 
 bool Domain::isConstantValid(const LiteralTerm& t_constant) const
 {
-  return !(extends_domain_name_.empty() && !t_constant.isValid(types_));
+  if (!extends_domain_name_.empty()) {
+    // TODO: fot time being return true, after implementing domain merging it should not be necessary
+    return true;
+  }
+  return t_constant.isValid(types_);
 }
 
 bool Domain::addConstant(const LiteralTerm& t_constant)
@@ -390,7 +410,11 @@ bool Domain::hasPredicate(const Predicate& t_predicate) const
 
 bool Domain::isPredicateValid(const Predicate& t_predicate) const
 {
-  return !(extends_domain_name_.empty() && !t_predicate.isValid(types_));
+  if (!extends_domain_name_.empty()) {
+    // TODO: fot time being return true, after implementing domain merging it should not be necessary
+    return true;
+  }
+  return t_predicate.isValid(types_);
 }
 
 bool Domain::addPredicate(const Predicate& t_predicate)
@@ -457,7 +481,11 @@ bool Domain::hasTimeless(const LiteralExpression& t_timeless) const
 
 bool Domain::isTimelessValid(const LiteralExpression& t_timeless) const
 {
-  return !(extends_domain_name_.empty() && !t_timeless.isValid({}, types_, constants_, predicates_, {}));
+  if (!extends_domain_name_.empty()) {
+    // TODO: fot time being return true, after implementing domain merging it should not be necessary
+    return true;
+  }
+  return t_timeless.isValid({}, types_, constants_, predicates_, {});
 }
 
 bool Domain::addTimeless(const LiteralExpression& t_timeless)
@@ -521,7 +549,11 @@ bool Domain::hasAction(const Action& t_action) const
 
 bool Domain::isActionValid(const Action& t_action) const
 {
-  return !(extends_domain_name_.empty() && !t_action.isValid(types_, constants_, predicates_, timeless_));
+  if (!extends_domain_name_.empty()) {
+    // TODO: fot time being return true, after implementing domain merging it should not be necessary
+    return true;
+  }
+  return t_action.isValid(types_, constants_, predicates_, timeless_);
 }
 
 bool Domain::addAction(const Action& t_action)
@@ -576,6 +608,72 @@ bool Domain::setActions(const std::vector<Action>& t_actions)
   return true;
 }
 
+bool Domain::hasAxiom(const Axiom& t_axiom) const
+{
+  return std::find_if(
+           axioms_.begin(), axioms_.end(), [t_axiom, *this](const auto& a) { return t_axiom.isEquivalentTo(a); })
+         != axioms_.end();
+}
+
+bool Domain::isAxiomValid(const Axiom& t_axiom) const
+{
+  if (!extends_domain_name_.empty()) {
+    // TODO: fot time being return true, after implementing domain merging it should not be necessary
+    return true;
+  }
+  return t_axiom.isValid(types_, constants_, predicates_, timeless_);
+}
+
+bool Domain::addAxiom(const Axiom& t_axiom)
+{
+  if (!isAxiomValid(t_axiom)) {
+    std::cerr << "Fatal: addAxiom() failure. Invalid axiom" << std::endl;
+    return false;
+  }
+  if (hasAxiom(t_axiom)) {
+    std::cerr << "Fatal: addAxiom() failure. Duplicated axiom" << std::endl;
+    return false;
+  }
+
+  axioms_.emplace_back(t_axiom);
+  return true;
+}
+
+bool Domain::hasValidUniqueAxioms() const
+{
+  return hasValidUniqueAxioms(axioms_);
+}
+
+bool Domain::hasValidUniqueAxioms(const std::vector<Axiom>& t_axioms) const
+{
+  int ax_idx = 0, lambda_idx = 0;
+  for (const auto& ax : t_axioms) {
+    if (!isAxiomValid(ax)) {
+      return false;
+    }
+
+    lambda_idx = 0;
+    auto lambda = [ax, ax_idx, &lambda_idx](const auto& a) { return (lambda_idx++ != ax_idx && ax.isEquivalentTo(a)); };
+
+    if (std::find_if(t_axioms.begin(), t_axioms.end(), lambda) != t_axioms.end()) {
+      return false;
+    }
+    ++ax_idx;
+  }
+  return true;
+}
+
+bool Domain::setAxioms(const std::vector<Axiom>& t_axioms)
+{
+  if (!hasValidUniqueAxioms(t_axioms)) {
+    std::cerr << "Fatal: setAxioms() failure. Invalid or duplicated axiom(s)" << std::endl;
+    return false;
+  }
+
+  axioms_ = std::move(t_axioms);
+  return true;
+}
+
 bool Domain::isValid() const
 {
   bool is_valid = true;
@@ -587,7 +685,7 @@ bool Domain::isValid() const
   is_valid &= hasValidUniquePredicates();
   is_valid &= hasValidUniqueTimeless(timeless_);
   is_valid &= hasValidUniqueActions(actions_);
-
+  is_valid &= hasValidUniqueAxioms(axioms_);
   return is_valid;
 }
 
@@ -606,7 +704,8 @@ Domain& Domain::operator=(const Domain& t_other)
            t_other.getConstants(),
            t_other.getPredicates(),
            t_other.getTimeless(),
-           t_other.getActions())) {
+           t_other.getActions(),
+           t_other.getAxioms())) {
     std::cerr << "DOMAIN: copy operator returned at least one error, check the log" << std::endl;
   }
   return *this;
@@ -688,6 +787,13 @@ std::string Domain::toPddl(bool t_typing, int t_pad_lv) const
       out += act.toPddl(t_typing, pad_aligners_define.first) + "\n";
     }
   }
+
+  if (!axioms_.empty()) {
+    for (const auto& ax : axioms_) {
+      out += ax.toPddl(t_typing, pad_aligners_define.first) + "\n";
+    }
+  }
+
   out.pop_back();
   out += pad_aligners_define.second[2] + ")";
   return out;
@@ -765,6 +871,17 @@ bool rtask::commons::pddl_generator::operator==(const Domain& t_first, const Dom
   }
   for (const auto& f_act : f_acts) {
     if (std::find(s_acts.begin(), s_acts.end(), f_act) == s_acts.end()) {
+      return false;
+    }
+  }
+
+  const auto& f_axs = t_first.getAxioms();
+  const auto& s_axs = t_second.getAxioms();
+  if (f_axs.size() != s_axs.size()) {
+    return false;
+  }
+  for (const auto& f_ax : f_axs) {
+    if (std::find(s_axs.begin(), s_axs.end(), f_ax) == s_axs.end()) {
       return false;
     }
   }

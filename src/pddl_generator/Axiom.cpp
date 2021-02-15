@@ -110,6 +110,12 @@ bool Axiom::isValid(const UmapStrStr& t_known_types,
   return true;
 }
 
+bool Axiom::isEquivalentTo(const Axiom& t_other) const
+{
+  // TODO: to be implemented
+  return *this == t_other;
+}
+
 Axiom& Axiom::operator=(const Axiom& t_other)
 {
   set(t_other.getVariables(), t_other.getContext(), t_other.getImplies());

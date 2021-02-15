@@ -2,6 +2,7 @@
 #define rtask_commons_pddl_generator_domain_h
 
 #include "Action.h"
+#include "Axiom.h"
 #include "LiteralExpression.h"
 #include "LiteralTerm.h"
 #include "Predicate.h"
@@ -28,7 +29,8 @@ namespace rtask {
                const std::vector<LiteralTerm>& t_constants = {},
                const std::vector<Predicate>& t_predicates = {},
                const std::vector<LiteralExpression>& t_timeless = {},
-               const std::vector<Action>& t_actions = {});
+               const std::vector<Action>& t_actions = {},
+               const std::vector<Axiom>& t_axioms = {});
         Domain(XmlRpc::XmlRpcValue& t_rpc_val);
 
         void clear();
@@ -39,7 +41,8 @@ namespace rtask {
                  const std::vector<LiteralTerm>& t_constants = {},
                  const std::vector<Predicate>& t_predicates = {},
                  const std::vector<LiteralExpression>& t_timeless = {},
-                 const std::vector<Action>& t_actions = {});
+                 const std::vector<Action>& t_actions = {},
+                 const std::vector<Axiom>& t_axioms = {});
 
         bool setName(const std::string& t_name);
         bool setExtendedDomainName(const std::string& t_name);
@@ -49,6 +52,7 @@ namespace rtask {
         bool setPredicates(const std::vector<Predicate>& t_predicates);
         bool setTimeless(const std::vector<LiteralExpression>& t_timeless);
         bool setActions(const std::vector<Action>& t_actions);
+        bool setAxioms(const std::vector<Axiom>& t_axioms);
 
         bool hasRequirement(const std::string& t_requirement) const;
         bool hasType(const std::pair<std::string, std::string>& t_type) const;
@@ -56,6 +60,7 @@ namespace rtask {
         bool hasPredicate(const Predicate& t_predicate) const;
         bool hasTimeless(const LiteralExpression& t_timeless) const;
         bool hasAction(const Action& t_action) const;
+        bool hasAxiom(const Axiom& t_axiom) const;
 
         bool hasValidUniqueRequirements() const;
         bool hasValidUniqueTypes() const;
@@ -63,6 +68,7 @@ namespace rtask {
         bool hasValidUniquePredicates() const;
         bool hasValidUniqueTimeless() const;
         bool hasValidUniqueActions() const;
+        bool hasValidUniqueAxioms() const;
 
         bool addRequirement(const std::string& t_requirement);
         bool addType(const std::pair<std::string, std::string> t_type);
@@ -70,6 +76,7 @@ namespace rtask {
         bool addPredicate(const Predicate& t_predicate);
         bool addTimeless(const LiteralExpression& t_timeless);
         bool addAction(const Action& t_action);
+        bool addAxiom(const Axiom& t_axiom);
 
         inline std::string getName() const { return name_; }
         inline std::string getExtendedDomainName() const { return extends_domain_name_; }
@@ -79,6 +86,7 @@ namespace rtask {
         inline std::vector<Predicate> getPredicates() const { return predicates_; }
         inline std::vector<LiteralExpression> getTimeless() const { return timeless_; }
         inline std::vector<Action> getActions() const { return actions_; }
+        inline std::vector<Axiom> getAxioms() const { return axioms_; }
 
         bool isValid() const;
         bool isEquivalentTo(const Domain& t_other) const;
@@ -95,6 +103,7 @@ namespace rtask {
         std::vector<Predicate> predicates_{};
         std::vector<LiteralExpression> timeless_{};
         std::vector<Action> actions_{};
+        std::vector<Axiom> axioms_{};
 
         const static inline std::map<std::string, bool> SupportedRequirements = {{"strips", true},
                                                                                  {"typing", true},
@@ -137,6 +146,9 @@ namespace rtask {
 
         bool isActionValid(const Action& t_action) const;
         bool hasValidUniqueActions(const std::vector<Action>& t_actions) const;
+
+        bool isAxiomValid(const Axiom& t_axiom) const;
+        bool hasValidUniqueAxioms(const std::vector<Axiom>& t_axioms) const;
       };
 
       bool operator==(const Domain& t_first, const Domain& t_second);
