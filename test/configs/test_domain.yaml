@@ -50,3 +50,13 @@ domain:
         and:
         - expr: { name: "walls-built", args: ["s"] }
         - expr: { name: "material-used", args: ["b"] }
+  axioms:
+    - vars:
+      - { name: "s", type: "site" }
+      context:
+        and:
+         - expr: { name: "walls-built", args: ["s"] }
+         - expr: { name: "windows-fitted", args: ["s"] }
+         - expr: { name: "cables-installed", args: ["s"] }
+      implies:
+        expr: { name: "site-built", args: ["s"] }

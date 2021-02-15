@@ -16,6 +16,7 @@ namespace rtask {
     namespace pddl_generator {
 
       using LiteralExprVector = std::vector<LiteralExpression>;
+      using DomainPtr = std::shared_ptr<Domain>;
 
       class Problem
       {
@@ -43,11 +44,29 @@ namespace rtask {
         bool setInitialState(const LiteralExprVector& t_initial_state);
         bool setGoal(LogicalExprPtr t_ptr);
 
+        bool setBelongingDomain(DomainPtr t_ptr);
+        inline DomainPtr getBelongingDomain() const { return belonging_domain_; }
+
+        bool hasObject(const LiteralTerm& t_obj) const;
+        bool hasInitialState(const LiteralExpression& t_state) const;
+
+        bool hasValidUniqueObjects() const;
+        bool hasValidUniqueInitialStates() const;
+
+        bool addObject(const LiteralTerm& t_obj);
+        bool addInitialState(const LiteralExpression& t_state);
+
+        bool hasValidGoal() const;
+        bool hasValidBelongingDomain() const;
+
         inline std::string getName() const { return name_; }
         inline std::string getBelongingDomainName() const { return belonging_domain_name_; }
         inline LiteralTermVector getObjects() const { return objects_; }
         inline LiteralExprVector getInitialState() const { return initial_state_; }
         inline LogicalExprPtr getGoal() const { return goal_; }
+
+        bool isValid() const;
+        bool isEquivalentTo(const Problem& t_other) const;
 
         Problem& operator=(const Problem& t_other);
         std::string toPddl(bool t_typing = true, int t_pad_lv = 0) const;
@@ -60,7 +79,16 @@ namespace rtask {
         LiteralExprVector initial_state_{};
         LogicalExprPtr goal_ = nullptr;
 
-        std::shared_ptr<Domain> belonging_domain_ = nullptr;
+        DomainPtr belonging_domain_ = nullptr;
+
+        bool checkNameValidity(const std::string& t_name) const;
+        bool checkBelongingDomainNameValidity(const std::string& t_name) const;
+
+        bool isObjectValid(const LiteralTerm& t_obj) const;
+        bool hasValidUniqueObjects(const LiteralTermVector& t_objs) const;
+
+        bool isInitialStateValid(const LiteralExpression& t_state) const;
+        bool hasValidUniqueInitialStates(const LiteralExprVector& t_states) const;
       };
 
       bool operator==(const Problem& t_first, const Problem& t_second);

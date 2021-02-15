@@ -113,66 +113,248 @@ bool Problem::setBelongingDomainName(const std::string& t_name)
 
 bool Problem::setObjects(const LiteralTermVector& t_objs)
 {
-  bool error_free = true;
+  if (belonging_domain_ && !hasValidUniqueObjects(t_objs)) {
+    std::cerr << "Fatal: setObjects() failure. Invalid or duplicated object(s)" << std::endl;
+    return false;
+  }
+
   objects_.clear();
   objects_map_.clear();
-
-  for (auto& obj : t_objs) {
-    if (belonging_domain_) {
-      if (!obj.isValid(belonging_domain_->getTypes())) {
-        std::cerr << "Validation Error: invalid OBJ: " << obj.getName() << " in current PROBLEM: " << name_
-                  << std::endl;
-        error_free = false;
-        continue;
-      }
-    }
-
-    // Two CONST cannot have the same name (regardless from type), otherwise it will be not known which one to use
-    const auto& it = std::find_if(
-      objects_.begin(), objects_.end(), [obj](const LiteralTerm& o) { return obj.getName() == o.getName(); });
-    if (objects_map_.count(obj.getName()) > 0) {
-      std::cerr << "Validation Error: OBJ: " << obj.getName() << " already defined in current PROBLEM: " << name_
-                << std::endl;
-      error_free = false;
-      continue;
+  for (const auto& obj : t_objs) {
+    if (hasObject(obj)) {
+      std::cerr << "Fatal: setObjects() failure. Duplicated object(s): " << obj << std::endl;
+      objects_.clear();
+      objects_map_.clear();
+      return false;
     }
     objects_.push_back(obj);
     objects_.back().setIsAConstantTerm(true);
     objects_map_.emplace(obj.getName(), obj.getType());
   }
-  return error_free;
+  return true;
 }
 
 bool Problem::setInitialState(const LiteralExprVector& t_initial_state)
 {
-  bool error_free = true;
-
-  for (const auto& le : t_initial_state) {
-    if (belonging_domain_) {
-      if (!le.isValid({}, belonging_domain_->getTypes(), objects_, belonging_domain_->getPredicates(), {})) {
-        std::cerr << "Fatal: Invalid INIT " << name_ << " in current PROBLEM: " << name_ << std::endl;
-        error_free = false;
-        continue;
-      }
-    }
-
-    const auto f =
-      std::find_if(initial_state_.begin(), initial_state_.end(), [le](const auto& ole) { return operator==(le, ole); });
-    if (f != initial_state_.end()) {
-      std::cerr << "Fatal: INIT " << name_ << "already defined as: " << *f << " in current PROBLEM: " << name_
-                << std::endl;
-      error_free = false;
-      continue;
-    }
-    initial_state_.push_back(le);
+  if (belonging_domain_ && !hasValidUniqueInitialStates(t_initial_state)) {
+    std::cerr << "Fatal: setInitialState() failure. Invalid or duplicated initial state" << std::endl;
+    return false;
   }
-  return error_free;
+  initial_state_.clear();
+  for (const auto& is : t_initial_state) {
+    if (hasInitialState(is)) {
+      std::cerr << "Fatal: setInitialState() failure. Duplicated initial state: " << is << std::endl;
+      initial_state_.clear();
+      return false;
+    }
+    else {
+      initial_state_.push_back(is);
+    }
+  }
+
+  return true;
 }
 
 bool Problem::setGoal(LogicalExprPtr t_ptr)
 {
   goal_ = t_ptr;
   return true;
+}
+
+bool Problem::setBelongingDomain(DomainPtr t_ptr)
+{
+  if (!t_ptr) {
+    belonging_domain_.reset();
+    std::cout << "Problem: Belonging Domain reset!" << std::endl;
+    return true;
+  }
+
+  if (!belonging_domain_name_.empty() && t_ptr->getName() != belonging_domain_name_) {
+    std::cout << "Problem: Belonging Domain name mismatch! Required: " << belonging_domain_name_
+              << " Got: " << t_ptr->getName() << " Doing nothing" << std::endl;
+    return false;
+  }
+
+  belonging_domain_name_ = t_ptr->getName();
+  belonging_domain_ = t_ptr;
+  return true;
+}
+
+bool Problem::hasObject(const LiteralTerm& t_obj) const
+{
+  return std::find_if(objects_.begin(), objects_.end(), [t_obj](const auto& obj) { return t_obj == obj; })
+         != objects_.end();
+}
+
+bool Problem::hasInitialState(const LiteralExpression& t_state) const
+{
+  return std::find_if(initial_state_.begin(),
+                      initial_state_.end(),
+                      [t_state, *this](const auto& s) { return helpers::operator==(s, t_state); })
+         != initial_state_.end();
+}
+
+bool Problem::hasValidUniqueObjects() const
+{
+  return hasValidUniqueObjects(objects_);
+}
+
+bool Problem::hasValidUniqueInitialStates() const
+{
+  return hasValidUniqueInitialStates(initial_state_);
+}
+
+bool Problem::addObject(const LiteralTerm& t_obj)
+{
+  if (belonging_domain_ && !isObjectValid(t_obj)) {
+    std::cerr << "Fatal: addObject() failure. Invalid object" << std::endl;
+    return false;
+  }
+
+  if (hasObject(t_obj)) {
+    std::cerr << "Fatal: addObject() failure. Duplicated object" << std::endl;
+    return false;
+  }
+
+  objects_.emplace_back(t_obj);
+  return true;
+}
+
+bool Problem::addInitialState(const LiteralExpression& t_state)
+{
+  if (belonging_domain_ && !isInitialStateValid(t_state)) {
+    std::cerr << "Fatal: addInitialState() failure. Invalid InitialState" << std::endl;
+    return false;
+  }
+  if (hasInitialState(t_state)) {
+    std::cerr << "Fatal: addInitialState() failure. Duplicated InitialState" << std::endl;
+    return false;
+  }
+
+  initial_state_.emplace_back(t_state);
+  return true;
+}
+
+bool Problem::hasValidGoal() const
+{
+  if (!belonging_domain_) {
+    return false;
+  }
+  return helpers::isValid(goal_,
+                          objects_map_,
+                          belonging_domain_->getTypes(),
+                          belonging_domain_->getConstants(),
+                          belonging_domain_->getPredicates(),
+                          belonging_domain_->getTimeless(),
+                          true);
+}
+
+bool Problem::hasValidBelongingDomain() const
+{
+  if (!belonging_domain_) {
+    return false;
+  }
+  return belonging_domain_->isValid();
+}
+
+bool Problem::checkNameValidity(const std::string& t_name) const
+{
+  if (t_name.empty()) {
+    std::cerr << "Fatal: Empty name for current PROBLEM" << std::endl;
+    return false;
+  }
+  return true;
+}
+
+bool Problem::checkBelongingDomainNameValidity(const std::string& t_name) const
+{
+  if (t_name.empty()) {
+    std::cerr << "Fatal: Empty BelongingDomainName for current PROBLEM" << std::endl;
+    return false;
+  }
+  return true;
+}
+
+bool Problem::isObjectValid(const LiteralTerm& t_obj) const
+{
+  if (!belonging_domain_) {
+    std::cerr << "Validation Error: BELONGING DOMAIN not set, unable to validate" << std::endl;
+    return false;
+  }
+
+  return t_obj.isValid(belonging_domain_->getTypes());
+}
+
+bool Problem::hasValidUniqueObjects(const LiteralTermVector& t_objs) const
+{
+  int objs_idx = 0, lambda_idx = 0;
+  for (const auto& obj : t_objs) {
+    if (!isObjectValid(obj)) {
+      return false;
+    }
+
+    lambda_idx = 0;
+    auto lambda = [obj, objs_idx, &lambda_idx](const auto& o) { return (lambda_idx++ != objs_idx && obj == o); };
+
+    if (std::find_if(t_objs.begin(), t_objs.end(), lambda) != t_objs.end()) {
+      return false;
+    }
+    ++objs_idx;
+  }
+  return true;
+}
+
+bool Problem::isInitialStateValid(const LiteralExpression& t_state) const
+{
+  if (!belonging_domain_) {
+    std::cerr << "Validation Error: BELONGING DOMAIN not set, unable to validate" << std::endl;
+    return false;
+  }
+
+  return t_state.isValid(objects_map_,
+                         belonging_domain_->getTypes(),
+                         belonging_domain_->getConstants(),
+                         belonging_domain_->getPredicates(),
+                         belonging_domain_->getTimeless());
+}
+
+bool Problem::hasValidUniqueInitialStates(const LiteralExprVector& t_states) const
+{
+  int st_idx = 0, lambda_idx = 0;
+  for (const auto& st : t_states) {
+    if (!isInitialStateValid(st)) {
+      return false;
+    }
+
+    lambda_idx = 0;
+    auto lambda = [st, *this, st_idx, &lambda_idx](const auto& s) {
+      return (lambda_idx++ != st_idx && helpers::operator==(s, st));
+    };
+
+    if (std::find_if(t_states.begin(), t_states.end(), lambda) != t_states.end()) {
+      return false;
+    }
+    ++st_idx;
+  }
+  return true;
+}
+
+bool Problem::isValid() const
+{
+  bool is_valid = true;
+  is_valid &= checkNameValidity(name_);
+  is_valid &= checkBelongingDomainNameValidity(belonging_domain_name_);
+  is_valid &= hasValidUniqueObjects(objects_);
+  is_valid &= hasValidUniqueInitialStates(initial_state_);
+  is_valid &= hasValidGoal();
+  is_valid &= hasValidBelongingDomain();
+  return is_valid;
+}
+
+bool Problem::isEquivalentTo(const Problem& t_other) const
+{
+  // TODO: to be properly implemented
+  return operator==(*this, t_other);
 }
 
 Problem& Problem::operator=(const Problem& t_other)
