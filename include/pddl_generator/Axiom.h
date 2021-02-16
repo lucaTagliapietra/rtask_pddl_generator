@@ -30,9 +30,9 @@ namespace rtask {
                  LogicalExprPtr t_context = nullptr,
                  LogicalExprPtr t_implies = nullptr);
 
-        void setVariables(const LiteralTermVector& t_vars);
-        inline void setContext(LogicalExprPtr t_context) { context_ = t_context; }
-        inline void setImplies(LogicalExprPtr t_implies) { implies_ = t_implies; }
+        bool setVariables(const LiteralTermVector& t_vars);
+        bool setContext(LogicalExprPtr t_context);
+        bool setImplies(LogicalExprPtr t_implies);
 
         inline int getNumVars() const { return static_cast<int>(vars_.size()); }
         inline LiteralTermVector getVariables() const { return vars_; }

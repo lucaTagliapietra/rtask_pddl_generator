@@ -63,18 +63,30 @@ bool Axiom::set(const LiteralTermVector& t_vars, LogicalExprPtr t_context, Logic
   return true;
 }
 
-void Axiom::setVariables(const LiteralTermVector& t_vars)
+bool Axiom::setVariables(const LiteralTermVector& t_vars)
 {
   vars_.clear();
   vars_map_.clear();
   for (const auto& var : t_vars) {
     if (vars_map_.count(var.getName()) != 0) {
       std::cerr << "Fatal: Duplicate VAR in current AXIOM" << std::endl;
-      exit(EXIT_FAILURE);
+      return false;
     }
     vars_map_.emplace(var.getName(), var.getType());
     vars_.push_back(var);
   }
+  return true;
+}
+
+bool Axiom::setContext(LogicalExprPtr t_context)
+{
+  context_ = t_context;
+  return true;
+}
+bool Axiom::setImplies(LogicalExprPtr t_implies)
+{
+  implies_ = t_implies;
+  return true;
 }
 
 bool Axiom::isValid(const UmapStrStr& t_known_types,

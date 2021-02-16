@@ -171,7 +171,7 @@ bool Problem::setBelongingDomain(DomainPtr t_ptr)
 
   if (!belonging_domain_name_.empty() && t_ptr->getName() != belonging_domain_name_) {
     std::cout << "Problem: Belonging Domain name mismatch! Required: " << belonging_domain_name_
-              << " Got: " << t_ptr->getName() << " Doing nothing" << std::endl;
+              << " Got: " << t_ptr->getName() << ". Doing nothing" << std::endl;
     return false;
   }
 
