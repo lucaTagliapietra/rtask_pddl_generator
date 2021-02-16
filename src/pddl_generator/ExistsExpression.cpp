@@ -88,8 +88,14 @@ bool ExistsExpression::isValid(UmapStrStr t_action_params,
     return false;
   }
 
+  UmapStrStr par;
+  for (auto& ap : t_action_params) {
+    par.emplace(ap.first, ap.second);
+  }
+  par.emplace(what_->getName(), what_->getType());
+
   return helpers::isValid(
-    condition_, t_action_params, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false);
+    condition_, par, t_known_types, t_known_constants, t_known_predicates, t_known_timeless, false);
 }
 
 std::string ExistsExpression::toPddl(bool t_typing, int t_pad_lv) const
