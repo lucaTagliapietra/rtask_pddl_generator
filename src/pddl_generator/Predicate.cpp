@@ -14,15 +14,15 @@ Predicate::Predicate(XmlRpc::XmlRpcValue& t_rpc_val)
 {
 
   if (!(t_rpc_val.getType() == XmlRpc::XmlRpcValue::Type::TypeStruct
-        && helpers::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeString, false)
-        && helpers::checkXmlRpcSanity("params", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeArray))) {
-    std::cerr << "Fatal: Invalid Predicate Structure, should be a Struct with name and params fields" << std::endl;
+        && helpers::checkXmlRpcSanity("name", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeString, false))) {
+    std::cerr << "Fatal: Invalid Predicate Structure, should be a Struct with name field" << std::endl;
     exit(EXIT_FAILURE);
   }
 
   name_ = static_cast<std::string>(t_rpc_val["name"]);
 
-  if (t_rpc_val["params"].size() == 0) {
+  if (!helpers::hasValidXmlRpcTag("params", t_rpc_val, XmlRpc::XmlRpcValue::Type::TypeArray)
+      || t_rpc_val["params"].size() == 0) {
     std::cout << "Empty params vector for Predicate " << name_ << std::endl;
   }
   else {
@@ -134,7 +134,7 @@ bool Predicate::isValid(const UmapStrStr& t_known_types) const
   }
 
   for (const auto& arg : params_) {
-    if (arg.getType().empty() || t_known_types.count(arg.getType()) == 0) {
+    if (arg.getType().empty() || (arg.getType() != "object" && t_known_types.count(arg.getType()) == 0)) {
       std::cout << "Validation Error: empty/unknown TYPE for ARG " << arg.getName() << " of current PREDICATE"
                 << std::endl;
       return false;

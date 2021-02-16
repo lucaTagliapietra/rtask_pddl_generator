@@ -23,7 +23,7 @@ namespace rtask {
 
       namespace helpers {
 
-        const std::string PAD = std::string("**");
+        const std::string PAD = std::string("  ");
 
         bool checkXmlRpcSanity(const std::string& t_tag,
                                XmlRpc::XmlRpcValue& t_node,
