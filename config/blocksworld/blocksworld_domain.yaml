@@ -1,0 +1,86 @@
+domain:
+  name: "blocks"
+  requirements: ["strips", "typing"]
+  types:
+    - { type_names: ["block"] }
+  predicates:
+    - name: "on-table"
+      params:
+        - { name: "x", type: "block" }
+    - name: "clear"
+      params:
+        - { name: "x", type: "block" }
+    - name: "on"
+      params:
+        - { name: "x", type: "block" }
+        - { name: "y", type: "block" }
+    - name: "handempty"
+    - name: "holding"
+      params:
+        - { name: "x", type: "block" }
+  actions:
+    - name: "pick-up"
+      params:
+        - { name: "x", type: "block" }
+      precondition:
+        and:
+          - expr: { name: "clear", args: ["x"] }
+          - expr: { name: "on-table", args: ["x"] }
+          - expr: { name: "handempty" }
+      effect:
+        and:
+          - not:
+              expr: { name: "on-table", args: ["x"] }
+          - not:
+              expr: { name: "clear", args: ["x"] }
+          - not:
+              expr: { name: "handempty" }
+          - expr: { name: "holding", args: ["x"] }
+    - name: "put-down"
+      params:
+        - { name: "x", type: "block" }
+      precondition:
+        expr: { name: "holding", args: ["x"] }
+      effect:
+        and:
+          - not:
+              expr: { name: "holding", args: ["x"] }
+          - expr: { name: "clear", args: ["x"] }
+          - expr: { name: "handempty" }
+          - expr: { name: "on-table", args: ["x"] }
+    - name: "stack"
+      params:
+        - { name: "x", type: "block" }
+        - { name: "y", type: "block" }
+      precondition:
+        and:
+          - expr: { name: "holding", args: ["x"] }
+          - expr: { name: "clear", args: ["y"] }
+      effect:
+        and:
+          - not:
+              expr: { name: "holding", args: ["x"] }
+          - not:
+              expr: { name: "clear", args: ["y"] }
+          - expr: { name: "clear", args: ["x"] }
+          - expr: { name: "handempty" }
+          - expr: { name: "on", args: ["x", "y"] }
+    - name: "unstack"
+      params:
+        - { name: "x", type: "block" }
+        - { name: "y", type: "block" }
+      precondition:
+        and:
+          - expr: { name: "on", args: ["x", "y"] }
+          - expr: { name: "clear", args: ["y"] }
+          - expr: { name: "handempty" }
+      effect:
+        and:
+          - expr: { name: "holding", args: ["x"] }
+          - expr: { name: "clear", args: ["y"] }
+          - not:
+              expr: { name: "clear", args: ["x"] }
+          - not:
+              expr: { name: "handempty" }
+          - not:
+              expr: { name: "on", args: ["x", "y"] }

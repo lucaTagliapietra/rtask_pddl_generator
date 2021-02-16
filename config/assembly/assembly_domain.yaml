@@ -1,0 +1,232 @@
+domain:
+  name: "assembly"
+  requirements: ["adl"]
+  types:
+    - { type_names: ["assembly", "resource"], parent_type: "object" }
+  predicates:
+    - name: "available"
+      params:
+        - { name: "x", type: "object" }
+    - name: "complete"
+      params:
+        - { name: "a", type: "assembly" }
+    - name: "requires"
+      params:
+        - { name: "a", type: "assembly" }
+        - { name: "r", type: "resource" }
+    - name: "committed"
+      params:
+        - { name: "r", type: "resource" }
+        - { name: "a", type: "assembly" }
+    - name: "incorporated"
+      params:
+        - { name: "part", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+    - name: "part-of"
+      params:
+        - { name: "part", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+    - name: "to-be-removed"
+      params:
+        - { name: "part", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+    - name: "assemble-order"
+      params:
+        - { name: "part1", type: "assembly" }
+        - { name: "part2", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+    - name: "transient-part"
+      params:
+        - { name: "part", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+    - name: "remove-order"
+      params:
+        - { name: "part1", type: "assembly" }
+        - { name: "part2", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+  actions:
+    - name: "commit"
+      params:
+        - { name: "res", type: "resource" }
+        - { name: "as", type: "assembly" }
+      precondition:
+        expr: { name: "available", args: ["res"] }
+      effect:
+        and:
+          - not:
+              expr: { name: "available", args: ["res"] }
+          - expr: { name: "committed", args: ["res", "as"] }
+    - name: "release"
+      params:
+        - { name: "res", type: "resource" }
+        - { name: "as", type: "assembly" }
+      precondition:
+        expr: { name: "committed", args: ["res", "as"] }
+      effect:
+        and:
+          - not:
+              expr: { name: "committed", args: ["res", "as"] }
+          - expr: { name: "available", args: ["res"] }
+    - name: "assemble"
+      params:
+        - { name: "part", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+      precondition:
+        and:
+          - forall:
+              what: { name: "res", type: "resource" }
+              condition:
+                imply:
+                  condition:
+                    expr: { name: "requires", args: ["whole", "res"] }
+                  consequence:
+                    expr: { name: "committed", args: ["res", "whole"] }
+          - or:
+              - expr: { name: "part-of", args: ["part", "whole"] }
+              - expr: { name: "transient-part", args: ["part", "whole"] }
+          - expr: { name: "available", args: ["part"] }
+          - forall:
+              what: { name: "prev", type: "assembly" }
+              condition:
+                imply:
+                  condition:
+                    expr:
+                      {
+                        name: "assemble-order",
+                        args: ["prev", "part", "whole"],
+                      }
+                  consequence:
+                    expr: { name: "incorporated", args: ["prev", "whole"] }
+      effect:
+        and:
+          - expr: { name: "incorporated", args: ["part", "whole"] }
+          - not:
+              expr: { name: "available", args: ["part"] }
+          - when:
+              condition:
+                and:
+                  - not:
+                      exists:
+                        what: { name: "p", type: "assembly" }
+                        condition:
+                          and:
+                            - expr: { name: "part-of", args: ["p", "whole"] }
+                            - not: { equals: { lhs: "p", rhs: "part" } }
+                            - not:
+                                {
+                                  expr:
+                                    {
+                                      name: "incorporated",
+                                      args: ["p", "whole"],
+                                    },
+                                }
+                  - not:
+                      exists:
+                        what: { name: "tp", type: "assembly" }
+                        condition:
+                          and:
+                            - expr:
+                                {
+                                  name: "transient-part",
+                                  args: ["tp", "whole"],
+                                }
+                            - expr:
+                                { name: "incorporated", args: ["tp", "whole"] }
+                            - not: { equals: { lhs: "tp", rhs: "part" } }
+                            - not:
+                                {
+                                  expr:
+                                    {
+                                      name: "incorporated",
+                                      args: ["tp", "whole"],
+                                    },
+                                }
+              consequence:
+                and:
+                  - expr: { name: "complete", args: ["whole"] }
+                  - expr: { name: "available", args: ["whole"] }
+    - name: "remove"
+      params:
+        - { name: "part", type: "assembly" }
+        - { name: "whole", type: "assembly" }
+      precondition:
+        and:
+          - forall:
+              what: { name: "res", type: "resource" }
+              condition:
+                imply:
+                  condition:
+                    expr: { name: "requires", args: ["whole", "res"] }
+                  consequence:
+                    expr: { name: "committed", args: ["res", "whole"] }
+          - expr: { name: "incorporated", args: ["part", whole] }
+          - or:
+              - and:
+                  - expr: { name: "transient-part", args: ["part", "whole"] }
+                  - forall:
+                      what: { name: "prev1", type: "assembly" }
+                      condition:
+                        imply:
+                          condition:
+                            expr:
+                              {
+                                name: "remove-order",
+                                args: ["prev1", "part", "whole"],
+                              }
+                          consequence:
+                            expr:
+                              { name: "incorporated", args: ["prev1", "whole"] }
+                  - and:
+                      - expr: { name: "part-of", args: ["part", "whole"] }
+                      - not:
+                          exists:
+                            what: { name: "prev2", type: "assembly" }
+                            condition:
+                              and:
+                                - expr:
+                                    {
+                                      name: "assemble-order",
+                                      args: ["prev2", "part", "whole"],
+                                    }
+                                - expr:
+                                    {
+                                      name: "incorporated",
+                                      args: ["prev2", "whole"],
+                                    }
+      effect:
+        and:
+          - not:
+              expr: { name: "incorporated", args: ["part", "whole"] }
+          - expr: { name: "available", args: ["part"] }
+          - when:
+              condition:
+                and:
+                  - not:
+                      exists:
+                        what: { name: "p", type: "assembly" }
+                        condition:
+                          and:
+                            - expr: { name: "part-of", args: ["p", "whole"] }
+                            - not:
+                                expr:
+                                  { name: "incorporated", args: ["p", "whole"] }
+                  - not:
+                      exists:
+                        what: { name: "tp", type: "assembly" }
+                        condition:
+                          and:
+                            - expr:
+                                {
+                                  name: "transient-part",
+                                  args: ["tp", "whole"],
+                                }
+                            - not:
+                                equals:
+                                  lhs: "tp"
+                                  rhs: "part"
+                            - expr:
+                                { name: "incorporated", args: ["tp", "whole"] }
+              consequence:
+                and:
+                  - expr: { name: "complete", args: ["whole"] }
+                  - expr: { name: "available", args: ["whole"] }

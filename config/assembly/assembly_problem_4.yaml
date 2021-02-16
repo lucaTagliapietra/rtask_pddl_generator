@@ -1,0 +1,55 @@
+problem:
+  name: "assembly-4"
+  belonging_domain: "assembly"
+  objects:
+    - { name: "kludge", type: "assembly" }
+    - { name: "bracket", type: "assembly" }
+    - { name: "whatsis", type: "assembly" }
+    - { name: "sprocket", type: "assembly" }
+    - { name: "doodad", type: "assembly" }
+    - { name: "contraption", type: "assembly" }
+    - { name: "wire", type: "assembly" }
+    - { name: "gimcrack", type: "assembly" }
+    - { name: "plug", type: "assembly" }
+    - { name: "hoozawhatsie", type: "assembly" }
+    - { name: "thingumbob", type: "assembly" }
+    - { name: "coil", type: "assembly" }
+    - { name: "fastener", type: "assembly" }
+    - { name: "widget", type: "assembly" }
+    - { name: "charger", type: "resource" }
+    - { name: "pliers", type: "resource" }
+  init:
+    - expr: { name: "available", args: ["sprocket"] }
+    - expr: { name: "available", args: ["doodad"] }
+    - expr: { name: "available", args: ["contraption"] }
+    - expr: { name: "available", args: ["wire"] }
+    - expr: { name: "available", args: ["plug"] }
+    - expr: { name: "available", args: ["hoozawhatsie"] }
+    - expr: { name: "available", args: ["thingumbob"] }
+    - expr: { name: "available", args: ["fastener"] }
+    - expr: { name: "available", args: ["widget"] }
+    - expr: { name: "available", args: ["charger"] }
+    - expr: { name: "available", args: ["pliers"] }
+    - expr: { name: "requires", args: ["bracket", "charger"] }
+    - expr: { name: "requires", args: ["whatsis", "pliers"] }
+    - expr: { name: "requires", args: ["gimcrack", "pliers"] }
+    - expr: { name: "requires", args: ["coil", "pliers"] }
+    - expr: { name: "part-of", args: ["bracket", "kludge"] }
+    - expr: { name: "part-of", args: ["coil", "kludge"] }
+    - expr: { name: "part-of", args: ["whatsis", "bracket"] }
+    - expr: { name: "part-of", args: ["gimcrack", "bracket"] }
+    - expr: { name: "part-of", args: ["sprocket", "whatsis"] }
+    - expr: { name: "part-of", args: ["doodad", "whatsis"] }
+    - expr: { name: "part-of", args: ["contraption", "whatsis"] }
+    - expr: { name: "part-of", args: ["wire", "whatsis"] }
+    - expr: { name: "part-of", args: ["plug", "gimcrack"] }
+    - expr: { name: "part-of", args: ["hoozawhatsie", "gimcrack"] }
+    - expr: { name: "part-of", args: ["thingumbob", "gimcrack"] }
+    - expr: { name: "part-of", args: ["fastener", "coil"] }
+    - expr: { name: "part-of", args: ["widget", "coil"] }
+    - expr: { name: "assemble-order", args: ["bracket", "coil", "kludge"] }
+    - expr: { name: "assemble-order", args: ["whatsis", "gimcrack", "bracket"] }
+    - expr: { name: "assemble-order", args: ["wire", "contraption", "whatsis"] }
+    - expr: { name: "assemble-order", args: ["plug", "thingumbob", "gimcrack"] }
+  goal:
+    expr: { name: "complete", args: ["kludge"] }

@@ -1,0 +1,23 @@
+problem:
+  name: "blocks-4"
+  belonging_domain: "blocks"
+  objects:
+    - { name: "D", type: "block" }
+    - { name: "B", type: "block" }
+    - { name: "A", type: "block" }
+    - { name: "C", type: "block" }
+  init:
+    - expr: { name: "clear", args: ["C"] }
+    - expr: { name: "clear", args: ["A"] }
+    - expr: { name: "clear", args: ["B"] }
+    - expr: { name: "clear", args: ["D"] }
+    - expr: { name: "on-table", args: ["C"] }
+    - expr: { name: "on-table", args: ["A"] }
+    - expr: { name: "on-table", args: ["B"] }
+    - expr: { name: "on-table", args: ["D"] }
+    - expr: { name: "handempty" }
+  goal:
+    and:
+      - expr: { name: "on", args: ["D", "C"] }
+      - expr: { name: "on", args: ["C", "B"] }
+      - expr: { name: "on", args: ["B", "A"] }
