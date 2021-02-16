@@ -1,11 +1,9 @@
 domain:
   name: "BLOCKS"
-  requirements:
-    equality: False
-    strips: False
-    typing: True
+  requirements: ["equality", "strips", "typing"]
   types:
-    - { type_names: ["block"] }
+#    - { type_names: ["block"] }
+    - { type_names: ["block"], parent_type: "object" }
   predicates:
     - name: "on"
       params:

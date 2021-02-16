@@ -3,11 +3,10 @@ domain:
   extends: "building"
   requirements: ["strips", "typing"]
   types:
-#    - { type_names: ["block"] }
-    - { type_names: ["site", "material"], parent_type: "object" }
+    - { type_names: ["site", "material"] }
     - { type_names: ["bricks", "cables", "windows"], parent_type: "material" }
   constants:
-    - {name: "mainsite", type: "site"}
+    - { name: "mainsite", type: "site" }
   predicates:
     - name: "walls-built"
       params:
@@ -32,7 +31,7 @@ domain:
       params:
         - { name: "m", type: "material" }
   timeless:
-    - expr: {name: "foundations-set", args: ["mainsite"]}
+    - expr: { name: "foundations-set", args: ["mainsite"] }
   actions:
     - name: "build-wall"
       params:
@@ -40,23 +39,23 @@ domain:
         - { name: "b", type: "bricks" }
       precondition:
         and:
-            - expr: { name: "on-site", args: ["b", "s"] }
-            - expr: { name: "foundations-set", args: ["s"] }
-            - not:
-                expr: { name: "walls-built", args: ["s"] }
-            - not:
-                expr: { name: "material-used", args: ["b"] }
+          - expr: { name: "on-site", args: ["b", "s"] }
+          - expr: { name: "foundations-set", args: ["s"] }
+          - not:
+              expr: { name: "walls-built", args: ["s"] }
+          - not:
+              expr: { name: "material-used", args: ["b"] }
       effect:
         and:
-        - expr: { name: "walls-built", args: ["s"] }
-        - expr: { name: "material-used", args: ["b"] }
+          - expr: { name: "walls-built", args: ["s"] }
+          - expr: { name: "material-used", args: ["b"] }
   axioms:
     - vars:
-      - { name: "s", type: "site" }
+        - { name: "s", type: "site" }
       context:
         and:
-         - expr: { name: "walls-built", args: ["s"] }
-         - expr: { name: "windows-fitted", args: ["s"] }
-         - expr: { name: "cables-installed", args: ["s"] }
+          - expr: { name: "walls-built", args: ["s"] }
+          - expr: { name: "windows-fitted", args: ["s"] }
+          - expr: { name: "cables-installed", args: ["s"] }
       implies:
         expr: { name: "site-built", args: ["s"] }
